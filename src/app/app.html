@@ -1,4 +1,11 @@
-<p>This webpage is working!</p>
-<p-button label="Test"></p-button>
+<p-button label="Test" (click)="generateRandomHand()"></p-button>
+<h3>Current Hand</h3>
+<div class="p-grid" style="display: flex; flex-wrap: wrap;">
+  @for (card of currentHand; track $index) { 
+    <div class="p-col-6 p-md-4 p-lg-3">
+        <p-card [title]="card"><img [src]="getImageUrl(card)" /></p-card>
+        </div>
+  }
+</div>
 
 <router-outlet />
