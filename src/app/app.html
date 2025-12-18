@@ -1,7 +1,7 @@
 <button (click)="generateRandomHand()">Generate Hand</button>
 
 <h3>Battlefield</h3>
-<div cdkDropList 
+<div cdkDropZone 
      #battlefieldZone="cdkDropList" 
      [cdkDropListData]="battlefield"
      (cdkDropListDropped)="onBattlefieldDrop($event)"

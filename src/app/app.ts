@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 // import { ButtonModule } from 'primeng/button';
 // import { CardModule } from 'primeng/card';
 import { HttpClient } from '@angular/common/http';
-import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
