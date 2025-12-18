@@ -1,10 +1,44 @@
-<p-button label="Test" (click)="generateRandomHand()"></p-button>
-<h3>Current Hand</h3>
-<div class="p-grid" style="display: flex; flex-wrap: wrap;">
-  @for (card of currentHand; track $index) { 
-    <div class="p-col-6 p-md-4 p-lg-3">
-        <p-card [title]="card"><img [src]="getImageUrl(card)" /></p-card>
-        </div>
+<button (click)="generateRandomHand()">Generate Hand</button>
+
+<h3>Battlefield</h3>
+<div cdkDropList 
+     #battlefieldZone="cdkDropList" 
+     [cdkDropListData]="battlefield"
+     (cdkDropListDropped)="onBattlefieldDrop($event)"
+     [cdkDropListSortingDisabled]="true"
+     style="border: 2px solid #ccc; padding: 20px; min-height: 1000px; background: #2a2a2a; position: relative; overflow: auto;">
+  
+  
+</div>
+@for (item of battlefield; track $index;) {
+    <div cdkDrag
+         [style.position]="'relative'"
+         [style.left.px]="item.x"
+         [style.top.px]="item.y"
+         style="cursor: move; display: flex; position: relative;">
+      <div [title]="item.card" [ngStyle]="{ 'width' : '200px'}">
+        <img [src]="getImageUrl(item.card)" style="width: 100%; height: auto;" />
+        <p>({{item.x}}, {{item.y}})</p>
+      </div>
+    </div>
+  }
+
+<h3>Hand</h3>
+<div cdkDropList 
+     #handZone="cdkDropList"
+     [cdkDropListData]="currentHand"
+     (cdkDropListDropped)="onHandDrop($event)"
+     [cdkDropListSortingDisabled]="false"
+     [cdkDropListConnectedTo]="[battlefieldZone]"
+     style="border: 2px solid #666; padding: 20px; min-height: 150px; background: #1a1a1a; display: flex; gap: 10px; flex-wrap: wrap;">
+  
+  @for (card of currentHand; track card; let i = $index) {
+    <div cdkDrag
+         style="cursor: move;">
+      <div [title]="card" [ngStyle]="{ 'width' : '200px'}">
+        <img [src]="getImageUrl(card)" style="width: 100%; height: auto;" />
+      </div>
+    </div>
   }
 </div>
 

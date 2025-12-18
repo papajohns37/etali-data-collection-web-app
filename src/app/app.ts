@@ -1,19 +1,21 @@
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+// import { ButtonModule } from 'primeng/button';
+// import { CardModule } from 'primeng/card';
 import { HttpClient } from '@angular/common/http';
-import { get } from 'http';
+import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ButtonModule, CardModule],
+  imports: [RouterOutlet, DragDropModule, CommonModule, CdkDrag, CdkDropList],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('mtg-data');
-  currentHand = [''];
+  currentHand: string[] = [''];
+  battlefield: {card: string, x: number, y: number}[] = [];
   decklist = [
     '_____ Goblin',
     'Ancient Tomb',
@@ -130,7 +132,6 @@ export class App {
         this.currentHand.push(card);
       }
     }
-    alert(this.getImageUrl(this.currentHand[0]));
   }
 
   randomInt(min: number, max: number): number {
@@ -140,5 +141,36 @@ export class App {
   getImageUrl(cardName: string): string {
     const formattedName = cardName.replace(/ /g, '+').replace(/'/g, '%27').replace(/,/g, '%2C');
     return `https://api.scryfall.com/cards/named?exact=${formattedName}&format=image`;
+  }
+
+  onBattlefieldDrop(event: CdkDragDrop<any>) {
+    if (event.previousContainer === event.container){
+      // const x = event.dropPoint.x;
+      // const y = event.dropPoint.y;
+      // this.battlefield[event.previousIndex].x = x;
+      // this.battlefield[event.previousIndex].y = y;
+    }
+    else{
+      const card = event.previousContainer.data[event.previousIndex];
+
+      const x = event.dropPoint.x;
+      const y = event.dropPoint.y;
+
+      this.battlefield.push({card, x, y});
+
+      this.currentHand.splice(event.previousIndex, 1);
+    }
+  }
+
+  onHandDrop(event: CdkDragDrop<any>) {
+    if(event.previousContainer === event.container){
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    }
+    else{
+      const card = event.previousContainer.data[event.previousIndex];
+
+      this.currentHand.push(card); //Try this.currentHand.splice(event.currentIndex, 0, card); for replacement
+      this.battlefield.splice(event.previousIndex, 1);
+    }
   }
 }
