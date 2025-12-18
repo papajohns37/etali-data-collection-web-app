@@ -15,7 +15,7 @@ import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, Cdk
 export class App {
   protected readonly title = signal('mtg-data');
   currentHand: string[] = [''];
-  battlefield: {card: string, x: number, y: number}[] = [];
+  battlefield: {card: string, x: number, y: number, tapped: boolean}[] = [];
   decklist = [
     '_____ Goblin',
     'Ancient Tomb',
@@ -164,7 +164,7 @@ export class App {
         const constrainedX = Math.max(0, Math.min(x, rect.width - 200));
         const constrainedY = Math.max(0, Math.min(y, rect.height - 280));
         
-        this.battlefield.push({ card, x: constrainedX, y: constrainedY });
+        this.battlefield.push({ card, x: constrainedX, y: constrainedY, tapped: false });
         this.currentHand.splice(index, 1);
       }
     }
@@ -218,5 +218,9 @@ export class App {
       // Reset the drag position to prevent double-transform
       event.source.reset();
     }
+  }
+
+  toggleTap(index: number) {
+    this.battlefield[index].tapped = !this.battlefield[index].tapped;
   }
 }

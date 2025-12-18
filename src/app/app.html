@@ -28,6 +28,8 @@
         <div 
           cdkDrag
           (cdkDragEnded)="onBattlefieldCardDragEnded($event, i)"
+          (dblclick)="toggleTap(i)"
+          [class.tapped]="cardData.tapped"
           [style.left.px]="cardData.x"
           [style.top.px]="cardData.y"
           class="battlefield-card card">
