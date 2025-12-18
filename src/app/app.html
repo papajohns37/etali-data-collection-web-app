@@ -1,45 +1,41 @@
 <button (click)="generateRandomHand()">Generate Hand</button>
 
-<h3>Battlefield</h3>
-<div cdkDropZone 
-     #battlefieldZone="cdkDropList" 
-     [cdkDropListData]="battlefield"
-     (cdkDropListDropped)="onBattlefieldDrop($event)"
-     [cdkDropListSortingDisabled]="true"
-     style="border: 2px solid #ccc; padding: 20px; min-height: 1000px; background: #2a2a2a; position: relative; overflow: auto;">
-  
-  
-</div>
-@for (item of battlefield; track $index;) {
-    <div cdkDrag
-         [style.position]="'relative'"
-         [style.left.px]="item.x"
-         [style.top.px]="item.y"
-         style="cursor: move; display: flex; position: relative;">
-      <div [title]="item.card" [ngStyle]="{ 'width' : '200px'}">
-        <img [src]="getImageUrl(item.card)" style="width: 100%; height: auto;" />
-        <p>({{item.x}}, {{item.y}})</p>
-      </div>
+<div class="game-container">
+  <div class="hand-section">
+    <h2 class="zone-label">Hand</h2>
+    <div 
+      cdkDropList 
+      #handList="cdkDropList"
+      [cdkDropListData]="currentHand"
+      (cdkDropListDropped)="onHandDrop($event)"
+      class="hand-zone">
+      @for (card of currentHand; track card; let i = $index) {
+        <div 
+          cdkDrag
+          [cdkDragData]="{card: card, index: i, source: 'hand'}"
+          (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
+          class="hand-card card">
+          <img [src]="getImageUrl(card)" [alt]="card" />
+        </div>
+      }
     </div>
-  }
+  </div>
 
-<h3>Hand</h3>
-<div cdkDropList 
-     #handZone="cdkDropList"
-     [cdkDropListData]="currentHand"
-     (cdkDropListDropped)="onHandDrop($event)"
-     [cdkDropListSortingDisabled]="false"
-     [cdkDropListConnectedTo]="[battlefieldZone]"
-     style="border: 2px solid #666; padding: 20px; min-height: 150px; background: #1a1a1a; display: flex; gap: 10px; flex-wrap: wrap;">
-  
-  @for (card of currentHand; track card; let i = $index) {
-    <div cdkDrag
-         style="cursor: move;">
-      <div [title]="card" [ngStyle]="{ 'width' : '200px'}">
-        <img [src]="getImageUrl(card)" style="width: 100%; height: auto;" />
-      </div>
+  <div class="battlefield-section">
+    <h2 class="zone-label">Battlefield</h2>
+    <div class="battlefield-zone">
+      @for (cardData of battlefield; track cardData; let i = $index) {
+        <div 
+          cdkDrag
+          (cdkDragEnded)="onBattlefieldCardDragEnded($event, i)"
+          [style.left.px]="cardData.x"
+          [style.top.px]="cardData.y"
+          class="battlefield-card card">
+          <img [src]="getImageUrl(cardData.card)" [alt]="cardData.card" />
+        </div>
+      }
     </div>
-  }
+  </div>
 </div>
 
 <router-outlet />
