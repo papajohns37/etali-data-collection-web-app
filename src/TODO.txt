@@ -1,0 +1,8 @@
+Implement basic goldfishing functionality
+Update image getters to cache or store images on load
+Add hand data functionality
+Retrieve list from moxfield list
+Implement C# dbs to store hand and decklist data
+Implement graphic to display statistics on gathered data
+Allow user to select existing decklist with data to open
+Setup logit regression
