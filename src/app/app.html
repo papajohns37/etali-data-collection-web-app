@@ -1,7 +1,14 @@
-<button (click)="generateRandomHand()">Generate Hand</button>
+<div class="button-container">
+  <button (click)="onRequestHand()" [disabled]="isLoading" class="btn btn-primary">Request Hand from Server</button>
+  <button (click)="generateRandomHand()" class="btn btn-secondary">Generate Random Hand</button>
+</div>
 
 <div class="game-container">
   <div class="hand-section">
+    <div class="metadata-display">
+      <span class="metadata-item">Seat Order: <strong>{{ seatOrder }}</strong></span>
+      <span class="metadata-item">Stickers: <strong>{{ stickers.join(', ') }}</strong></span>
+    </div>
     <h2 class="zone-label">Hand</h2>
     <div 
       cdkDropList 
@@ -24,7 +31,7 @@
   <div class="battlefield-section">
     <h2 class="zone-label">Battlefield</h2>
     <div class="battlefield-zone">
-      @for (cardData of battlefield; track cardData; let i = $index) {
+      @for (cardData of battlefield; track $index; let i = $index) {
         <div 
           cdkDrag
           (cdkDragEnded)="onBattlefieldCardDragEnded($event, i)"
@@ -32,6 +39,45 @@
           [style.top.px]="cardData.y"
           class="battlefield-card card">
           <img [src]="getImageUrl(cardData.card)" [alt]="cardData.card" />
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="evaluation-section">
+    <h3 class="evaluation-title">Evaluate Hand</h3>
+    <div class="evaluation-form">
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="canCastEtali" [disabled]="isLoading" />
+          Was able to cast Etali
+        </label>
+      </div>
+
+      @if (canCastEtali) {
+        <div class="form-group">
+          <label for="minCards">Minimum Cards Required to Cast Etali:</label>
+          <input 
+            id="minCards"
+            type="number" 
+            [(ngModel)]="minimumCardsToCastEtali" 
+            min="1" 
+            max="7"
+            [disabled]="isLoading"
+            class="input-field" />
+        </div>
+      }
+
+      <button 
+        (click)="onSubmitEvaluation()" 
+        [disabled]="isLoading || currentHandId === 0"
+        class="btn btn-submit">
+        {{ isLoading ? 'Submitting...' : 'Submit Evaluation' }}
+      </button>
+
+      @if (evaluationMessage) {
+        <div class="evaluation-message" [ngClass]="{'success': evaluationMessage.includes('successfully'), 'error': evaluationMessage.includes('Failed')}">
+          {{ evaluationMessage }}
         </div>
       }
     </div>

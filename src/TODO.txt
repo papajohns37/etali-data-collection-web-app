@@ -1,8 +1,46 @@
-Implement basic goldfishing functionality
-Update image getters to cache or store images on load
+TODO:
 Add hand data functionality
+Update image getters to cache or store images on load
 Retrieve list from moxfield list
 Implement C# dbs to store hand and decklist data
 Implement graphic to display statistics on gathered data
 Allow user to select existing decklist with data to open
 Setup logit regression
+
+Planning:
+C# API Jobs - receive hand results, request hands to test
+MTG Data Web Jobs - provide ui for user to test hands from API, request hand, send hand data
+
+Sample HTTP Requests:
+POST https://localhost:7194/hand/evaluate
+Content-Type: application/json
+
+{
+  "id": 9,
+  "cards": ["Guttural Response", "Worldly Tutor", "Devastating Onslaught", "Jaxis, the Troublemaker", "Crystal Vein", "Emerald Charm", "Strike It Rich"],
+  "seatOrder": 2,
+  "stickers": [4, 4, 6],
+  "canCastEtali": true,
+  "minimumCardsToCastEtali": 6
+}
+GET https://localhost:7194/hand
+
+Response:
+{
+  "id": 10,
+  "cards": [
+    "Tinder Wall",
+    "Heat Shimmer",
+    "Crop Rotation",
+    "Desperate Ritual",
+    "Prismatic Vista",
+    "Ragavan, Nimble Pilferer",
+    "Autumn\"s Veil"
+  ],
+  "seatOrder": 1,
+  "stickers": [
+    4,
+    5,
+    3
+  ]
+}

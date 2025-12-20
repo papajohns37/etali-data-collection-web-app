@@ -1,14 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 // import { ButtonModule } from 'primeng/button';
 // import { CardModule } from 'primeng/card';
 import { HttpClient } from '@angular/common/http';
 import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
 
+
+interface Hand {
+  id: number;
+  cards: string[];
+  seatOrder: number;
+  stickers: number[];
+}
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DragDropModule, CommonModule, CdkDrag, CdkDropList],
+  imports: [RouterOutlet, DragDropModule, CommonModule, CdkDrag, CdkDropList, FormsModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -16,6 +25,13 @@ export class App {
   protected readonly title = signal('mtg-data');
   currentHand: string[] = [''];
   battlefield: {card: string, x: number, y: number}[] = [];
+  currentHandId: number = 0;
+  seatOrder: number = 0;
+  stickers: number[] = [];
+  canCastEtali: boolean = false;
+  minimumCardsToCastEtali: number = 8;
+  isLoading: boolean = false;
+  evaluationMessage: string = '';
   decklist = [
     '_____ Goblin',
     'Ancient Tomb',
@@ -119,6 +135,32 @@ export class App {
   ];
 
   private http: HttpClient = inject(HttpClient);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly baseUrl = 'https://localhost:7194';
+
+  onRequestHand() {
+    this.isLoading = true;
+    this.evaluationMessage = '';
+    this.http.get<Hand>(`${this.baseUrl}/hand`).subscribe({
+      next: (response) => {
+        this.currentHandId = response.id;
+        this.currentHand = response.cards;
+        this.seatOrder = response.seatOrder;
+        this.stickers = response.stickers;
+        this.battlefield = [];
+        this.canCastEtali = false;
+        this.minimumCardsToCastEtali = 8;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to fetch hand:', err);
+        this.evaluationMessage = 'Failed to fetch hand from server';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   generateRandomHand() {
     this.currentHand = [];
@@ -218,5 +260,42 @@ export class App {
       // Reset the drag position to prevent double-transform
       event.source.reset();
     }
+  }
+
+  onSubmitEvaluation() {
+    const payload = {
+      id: this.currentHandId,
+      cards: this.currentHand,
+      seatOrder: this.seatOrder,
+      stickers: this.stickers,
+      canCastEtali: this.canCastEtali,
+      minimumCardsToCastEtali: this.canCastEtali ? this.minimumCardsToCastEtali : 8
+    };
+
+    this.isLoading = true;
+    this.http.post(`${this.baseUrl}/hand/evaluate`, payload).subscribe({
+      next: (response) => {
+        this.evaluationMessage = 'Hand evaluation submitted successfully!';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        // Reset form for next hand
+        setTimeout(() => {
+          this.currentHand = [];
+          this.battlefield = [];
+          this.currentHandId = 0;
+          this.seatOrder = 0;
+          this.stickers = [];
+          this.canCastEtali = false;
+          this.minimumCardsToCastEtali = 8;
+          this.evaluationMessage = '';
+        }, 2000);
+      },
+      error: (err) => {
+        console.error('Failed to submit evaluation:', err);
+        this.evaluationMessage = 'Failed to submit evaluation. Please try again.';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
