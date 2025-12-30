@@ -1,5 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
@@ -14,6 +15,10 @@ export class DecklistFormComponent implements OnInit {
   newDecklistForm: FormGroup;
   existingDecklists = signal<{ id: string; name: string }[]>([]);
   selectedDecklistName = signal<string>('');
+
+  private http: HttpClient = inject(HttpClient);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly baseUrl = 'https://localhost:7194';
 
   constructor(private fb: FormBuilder) {
     // Initialize dropdown form
@@ -99,6 +104,8 @@ export class DecklistFormComponent implements OnInit {
         deckName: formData.deckName,
         moxfieldLink: formData.moxfieldLink
       });
+
+      this.http.post(`${this.baseUrl}/decklist?link=${encodeURIComponent(formData.moxfieldLink)}&name=${encodeURIComponent(formData.deckName)}`, {});
       
       // TODO: Implement actual submission logic to backend
       // For now, add the new deck to the existing list
@@ -111,8 +118,6 @@ export class DecklistFormComponent implements OnInit {
       
       // Reset form after submission
       this.newDecklistForm.reset();
-    } else {
-      console.log('Form is invalid, cannot submit');
     }
   }
 }
