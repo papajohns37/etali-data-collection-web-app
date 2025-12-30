@@ -14,6 +14,8 @@ interface Hand {
   cards: string[];
   seatOrder: number;
   stickers: number[];
+  decklistId: number;
+  decklistName: string;
 }
 
 @Component({
@@ -29,129 +31,41 @@ export class App {
   currentHand: string[] = [''];
   battlefield: {card: string, x: number, y: number, tapped: boolean}[] = [];
   currentHandId: number = 0;
+  currentDecklistId: number = 0;
+  currentDecklistName: string = '';
   seatOrder: number = 0;
   stickers: number[] = [];
   canCastEtali: boolean = false;
   minimumCardsToCastEtali: number = 8;
   isLoading: boolean = false;
   evaluationMessage: string = '';
-  decklist = [
-    '_____ Goblin',
-    'Ancient Tomb',
-    'Arid Mesa',
-    'Autumn\'s Veil',
-    'Birds of Paradise',
-    'Birgi, God of Storytelling',
-    'Bloodstained Mire',
-    'Boseiju, Who Endures',
-    'Chandra, Flameshaper',
-    'Chrome Mox',
-    'City of Brass',
-    'City of Traitors',
-    'Command Tower',
-    'Copperline Gorge',
-    'Cragcrown Pathway',
-    'Crop Rotation',
-    'Crystal Vein',
-    'Cursed Mirror',
-    'Deflecting Swat',
-    'Desperate Ritual',
-    'Devastating Onslaught',
-    'Dualcaster Mage',
-    'Dwarven Ruins',
-    'Eldrazi Confluence',
-    'Eldritch Evolution',
-    'Electroduplicate',
-    'Elvish Spirit Guide',
-    'Emerald Charm',
-    'Emrakul, the Promised End',
-    'Eternal Witness',
-    'Evendo Brushrazer',
-    'Flare of Duplication',
-    'Food Chain',
-    'Forbidden Orchard',
-    'Forbidden Orchard',
-    'Fury',
-    'Gamble',
-    'Gemstone Caverns',
-    'Geosurge',
-    'Grim Monolith',
-    'Grove of the Burnwillows',
-    'Guttural Response',
-    'Heat Shimmer',
-    'Hellkite Courser',
-    'Hunting Velociraptor',
-    'Imperial Recruiter',
-    'Infernal Plunge',
-    'Jaxis, the Troublemaker',
-    'Jeska\'s Will',
-    'Karplusan Forest',
-    'Lion\'s Eye Diamond',
-    'Lotus Petal',
-    'Mana Confluence',
-    'Mana Vault',
-    'Metamorphosis',
-    'Misty Rainforest',
-    'Molten Duplication',
-    'Mountain',
-    'Mox Diamond',
-    'Multiversal Passage',
-    'Natural State',
-    'Nature\'s Claim',
-    'Noxious Revival',
-    'Open the Omenpaths',
-    'Orcish Lumberjack',
-    'Pick Your Poison',
-    'Prismatic Vista',
-    'Pyretic Ritual',
-    'Pyroblast',
-    'Pyrokinesis',
-    'Ragavan, Nimble Pilferer',
-    'Red Elemental Blast',
-    'Rionya, Fire Dancer',
-    'Rite of Flame',
-    'Sandstone Needle',
-    'Scalding Tarn',
-    'Seething Song',
-    'Simian Spirit Guide',
-    'Snow-Covered Forest',
-    'Snow-Covered Mountain',
-    'Sol Ring',
-    'Spire Garden',
-    'Squee, the Immortal',
-    'Starting Town',
-    'Stomping Ground',
-    'Strike It Rich',
-    'Sylvan Tutor',
-    'Taiga',
-    'Thornspire Verge',
-    'Tinder Wall',
-    'Treasonous Ogre',
-    'Twinflame',
-    'Underworld Breach',
-    'Veil of Summer',
-    'Verdant Catacombs',
-    'Wheel of Fortune',
-    'Windswept Heath',
-    'Wooded Foothills',
-    'Worldly Tutor'
-  ];
-
+  
   private http: HttpClient = inject(HttpClient);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly baseUrl = 'https://localhost:7194';
 
   onRequestHand() {
-    console.log('Requesting hand from server. Currently selected decklist:', this.decklistForm?.selectedDecklistName() || 'None');
+    const selectedDecklistName = this.decklistForm?.selectedDecklistName();
+    
+    if (!selectedDecklistName || selectedDecklistName === 'None') {
+      this.evaluationMessage = 'Please select a decklist first';
+      return;
+    }
+    
+    console.log('Requesting hand from server. Currently selected decklist:', selectedDecklistName);
     
     this.isLoading = true;
     this.evaluationMessage = '';
-    this.http.get<Hand>(`${this.baseUrl}/hand`).subscribe({
+    
+    const encodedDecklistName = encodeURIComponent(selectedDecklistName);
+    this.http.get<Hand>(`${this.baseUrl}/hand?decklistName=${encodedDecklistName}`).subscribe({
       next: (response) => {
         this.currentHandId = response.id;
         this.currentHand = response.cards;
         this.seatOrder = response.seatOrder;
         this.stickers = response.stickers;
+        this.currentDecklistId = response.decklistId;
+        this.currentDecklistName = response.decklistName;
         this.battlefield = [];
         this.canCastEtali = false;
         this.minimumCardsToCastEtali = 8;
@@ -160,27 +74,17 @@ export class App {
       },
       error: (err) => {
         console.error('Failed to fetch hand:', err);
-        this.evaluationMessage = 'Failed to fetch hand from server';
+        if (err.status === 404) {
+          this.evaluationMessage = `Decklist "${selectedDecklistName}" not found`;
+        } else if (err.error?.error) {
+          this.evaluationMessage = err.error.error;
+        } else {
+          this.evaluationMessage = 'Failed to fetch hand from server';
+        }
         this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
-  }
-
-  generateRandomHand() {
-    this.currentHand = [];
-    this.randomInt(0, this.decklist.length);
-    while (this.currentHand.length < 7) {
-      const randIndex = this.randomInt(0, this.decklist.length);
-      const card = this.decklist[randIndex];
-      if (!this.currentHand.includes(card)) {
-        this.currentHand.push(card);
-      }
-    }
-  }
-
-  randomInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min)) + min;
   }
 
   getImageUrl(cardName: string): string {
@@ -274,7 +178,9 @@ export class App {
       seatOrder: this.seatOrder,
       stickers: this.stickers,
       canCastEtali: this.canCastEtali,
-      minimumCardsToCastEtali: this.canCastEtali ? this.minimumCardsToCastEtali : 8
+      minimumCardsToCastEtali: this.canCastEtali ? this.minimumCardsToCastEtali : 8,
+      decklistId: this.currentDecklistId,
+      decklistName: this.currentDecklistName
     };
 
     this.isLoading = true;
@@ -288,6 +194,8 @@ export class App {
           this.currentHand = [];
           this.battlefield = [];
           this.currentHandId = 0;
+          this.currentDecklistId = 0;
+          this.currentDecklistName = '';
           this.seatOrder = 0;
           this.stickers = [];
           this.canCastEtali = false;

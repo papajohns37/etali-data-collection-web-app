@@ -7,12 +7,23 @@ Implement graphic to display statistics on gathered data
 Allow user to select existing decklist with data to open
 Setup logit regression
 
-Planning:
-Add efcore for hands
-Add efcore for decklists
-Add support for decklists on client
+Sprints:
+UI Upgrade
+Reporting
 Implement SQLLite database to store data
-Next should be data reporting and list comparison tool
+List comparison tool
+
+UI Upgrade:
+Move decklist selection to a seperate page
+-Display decks as a series of cards
+-Replace new deck form with a button popup
+Adjust card and battlefield sizes
+Add tutoring
+Add gamble tools
+Make sure page is fully reset when generating new hand
+Automatically make new hand after submitting results
+Add shortcuts?
+Test some hands and see what is good/frustrating and add more ideas here
 
 Reporting:
 New page where user selects a decklist and is shown the following

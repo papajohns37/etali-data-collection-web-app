@@ -1,7 +1,13 @@
-import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+
+interface Decklist {
+  id: number;
+  name: string;
+  cardNames: string[];
+}
 
 @Component({
   selector: 'app-decklist-form',
@@ -13,11 +19,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractContro
 export class DecklistFormComponent implements OnInit {
   decklistSelectionForm: FormGroup;
   newDecklistForm: FormGroup;
-  existingDecklists = signal<{ id: string; name: string }[]>([]);
+  existingDecklists = signal<{ id: number; name: string }[]>([]);
   selectedDecklistName = signal<string>('');
 
   private http: HttpClient = inject(HttpClient);
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
   private readonly baseUrl = 'https://localhost:7194';
 
   constructor(private fb: FormBuilder) {
@@ -34,7 +41,10 @@ export class DecklistFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadExistingDecklists();
+    // Only load decklists in browser, not during SSR
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadExistingDecklists();
+    }
   }
 
   /**
@@ -54,36 +64,33 @@ export class DecklistFormComponent implements OnInit {
   }
 
   /**
-   * Method to get existing decklists - will be implemented later
-   * Currently returns mock data
+   * Method to get existing decklists from API
    */
   private loadExistingDecklists(): void {
-    // TODO: Replace with actual API call to fetch decklists
-    this.existingDecklists.set(this.getExistingDecklists());
-    console.log('Loaded existing decklists:', this.existingDecklists());
-  }
-
-  /**
-   * Gets list of existing decklists
-   * This will be replaced with actual data fetching later
-   */
-  getExistingDecklists(): { id: string; name: string }[] {
-    console.log('getExistingDecklists() called - placeholder for future implementation');
-    
-    // Mock data for now
-    return [
-      { id: '1', name: 'Etali Deck v1' },
-      { id: '2', name: 'Etali Deck v2' },
-      { id: '3', name: 'Etali Aggro' },
-      { id: '4', name: 'Etali Control' }
-    ];
+    this.http.get<Decklist[]>(`${this.baseUrl}/decklists`).subscribe({
+      next: (decklists) => {
+        // Map API response to dropdown format
+        const mappedDecklists = decklists.map(deck => ({
+          id: deck.id,
+          name: deck.name
+        }));
+        this.existingDecklists.set(mappedDecklists);
+        console.log('Loaded existing decklists:', mappedDecklists);
+      },
+      error: (err) => {
+        console.error('Failed to fetch decklists:', err);
+        // Set empty array on error
+        this.existingDecklists.set([]);
+      }
+    });
   }
 
   /**
    * Handler for when user selects a decklist from the dropdown
    */
   onDecklistSelected(): void {
-    const selectedId = this.decklistSelectionForm.get('selectedDecklist')?.value;
+    const selectedIdString = this.decklistSelectionForm.get('selectedDecklist')?.value;
+    const selectedId = selectedIdString ? Number(selectedIdString) : null;
     const selectedDecklist = this.existingDecklists().find(deck => deck.id === selectedId);
     const deckName = selectedDecklist?.name || 'None';
     
@@ -105,19 +112,20 @@ export class DecklistFormComponent implements OnInit {
         moxfieldLink: formData.moxfieldLink
       });
 
-      this.http.post(`${this.baseUrl}/decklist?link=${encodeURIComponent(formData.moxfieldLink)}&name=${encodeURIComponent(formData.deckName)}`, {});
-      
-      // TODO: Implement actual submission logic to backend
-      // For now, add the new deck to the existing list
-      const newDeck = {
-        id: (this.existingDecklists().length + 1).toString(),
-        name: formData.deckName
-      };
-      this.existingDecklists.update(decks => [...decks, newDeck]);
-      console.log('Updated decklists:', this.existingDecklists());
-      
-      // Reset form after submission
-      this.newDecklistForm.reset();
+      this.http.post(`${this.baseUrl}/decklist?link=${encodeURIComponent(formData.moxfieldLink)}&name=${encodeURIComponent(formData.deckName)}`, {}).subscribe({
+        next: (response) => {
+          console.log('Decklist saved successfully:', response);
+          
+          // Reload the list of decklists from the API
+          this.loadExistingDecklists();
+          
+          // Reset form after successful submission
+          this.newDecklistForm.reset();
+        },
+        error: (err) => {
+          console.error('Failed to save decklist:', err);
+        }
+      });
     }
   }
 }
