@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
@@ -6,6 +6,7 @@ import { RouterOutlet } from '@angular/router';
 // import { CardModule } from 'primeng/card';
 import { HttpClient } from '@angular/common/http';
 import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { DecklistFormComponent } from './components/decklist-form/decklist-form.component';
 
 
 interface Hand {
@@ -17,11 +18,13 @@ interface Hand {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DragDropModule, CommonModule, CdkDrag, CdkDropList, FormsModule],
+  imports: [RouterOutlet, DragDropModule, CommonModule, CdkDrag, CdkDropList, FormsModule, DecklistFormComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
+  @ViewChild(DecklistFormComponent) decklistForm!: DecklistFormComponent;
+  
   protected readonly title = signal('mtg-data');
   currentHand: string[] = [''];
   battlefield: {card: string, x: number, y: number, tapped: boolean}[] = [];
@@ -139,6 +142,8 @@ export class App {
   private readonly baseUrl = 'https://localhost:7194';
 
   onRequestHand() {
+    console.log('Requesting hand from server. Currently selected decklist:', this.decklistForm?.selectedDecklistName() || 'None');
+    
     this.isLoading = true;
     this.evaluationMessage = '';
     this.http.get<Hand>(`${this.baseUrl}/hand`).subscribe({
