@@ -24,7 +24,7 @@ interface Hand {
 export class App {
   protected readonly title = signal('mtg-data');
   currentHand: string[] = [''];
-  battlefield: {card: string, x: number, y: number}[] = [];
+  battlefield: {card: string, x: number, y: number, tapped: boolean}[] = [];
   currentHandId: number = 0;
   seatOrder: number = 0;
   stickers: number[] = [];
@@ -206,7 +206,7 @@ export class App {
         const constrainedX = Math.max(0, Math.min(x, rect.width - 200));
         const constrainedY = Math.max(0, Math.min(y, rect.height - 280));
         
-        this.battlefield.push({ card, x: constrainedX, y: constrainedY });
+        this.battlefield.push({ card, x: constrainedX, y: constrainedY, tapped: false });
         this.currentHand.splice(index, 1);
       }
     }
@@ -297,5 +297,9 @@ export class App {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  toggleTap(index: number) {
+    this.battlefield[index].tapped = !this.battlefield[index].tapped;
   }
 }
