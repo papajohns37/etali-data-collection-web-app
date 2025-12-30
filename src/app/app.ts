@@ -28,7 +28,7 @@ export class App {
   @ViewChild(DecklistFormComponent) decklistForm!: DecklistFormComponent;
   
   protected readonly title = signal('mtg-data');
-  currentHand: string[] = [''];
+  currentHand: string[] = [];
   battlefield: {card: string, x: number, y: number, tapped: boolean}[] = [];
   currentHandId: number = 0;
   currentDecklistId: number = 0;

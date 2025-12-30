@@ -17,7 +17,7 @@
       [cdkDropListData]="currentHand"
       (cdkDropListDropped)="onHandDrop($event)"
       class="hand-zone">
-      @for (card of currentHand; track card; let i = $index) {
+      @for (card of currentHand; track $index; let i = $index) {
         <div 
           cdkDrag
           [cdkDragData]="{card: card, index: i, source: 'hand'}"
