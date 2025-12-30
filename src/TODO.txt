@@ -8,8 +8,26 @@ Allow user to select existing decklist with data to open
 Setup logit regression
 
 Planning:
-C# API Jobs - receive hand results, request hands to test
-MTG Data Web Jobs - provide ui for user to test hands from API, request hand, send hand data
+Add efcore for hands
+Add efcore for decklists
+Add support for decklists on client
+Implement SQLLite database to store data
+Next should be data reporting and list comparison tool
+
+Reporting:
+New page where user selects a decklist and is shown the following
+Probabilities at each hand size
+Overall probability
+Confidence intervals for each hand size
+Confidence interval for overall hand size
+
+List comparison tool:
+Determine cards that were cut
+Create large sample of hands and only send the user ones that are included
+Setup storage system for list comparisons that does not include them in overall list reporting (separate table)
+
+Data editing tool:
+Create a page where I can view recently submitted hands and fix data as well as visit particular data sets and edit data for a hand
 
 Sample HTTP Requests:
 POST https://localhost:7194/hand/evaluate
