@@ -1,0 +1,35 @@
+<div class="decklist-selection-container">
+  <h1>Select a Decklist</h1>
+  
+  <div class="decklists-grid">
+    @if (decklistService.decklists().length === 0) {
+      <div class="empty-state">
+        <p class="no-decklists">No decklists yet.</p>
+      </div>
+    }
+    
+    @for (decklist of decklistService.decklists(); track decklist.id) {
+      <div class="decklist-card" (click)="onDecklistSelected(decklist)">
+        <h3>{{ decklist.name }}</h3>
+        <p>{{ decklist.cardNames.length }} cards</p>
+      </div>
+    }
+    
+    <div class="decklist-card add-card" (click)="openAddDecklistModal()">
+      <div class="plus-icon">+</div>
+      <p>Add New Decklist</p>
+    </div>
+  </div>
+</div>
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeAddDecklistModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add New Decklist</h2>
+        <button class="close-button" (click)="closeAddDecklistModal()">&times;</button>
+      </div>
+      <app-decklist-form (decklistAdded)="onDecklistAdded()"></app-decklist-form>
+    </div>
+  </div>
+}
