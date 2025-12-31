@@ -1,80 +1,52 @@
 <div class="decklist-form-container">
-  <h2>Decklist Management</h2>
-  
-  <!-- Existing Decklist Selection -->
-  <div class="section">
-    <h3>Select Existing Decklist</h3>
-    <form [formGroup]="decklistSelectionForm">
-      <div class="form-group">
-        <label for="decklistDropdown">Choose a decklist:</label>
-        <select 
-          id="decklistDropdown" 
-          formControlName="selectedDecklist"
-          (change)="onDecklistSelected()"
-          class="form-control">
-          <option value="">-- Select a decklist --</option>
-          @for (deck of existingDecklists(); track deck.id) {
-            <option [value]="deck.id">
-              {{ deck.name }}
-            </option>
+  <form [formGroup]="newDecklistForm" (ngSubmit)="onSubmitNewDecklist()">
+    <div class="form-group">
+      <label for="deckName">Deck Name:</label>
+      <input 
+        type="text" 
+        id="deckName" 
+        formControlName="deckName"
+        class="form-control"
+        placeholder="Enter deck name">
+      @if (newDecklistForm.get('deckName')?.invalid && newDecklistForm.get('deckName')?.touched) {
+        <div class="error-message">
+          @if (newDecklistForm.get('deckName')?.errors?.['required']) {
+            <span>Deck name is required</span>
           }
-        </select>
-      </div>
-    </form>
-  </div>
+          @if (newDecklistForm.get('deckName')?.errors?.['minlength']) {
+            <span>Deck name must be at least 3 characters</span>
+          }
+        </div>
+      }
+    </div>
 
-  <!-- New Decklist Form -->
-  <div class="section">
-    <h3>Add New Decklist from Moxfield</h3>
-    <form [formGroup]="newDecklistForm" (ngSubmit)="onSubmitNewDecklist()">
-      <div class="form-group">
-        <label for="deckName">Deck Name:</label>
-        <input 
-          type="text" 
-          id="deckName" 
-          formControlName="deckName"
-          class="form-control"
-          placeholder="Enter deck name">
-        @if (newDecklistForm.get('deckName')?.invalid && newDecklistForm.get('deckName')?.touched) {
-          <div class="error-message">
-            @if (newDecklistForm.get('deckName')?.errors?.['required']) {
-              <span>Deck name is required</span>
-            }
-            @if (newDecklistForm.get('deckName')?.errors?.['minlength']) {
-              <span>Deck name must be at least 3 characters</span>
-            }
-          </div>
-        }
-      </div>
+    <div class="form-group">
+      <label for="moxfieldLink">Moxfield Link:</label>
+      <input 
+        type="url" 
+        id="moxfieldLink" 
+        formControlName="moxfieldLink"
+        class="form-control"
+        placeholder="https://www.moxfield.com/decks/...">
+      @if (newDecklistForm.get('moxfieldLink')?.invalid && newDecklistForm.get('moxfieldLink')?.touched) {
+        <div class="error-message">
+          @if (newDecklistForm.get('moxfieldLink')?.errors?.['required']) {
+            <span>Moxfield link is required</span>
+          }
+          @if (newDecklistForm.get('moxfieldLink')?.errors?.['invalidMoxfieldUrl']) {
+            <span>Link must be from moxfield.com</span>
+          }
+        </div>
+      }
+    </div>
 
-      <div class="form-group">
-        <label for="moxfieldLink">Moxfield Link:</label>
-        <input 
-          type="url" 
-          id="moxfieldLink" 
-          formControlName="moxfieldLink"
-          class="form-control"
-          placeholder="https://www.moxfield.com/decks/...">
-        @if (newDecklistForm.get('moxfieldLink')?.invalid && newDecklistForm.get('moxfieldLink')?.touched) {
-          <div class="error-message">
-            @if (newDecklistForm.get('moxfieldLink')?.errors?.['required']) {
-              <span>Moxfield link is required</span>
-            }
-            @if (newDecklistForm.get('moxfieldLink')?.errors?.['invalidMoxfieldUrl']) {
-              <span>Link must be from moxfield.com</span>
-            }
-          </div>
-        }
-      </div>
-
-      <div class="form-group">
-        <button 
-          type="submit" 
-          class="submit-button"
-          [disabled]="newDecklistForm.invalid">
-          Add Decklist
-        </button>
-      </div>
-    </form>
-  </div>
+    <div class="form-group">
+      <button 
+        type="submit" 
+        class="submit-button"
+        [disabled]="newDecklistForm.invalid">
+        Add Decklist
+      </button>
+    </div>
+  </form>
 </div>

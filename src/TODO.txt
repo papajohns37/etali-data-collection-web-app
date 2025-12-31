@@ -14,9 +14,6 @@ Implement SQLLite database to store data
 List comparison tool
 
 UI Upgrade:
-Move decklist selection to a seperate page
--Display decks as a series of cards
--Replace new deck form with a button popup
 Adjust card and battlefield sizes
 Add tutoring
 Add gamble tools
