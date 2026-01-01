@@ -15,6 +15,7 @@ List comparison tool
 
 UI Upgrade:
 Test some hands and see what is good/frustrating and add more ideas here
+Upgrade font and use primeng aura theme
 
 Reporting:
 New page where user selects a decklist and is shown the following

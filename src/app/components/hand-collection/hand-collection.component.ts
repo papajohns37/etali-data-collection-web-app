@@ -15,6 +15,7 @@ import { DecklistService } from '../../services/decklist.service';
 export class HandCollectionComponent {
   protected readonly title = signal('mtg-data');
   currentHand = signal<string[]>([]);
+  originalHand = signal<string[]>([]); // Store original hand for reset
   battlefield = signal<{card: string, x: number, y: number, tapped: boolean}[]>([]);
   currentHandId: number = 0;
   currentDecklistId: number = 0;
@@ -141,6 +142,7 @@ export class HandCollectionComponent {
       next: (response) => {
         this.currentHandId = response.id;
         this.currentHand.set(response.cards);
+        this.originalHand.set([...response.cards]); // Store original hand for reset
         this.seatOrder = response.seatOrder;
         this.stickers = response.stickers;
         this.lowestGambleOdds = response.lowestGambleOdds;
@@ -454,6 +456,19 @@ export class HandCollectionComponent {
   closeLibraryModal() {
     this.showLibraryModal.set(false);
     this.searchQuery.set('');
+  }
+  
+  resetHand() {
+    // Clear the battlefield
+    this.battlefield.set([]);
+    
+    // Restore hand to original state
+    this.currentHand.set([...this.originalHand()]);
+    
+    // Reset other state
+    this.canCastEtali = false;
+    this.minimumCardsToCastEtali = 8;
+    this.cardsNeeded.set(1);
   }
 
   onAddCardToHand(cardName: string) {
