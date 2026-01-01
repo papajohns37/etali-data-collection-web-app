@@ -37,6 +37,11 @@ export class HandCollectionComponent {
   private decklistService = inject(DecklistService);
   private router = inject(Router);
 
+  constructor() {
+    // Automatically request a hand when component loads
+    this.onRequestHand();
+  }
+
   get selectedDecklist() {
     return this.decklistService.selectedDecklist();
   }
@@ -251,21 +256,11 @@ export class HandCollectionComponent {
       next: (response) => {
         this.evaluationMessage = 'Hand evaluation submitted successfully!';
         this.isLoading = false;
-        // Reset form for next hand
+        // Automatically request a new hand after brief delay
         setTimeout(() => {
-          this.currentHand.set([]);
-          this.battlefield.set([]);
-          this.currentHandId = 0;
-          this.currentDecklistId = 0;
-          this.currentDecklistName = '';
-          this.seatOrder = 0;
-          this.stickers = [];
-          this.lowestGambleOdds = 0;
-          this.canCastEtali = false;
-          this.minimumCardsToCastEtali = 8;
-          this.cardsNeeded.set(1);
           this.evaluationMessage = '';
-        }, 2000);
+          this.onRequestHand();
+        }, 1500);
       },
       error: (err) => {
         console.error('Failed to submit evaluation:', err);
