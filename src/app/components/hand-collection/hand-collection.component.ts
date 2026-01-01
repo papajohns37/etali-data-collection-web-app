@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, ChangeDetectorRef, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,8 +14,8 @@ import { DecklistService } from '../../services/decklist.service';
 })
 export class HandCollectionComponent {
   protected readonly title = signal('mtg-data');
-  currentHand: string[] = [];
-  battlefield: {card: string, x: number, y: number, tapped: boolean}[] = [];
+  currentHand = signal<string[]>([]);
+  battlefield = signal<{card: string, x: number, y: number, tapped: boolean}[]>([]);
   currentHandId: number = 0;
   currentDecklistId: number = 0;
   currentDecklistName: string = '';
@@ -26,6 +26,10 @@ export class HandCollectionComponent {
   isLoading: boolean = false;
   evaluationMessage: string = '';
   
+  // Library search modal state
+  showLibraryModal = signal(false);
+  searchQuery = signal('');
+  
   private decklistService = inject(DecklistService);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
@@ -33,6 +37,31 @@ export class HandCollectionComponent {
   get selectedDecklist() {
     return this.decklistService.selectedDecklist();
   }
+
+  // Computed signal for library cards (cards not in hand or battlefield)
+  libraryCards = computed(() => {
+    const decklist = this.decklistService.selectedDecklist();
+    if (!decklist) return [];
+    
+    const allCards = decklist.cardNames;
+    const inHand = new Set(this.currentHand());
+    const onBattlefield = new Set(this.battlefield().map(c => c.card));
+    
+    return allCards.filter(card => 
+      !inHand.has(card) && !onBattlefield.has(card)
+    );
+  });
+
+  // Filtered library cards based on search query
+  filteredLibraryCards = computed(() => {
+    const cards = this.libraryCards();
+    const query = this.searchQuery().toLowerCase();
+    
+    let filtered = query ? cards.filter(card => card.toLowerCase().includes(query)) : cards;
+    
+    // Sort alphabetically
+    return filtered.sort((a, b) => a.localeCompare(b));
+  });
 
   onRequestHand() {
     const selectedDecklist = this.decklistService.selectedDecklist();
@@ -51,12 +80,12 @@ export class HandCollectionComponent {
     this.decklistService.getRandomHand(selectedDecklist.name).subscribe({
       next: (response) => {
         this.currentHandId = response.id;
-        this.currentHand = response.cards;
+        this.currentHand.set(response.cards);
         this.seatOrder = response.seatOrder;
         this.stickers = response.stickers;
         this.currentDecklistId = response.decklistId;
         this.currentDecklistName = response.decklistName;
-        this.battlefield = [];
+        this.battlefield.set([]);
         this.canCastEtali = false;
         this.minimumCardsToCastEtali = 8;
         this.isLoading = false;
@@ -84,7 +113,11 @@ export class HandCollectionComponent {
 
   onHandDrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(this.currentHand, event.previousIndex, event.currentIndex);
+      this.currentHand.update(hand => {
+        const newHand = [...hand];
+        moveItemInArray(newHand, event.previousIndex, event.currentIndex);
+        return newHand;
+      });
     }
   }
 
@@ -105,8 +138,8 @@ export class HandCollectionComponent {
         const constrainedX = Math.max(0, Math.min(x, rect.width - 200));
         const constrainedY = Math.max(0, Math.min(y, rect.height - 280));
         
-        this.battlefield.push({ card, x: constrainedX, y: constrainedY, tapped: false });
-        this.currentHand.splice(index, 1);
+        this.battlefield.update(bf => [...bf, { card, x: constrainedX, y: constrainedY, tapped: false }]);
+        this.currentHand.update(hand => hand.filter((_, i) => i !== index));
       }
     }
   }
@@ -117,8 +150,8 @@ export class HandCollectionComponent {
     const handZone = document.querySelector('.hand-zone');
     
     // Store original position for potential reset
-    const originalX = this.battlefield[index].x;
-    const originalY = this.battlefield[index].y;
+    const originalX = this.battlefield()[index].x;
+    const originalY = this.battlefield()[index].y;
     
     // Check if card was dropped back on hand zone
     if (handZone) {
@@ -126,14 +159,14 @@ export class HandCollectionComponent {
       
       if (dropPoint.x >= handRect.left && dropPoint.x <= handRect.right &&
           dropPoint.y >= handRect.top && dropPoint.y <= handRect.bottom) {
-        const cardData = this.battlefield[index];
-        this.currentHand.push(cardData.card);
-        this.battlefield.splice(index, 1);
+        const cardData = this.battlefield()[index];
+        this.currentHand.update(hand => [...hand, cardData.card]);
+        this.battlefield.update(bf => bf.filter((_, i) => i !== index));
         return;
       }
     }
     
-    // Check if card was dropped within battlefield bounds
+    // Calculate new position and constrain to battlefield bounds
     if (battlefieldZone) {
       const battlefieldRect = battlefieldZone.getBoundingClientRect();
       const distance = event.distance;
@@ -142,19 +175,20 @@ export class HandCollectionComponent {
       let newX = originalX + distance.x;
       let newY = originalY + distance.y;
       
-      // Check if new position is within battlefield bounds
-      const isWithinBounds = newX >= 0 && newX <= battlefieldRect.width - 200 &&
-                             newY >= 0 && newY <= battlefieldRect.height - 280;
+      // Get card width dynamically from CSS variable
+      const cardWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-width')) || 120;
+      const cardHeight = cardWidth * 1.4; // MTG card aspect ratio
       
-      if (isWithinBounds) {
-        // Update to new position
-        this.battlefield[index].x = newX;
-        this.battlefield[index].y = newY;
-      } else {
-        // Return to original position if dropped outside battlefield
-        this.battlefield[index].x = originalX;
-        this.battlefield[index].y = originalY;
-      }
+      // Constrain position to battlefield bounds (snap to nearest valid position)
+      newX = Math.max(0, Math.min(newX, battlefieldRect.width - cardWidth));
+      newY = Math.max(0, Math.min(newY, battlefieldRect.height - cardHeight));
+      
+      // Update to constrained position
+      this.battlefield.update(bf => {
+        const newBf = [...bf];
+        newBf[index] = { ...newBf[index], x: newX, y: newY };
+        return newBf;
+      });
       
       // Reset the drag position to prevent double-transform
       event.source.reset();
@@ -164,7 +198,7 @@ export class HandCollectionComponent {
   onSubmitEvaluation() {
     const payload = {
       id: this.currentHandId,
-      cards: this.currentHand,
+      cards: this.currentHand(),
       seatOrder: this.seatOrder,
       stickers: this.stickers,
       canCastEtali: this.canCastEtali,
@@ -181,8 +215,8 @@ export class HandCollectionComponent {
         this.cdr.detectChanges();
         // Reset form for next hand
         setTimeout(() => {
-          this.currentHand = [];
-          this.battlefield = [];
+          this.currentHand.set([]);
+          this.battlefield.set([]);
           this.currentHandId = 0;
           this.currentDecklistId = 0;
           this.currentDecklistName = '';
@@ -203,10 +237,31 @@ export class HandCollectionComponent {
   }
 
   toggleTap(index: number) {
-    this.battlefield[index].tapped = !this.battlefield[index].tapped;
+    this.battlefield.update(bf => {
+      const newBf = [...bf];
+      newBf[index] = { ...newBf[index], tapped: !newBf[index].tapped };
+      return newBf;
+    });
   }
 
   goBackToDecklists() {
     this.router.navigate(['/decklists']);
+  }
+
+  // Library search modal methods
+  openLibraryModal() {
+    this.showLibraryModal.set(true);
+    this.searchQuery.set('');
+  }
+
+  closeLibraryModal() {
+    this.showLibraryModal.set(false);
+    this.searchQuery.set('');
+  }
+
+  onAddCardToHand(cardName: string) {
+    this.currentHand.update(hand => [...hand, cardName]);
+    // Card will be automatically filtered from library on next render due to computed signal
+    this.closeLibraryModal();
   }
 }

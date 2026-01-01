@@ -14,7 +14,6 @@ Implement SQLLite database to store data
 List comparison tool
 
 UI Upgrade:
-Adjust card and battlefield sizes
 Add tutoring
 Add gamble tools
 Make sure page is fully reset when generating new hand

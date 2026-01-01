@@ -1,71 +1,56 @@
 <div class="hand-collection-container">
-  <div class="header">
-    <button (click)="goBackToDecklists()" class="btn-back">← Back to Decklists</button>
+  <div class="top-bar">
+    <button (click)="goBackToDecklists()" class="btn-back">← Back</button>
     @if (selectedDecklist) {
-      <h2 class="selected-decklist">{{ selectedDecklist.name }}</h2>
+      <span class="deck-name">{{ selectedDecklist.name }}</span>
     }
+    <button (click)="onRequestHand()" [disabled]="isLoading" class="btn btn-primary">Request Hand</button>
   </div>
 
-  <div class="button-container">
-    <button (click)="onRequestHand()" [disabled]="isLoading" class="btn btn-primary">Request Hand from Server</button>
-  </div>
-
-  <div class="game-container">
-    <div class="hand-section">
-      <div class="metadata-display">
-        <span class="metadata-item">Seat Order: <strong>{{ seatOrder }}</strong></span>
-        <span class="metadata-item">Stickers: <strong>{{ stickers.join(', ') }}</strong></span>
-      </div>
-      <h2 class="zone-label">Hand</h2>
-      <div 
-        cdkDropList 
-        #handList="cdkDropList"
-        [cdkDropListData]="currentHand"
-        (cdkDropListDropped)="onHandDrop($event)"
-        class="hand-zone">
-        @for (card of currentHand; track $index; let i = $index) {
-          <div 
-            cdkDrag
-            [cdkDragData]="{card: card, index: i, source: 'hand'}"
-            (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
-            class="hand-card card">
-            <img [src]="getImageUrl(card)" [alt]="card" />
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="battlefield-section">
-      <h2 class="zone-label">Battlefield</h2>
-      <div class="battlefield-zone">
-        @for (cardData of battlefield; track $index; let i = $index) {
-          <div 
-            cdkDrag
-            (cdkDragEnded)="onBattlefieldCardDragEnded($event, i)"
-            (dblclick)="toggleTap(i)"
-            [class.tapped]="cardData.tapped"
-            [style.left.px]="cardData.x"
-            [style.top.px]="cardData.y"
-            class="battlefield-card card">
-            <img [src]="getImageUrl(cardData.card)" [alt]="cardData.card" />
-          </div>
-        }
-      </div>
-    </div>
-
-    <div class="evaluation-section">
-      <h3 class="evaluation-title">Evaluate Hand</h3>
-      <div class="evaluation-form">
-        <div class="form-group">
-          <label>
-            <input type="checkbox" [(ngModel)]="canCastEtali" [disabled]="isLoading" />
-            Was able to cast Etali
-          </label>
+  <div class="main-area">
+    <div class="battlefield-zone">
+      @for (cardData of battlefield(); track $index; let i = $index) {
+        <div 
+          cdkDrag
+          (cdkDragEnded)="onBattlefieldCardDragEnded($event, i)"
+          (dblclick)="toggleTap(i)"
+          [class.tapped]="cardData.tapped"
+          [style.left.px]="cardData.x"
+          [style.top.px]="cardData.y"
+          class="battlefield-card card">
+          <img [src]="getImageUrl(cardData.card)" [alt]="cardData.card" />
         </div>
+      }
+    </div>
+
+    <div class="side-panel">
+      <div class="metadata-panel">
+        <div class="metadata-item">
+          <span class="label">Seat Order:</span>
+          <span class="value">{{ seatOrder }}</span>
+        </div>
+        <div class="metadata-item">
+          <span class="label">Stickers:</span>
+          <span class="value">{{ stickers.join(', ') }}</span>
+        </div>
+      </div>
+
+      <button 
+        (click)="openLibraryModal()" 
+        [disabled]="!selectedDecklist || currentHandId === 0" 
+        class="btn btn-primary btn-search-library">
+        Search Library
+      </button>
+
+      <div class="evaluation-form">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="canCastEtali" [disabled]="isLoading" />
+          Cast Etali
+        </label>
 
         @if (canCastEtali) {
-          <div class="form-group">
-            <label for="minCards">Minimum Cards Required to Cast Etali:</label>
+          <div class="inline-group">
+            <label for="minCards">Min Cards:</label>
             <input 
               id="minCards"
               type="number" 
@@ -81,15 +66,68 @@
           (click)="onSubmitEvaluation()" 
           [disabled]="isLoading || currentHandId === 0"
           class="btn btn-submit">
-          {{ isLoading ? 'Submitting...' : 'Submit Evaluation' }}
+          {{ isLoading ? 'Submitting...' : 'Submit' }}
         </button>
 
         @if (evaluationMessage) {
-          <div class="evaluation-message" [ngClass]="{'success': evaluationMessage.includes('successfully'), 'error': evaluationMessage.includes('Failed')}">
+          <div class="message" [ngClass]="{'success': evaluationMessage.includes('successfully'), 'error': evaluationMessage.includes('Failed')}">
             {{ evaluationMessage }}
           </div>
         }
       </div>
     </div>
   </div>
+
+  <div class="hand-zone" 
+    cdkDropList 
+    #handList="cdkDropList"
+    [cdkDropListData]="currentHand()"
+    (cdkDropListDropped)="onHandDrop($event)">
+    @for (card of currentHand(); track $index; let i = $index) {
+      <div 
+        cdkDrag
+        [cdkDragData]="{card: card, index: i, source: 'hand'}"
+        (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
+        class="hand-card card">
+        <img [src]="getImageUrl(card)" [alt]="card" />
+      </div>
+    }
+  </div>
 </div>
+
+<!-- Library Search Modal -->
+@if (showLibraryModal()) {
+  <div class="modal-overlay" (click)="closeLibraryModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Search Library</h2>
+        <button class="close-button" (click)="closeLibraryModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input 
+          type="text" 
+          placeholder="Search for a card..." 
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          class="search-input"
+          autofocus />
+        
+        <div class="library-card-list">
+          @for (card of filteredLibraryCards(); track card) {
+            <div class="library-card-item" (click)="onAddCardToHand(card)">
+              {{ card }}
+            </div>
+          } @empty {
+            <div class="no-results">
+              @if (searchQuery()) {
+                No cards found matching "{{ searchQuery() }}"
+              } @else {
+                No cards available in library
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
