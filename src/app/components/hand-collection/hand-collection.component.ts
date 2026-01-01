@@ -34,6 +34,10 @@ export class HandCollectionComponent {
   showLibraryModal = signal(false);
   searchQuery = signal('');
   
+  // Track drag offset for accurate card placement
+  private dragOffsetX: number = 0;
+  private dragOffsetY: number = 0;
+  
   private decklistService = inject(DecklistService);
   private router = inject(Router);
 
@@ -164,6 +168,17 @@ export class HandCollectionComponent {
     }
   }
 
+  onMouseDown(event: MouseEvent, cardElement: HTMLElement) {
+    // Capture the card position and mouse position BEFORE CDK modifies anything
+    const rect = cardElement.getBoundingClientRect();
+    
+    // Calculate offset from top-left corner of card to cursor position
+    this.dragOffsetX = event.clientX - rect.left;
+    this.dragOffsetY = event.clientY - rect.top;
+    
+    console.log('Mouse down - offset:', this.dragOffsetX, this.dragOffsetY, 'mouse:', {x: event.clientX, y: event.clientY}, 'rect:', rect);
+  }
+
   onHandCardDragEnded(event: CdkDragEnd, card: string, index: number) {
     const dropPoint = event.dropPoint;
     const battlefieldZone = document.querySelector('.battlefield-zone');
@@ -173,13 +188,23 @@ export class HandCollectionComponent {
       
       if (dropPoint.x >= rect.left && dropPoint.x <= rect.right &&
           dropPoint.y >= rect.top && dropPoint.y <= rect.bottom) {
-        // Calculate position relative to battlefield, centering the card
-        const x = dropPoint.x - rect.left - 100; // 100 = card width / 2
-        const y = dropPoint.y - rect.top - 15;
+        // Get actual computed card width from the CSS variable
+        const computedStyle = getComputedStyle(document.documentElement);
+        const cardWidthStr = computedStyle.getPropertyValue('--card-width').trim();
+        
+        // Parse the min(9vw, 15vh) value by computing both and taking the min
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const cardWidth = Math.min(viewportWidth * 0.09, viewportHeight * 0.15);
+        const cardHeight = cardWidth * 1.4; // MTG card aspect ratio
+        
+        // Calculate position using the stored drag offset to maintain cursor position
+        const x = dropPoint.x - rect.left - this.dragOffsetX;
+        const y = dropPoint.y - rect.top - this.dragOffsetY;
         
         // Constrain within bounds
-        const constrainedX = Math.max(0, Math.min(x, rect.width - 200));
-        const constrainedY = Math.max(0, Math.min(y, rect.height - 280));
+        const constrainedX = Math.max(0, Math.min(x, rect.width - cardWidth));
+        const constrainedY = Math.max(0, Math.min(y, rect.height - cardHeight));
         
         this.battlefield.update(bf => [...bf, { card, x: constrainedX, y: constrainedY, tapped: false }]);
         this.currentHand.update(hand => hand.filter((_, i) => i !== index));

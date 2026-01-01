@@ -14,8 +14,6 @@ Implement SQLLite database to store data
 List comparison tool
 
 UI Upgrade:
-Automatically make new hand after submitting results
-Add shortcuts?
 Test some hands and see what is good/frustrating and add more ideas here
 
 Reporting:

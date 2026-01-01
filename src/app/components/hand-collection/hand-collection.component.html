@@ -128,8 +128,10 @@
     (cdkDropListDropped)="onHandDrop($event)">
     @for (card of currentHand(); track $index; let i = $index) {
       <div 
+        #cardElement
         cdkDrag
         [cdkDragData]="{card: card, index: i, source: 'hand'}"
+        (mousedown)="onMouseDown($event, cardElement)"
         (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
         class="hand-card card">
         <img [src]="getImageUrl(card)" [alt]="card" />
