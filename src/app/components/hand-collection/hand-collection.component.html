@@ -59,12 +59,20 @@
             @if (gamblePasses()) {
               <div class="gamble-pass">
                 <span class="icon">✓</span>
-                <span>Minimum hand size: {{ minHandSizeForPass() }}</span>
+                <span 
+                  class="result-text"
+                  title="Calculation: 7 - ({{ currentHand().length }} current cards - {{ minCardsForGamblePass() }} min cards for pass) = {{ minHandSizeForPass() }}. Gamble odds: {{ formatPercentage(currentGambleOdds()) }} ≥ {{ formatPercentage(lowestGambleOdds) }} required.">
+                  Minimum hand size: {{ minHandSizeForPass() }}
+                </span>
               </div>
             } @else {
               <div class="gamble-fail">
                 <span class="icon">✗</span>
-                <span>Gamble failed</span>
+                <span 
+                  class="result-text"
+                  title="Current odds {{ formatPercentage(currentGambleOdds()) }} < {{ formatPercentage(lowestGambleOdds) }} required. With {{ cardsNeeded() }} cards needed and {{ currentHand().length }} in hand, you need at most {{ minCardsForGamblePass() }} cards in hand to pass.">
+                  Gamble failed
+                </span>
               </div>
             }
           </div>

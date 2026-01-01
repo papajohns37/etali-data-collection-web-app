@@ -161,6 +161,11 @@
   color: #dc3545;
 }
 
+.result-text {
+  cursor: help;
+  border-bottom: 1px dotted currentColor;
+}
+
 .hand-zone {
   display: flex;
   flex-direction: row;

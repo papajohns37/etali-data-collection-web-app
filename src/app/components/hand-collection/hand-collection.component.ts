@@ -60,10 +60,10 @@ export class HandCollectionComponent {
 
   // Calculate minimum cards in hand where gamble still passes
   minCardsForGamblePass = computed(() => {
-    if (this.lowestGambleOdds === 0) return 0;
-    // Find smallest N where cardsNeeded/N >= lowestGambleOdds
-    // Rearranging: N <= cardsNeeded / lowestGambleOdds
-    return Math.floor(this.cardsNeeded() / this.lowestGambleOdds);
+    if (this.lowestGambleOdds === 0 || this.lowestGambleOdds >= 1) return 0;
+    // Find smallest N where (N - cardsNeeded) / N >= lowestGambleOdds
+    // Rearranging: N >= cardsNeeded / (1 - lowestGambleOdds)
+    return Math.ceil(this.cardsNeeded() / (1 - this.lowestGambleOdds));
   });
 
   // Calculate minimum hand size that makes gamble pass
