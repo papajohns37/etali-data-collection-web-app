@@ -14,7 +14,6 @@ Implement SQLLite database to store data
 List comparison tool
 
 UI Upgrade:
-Add tutoring
 Add gamble tools
 Make sure page is fully reset when generating new hand
 Automatically make new hand after submitting results
@@ -35,6 +34,11 @@ Setup storage system for list comparisons that does not include them in overall 
 
 Data editing tool:
 Create a page where I can view recently submitted hands and fix data as well as visit particular data sets and edit data for a hand
+
+Hand Queue:
+Add an api feature that holds onto unevaluated hands and an endpoint that pulls these hands
+Add ui features to mass add to the queue (100 hands from one decklist and a hundred for another etc)
+Add ui feature to test hands in the queue (indicator on decklist selector page that notifies user of unprocesssed hands)
 
 Sample HTTP Requests:
 POST https://localhost:7194/hand/evaluate

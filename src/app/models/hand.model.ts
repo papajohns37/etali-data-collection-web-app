@@ -3,6 +3,7 @@ export interface Hand {
   cards: string[];
   seatOrder: number;
   stickers: number[];
+  lowestGambleOdds: number;
   decklistId: number;
   decklistName: string;
 }

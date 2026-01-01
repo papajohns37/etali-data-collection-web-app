@@ -21,10 +21,14 @@ export class HandCollectionComponent {
   currentDecklistName: string = '';
   seatOrder: number = 0;
   stickers: number[] = [];
+  lowestGambleOdds: number = 0;
   canCastEtali: boolean = false;
   minimumCardsToCastEtali: number = 8;
   isLoading: boolean = false;
   evaluationMessage: string = '';
+  
+  // Gamble odds calculation
+  cardsNeeded = signal<number>(1);
   
   // Library search modal state
   showLibraryModal = signal(false);
@@ -35,6 +39,41 @@ export class HandCollectionComponent {
 
   get selectedDecklist() {
     return this.decklistService.selectedDecklist();
+  }
+
+  // Check if Gamble card is in hand
+  hasGambleInHand = computed(() => {
+    return this.currentHand().some(card => card.toLowerCase().includes('gamble'));
+  });
+
+  // Calculate current gamble odds (cards needed / cards in hand)
+  currentGambleOdds = computed(() => {
+    const cardsInHand = this.currentHand().length;
+    if (cardsInHand === 0) return 0;
+    return (cardsInHand - this.cardsNeeded()) / cardsInHand;
+  });
+
+  // Check if gamble passes (current odds >= lowest odds)
+  gamblePasses = computed(() => {
+    return this.currentGambleOdds() >= this.lowestGambleOdds;
+  });
+
+  // Calculate minimum cards in hand where gamble still passes
+  minCardsForGamblePass = computed(() => {
+    if (this.lowestGambleOdds === 0) return 0;
+    // Find smallest N where cardsNeeded/N >= lowestGambleOdds
+    // Rearranging: N <= cardsNeeded / lowestGambleOdds
+    return Math.floor(this.cardsNeeded() / this.lowestGambleOdds);
+  });
+
+  // Calculate minimum hand size that makes gamble pass
+  minHandSizeForPass = computed(() => {
+    return 7 - (this.currentHand().length - this.minCardsForGamblePass());
+  });
+
+  // Format percentage for display
+  formatPercentage(value: number): string {
+    return (value * 100).toFixed(2) + '%';
   }
 
   // Computed signal for library cards (cards not in hand or battlefield)
@@ -82,11 +121,13 @@ export class HandCollectionComponent {
         this.currentHand.set(response.cards);
         this.seatOrder = response.seatOrder;
         this.stickers = response.stickers;
+        this.lowestGambleOdds = response.lowestGambleOdds;
         this.currentDecklistId = response.decklistId;
         this.currentDecklistName = response.decklistName;
         this.battlefield.set([]);
         this.canCastEtali = false;
         this.minimumCardsToCastEtali = 8;
+        this.cardsNeeded.set(1);
         this.isLoading = false;
       },
       error: (err) => {
@@ -198,6 +239,7 @@ export class HandCollectionComponent {
       cards: this.currentHand(),
       seatOrder: this.seatOrder,
       stickers: this.stickers,
+      lowestGambleOdds: this.lowestGambleOdds,
       canCastEtali: this.canCastEtali,
       minimumCardsToCastEtali: this.canCastEtali ? this.minimumCardsToCastEtali : 8,
       decklistId: this.currentDecklistId,
@@ -218,8 +260,10 @@ export class HandCollectionComponent {
           this.currentDecklistName = '';
           this.seatOrder = 0;
           this.stickers = [];
+          this.lowestGambleOdds = 0;
           this.canCastEtali = false;
           this.minimumCardsToCastEtali = 8;
+          this.cardsNeeded.set(1);
           this.evaluationMessage = '';
         }, 2000);
       },

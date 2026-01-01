@@ -35,6 +35,42 @@
         </div>
       </div>
 
+      @if (hasGambleInHand()) {
+        <div class="gamble-odds-panel">
+          <h3>Gamble Calculator</h3>
+          
+          <p class="gamble-instructions">
+            Play out the hand, leaving all unused cards and Gamble in your hand.
+          </p>
+
+          <div class="inline-group">
+            <label for="cardsNeeded">Cards Needed:</label>
+            <input 
+              id="cardsNeeded"
+              type="number" 
+              [value]="cardsNeeded()"
+              (input)="cardsNeeded.set(+$any($event.target).value)" 
+              min="1"
+              [disabled]="isLoading"
+              class="input-field" />
+          </div>
+
+          <div class="gamble-result">
+            @if (gamblePasses()) {
+              <div class="gamble-pass">
+                <span class="icon">✓</span>
+                <span>Minimum hand size: {{ minHandSizeForPass() }}</span>
+              </div>
+            } @else {
+              <div class="gamble-fail">
+                <span class="icon">✗</span>
+                <span>Gamble failed</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
       <button 
         (click)="openLibraryModal()" 
         [disabled]="!selectedDecklist || currentHandId === 0" 
