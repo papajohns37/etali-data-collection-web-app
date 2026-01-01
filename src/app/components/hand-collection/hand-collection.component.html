@@ -11,8 +11,11 @@
       @for (cardData of battlefield(); track $index; let i = $index) {
         <div 
           cdkDrag
+          (mousedown)="onBattlefieldMouseDown($event)"
+          (mousemove)="onBattlefieldMouseMove($event)"
+          (click)="onBattlefieldCardClick(i)"
+          (dblclick)="onBattlefieldCardDoubleClick(i)"
           (cdkDragEnded)="onBattlefieldCardDragEnded($event, i)"
-          (dblclick)="toggleTap(i)"
           [class.tapped]="cardData.tapped"
           [style.left.px]="cardData.x"
           [style.top.px]="cardData.y"
@@ -132,6 +135,8 @@
         cdkDrag
         [cdkDragData]="{card: card, index: i, source: 'hand'}"
         (mousedown)="onMouseDown($event, cardElement)"
+        (mousemove)="onMouseMove($event)"
+        (click)="onHandCardClick(card, i)"
         (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
         class="hand-card card">
         <img [src]="getImageUrl(card)" [alt]="card" />

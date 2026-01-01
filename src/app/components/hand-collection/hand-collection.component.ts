@@ -38,6 +38,19 @@ export class HandCollectionComponent {
   private dragOffsetX: number = 0;
   private dragOffsetY: number = 0;
   
+  // Track mouse position to differentiate click from drag
+  private mouseDownX: number = 0;
+  private mouseDownY: number = 0;
+  private isDragging: boolean = false;
+  
+  // Track battlefield card drag separately
+  private battlefieldMouseDownX: number = 0;
+  private battlefieldMouseDownY: number = 0;
+  private isBattlefieldDragging: boolean = false;
+  
+  // Track pending click to distinguish single from double click
+  private clickTimeout: any = null;
+  
   private decklistService = inject(DecklistService);
   private router = inject(Router);
 
@@ -176,7 +189,139 @@ export class HandCollectionComponent {
     this.dragOffsetX = event.clientX - rect.left;
     this.dragOffsetY = event.clientY - rect.top;
     
+    // Track initial mouse position for drag detection
+    this.mouseDownX = event.clientX;
+    this.mouseDownY = event.clientY;
+    this.isDragging = false;
+    
     console.log('Mouse down - offset:', this.dragOffsetX, this.dragOffsetY, 'mouse:', {x: event.clientX, y: event.clientY}, 'rect:', rect);
+  }
+  
+  onMouseMove(event: MouseEvent) {
+    // Detect if user is dragging (moved more than 5px)
+    const distanceX = Math.abs(event.clientX - this.mouseDownX);
+    const distanceY = Math.abs(event.clientY - this.mouseDownY);
+    
+    if (distanceX > 5 || distanceY > 5) {
+      this.isDragging = true;
+    }
+  }
+  
+  private calculateCardDimensions(): { width: number, height: number } {
+    // Get actual computed card width from the CSS variable
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const cardWidth = Math.min(viewportWidth * 0.09, viewportHeight * 0.15);
+    const cardHeight = cardWidth * 1.4; // MTG card aspect ratio
+    
+    return { width: cardWidth, height: cardHeight };
+  }
+  
+  onHandCardClick(card: string, index: number) {
+    // Only place card if this was a click, not a drag
+    if (this.isDragging) {
+      return;
+    }
+    
+    const battlefieldZone = document.querySelector('.battlefield-zone');
+    if (!battlefieldZone) return;
+    
+    const rect = battlefieldZone.getBoundingClientRect();
+    const { width: cardWidth, height: cardHeight } = this.calculateCardDimensions();
+    const gap = 10; // Fixed gap between cards
+    
+    // Find the next available position (bottom-left, filling left-to-right, wrapping up)
+    let x = 0;
+    let y = rect.height - cardHeight;
+    
+    // Check each potential position for overlap with existing cards
+    const battlefield = this.battlefield();
+    let positionFound = false;
+    
+    while (!positionFound && y >= 0) {
+      // Try positions left-to-right in current row
+      while (x + cardWidth <= rect.width) {
+        // Check if this position overlaps with any existing card
+        const overlaps = battlefield.some(existingCard => {
+          const overlapX = x < existingCard.x + cardWidth && x + cardWidth > existingCard.x;
+          const overlapY = y < existingCard.y + cardHeight && y + cardHeight > existingCard.y;
+          return overlapX && overlapY;
+        });
+        
+        if (!overlaps) {
+          positionFound = true;
+          break;
+        }
+        
+        x += cardWidth + gap;
+      }
+      
+      if (!positionFound) {
+        // Move to next row up
+        x = 0;
+        y -= cardHeight + gap;
+      }
+    }
+    
+    // Constrain within bounds
+    const constrainedX = Math.max(0, Math.min(x, rect.width - cardWidth));
+    const constrainedY = Math.max(0, Math.min(y, rect.height - cardHeight));
+    
+    // Add card to battlefield and remove from hand
+    this.battlefield.update(bf => [...bf, { card, x: constrainedX, y: constrainedY, tapped: false }]);
+    this.currentHand.update(hand => hand.filter((_, i) => i !== index));
+  }
+  
+  onBattlefieldMouseDown(event: MouseEvent) {
+    // Track initial mouse position for drag detection
+    this.battlefieldMouseDownX = event.clientX;
+    this.battlefieldMouseDownY = event.clientY;
+    this.isBattlefieldDragging = false;
+  }
+  
+  onBattlefieldMouseMove(event: MouseEvent) {
+    // Detect if user is dragging (moved more than 5px)
+    const distanceX = Math.abs(event.clientX - this.battlefieldMouseDownX);
+    const distanceY = Math.abs(event.clientY - this.battlefieldMouseDownY);
+    
+    if (distanceX > 5 || distanceY > 5) {
+      this.isBattlefieldDragging = true;
+    }
+  }
+  
+  onBattlefieldCardClick(index: number) {
+    // Only process click if this was not a drag
+    if (this.isBattlefieldDragging) {
+      return;
+    }
+    
+    // Clear any existing timeout
+    if (this.clickTimeout) {
+      clearTimeout(this.clickTimeout);
+    }
+    
+    // Wait to see if a double-click occurs
+    this.clickTimeout = setTimeout(() => {
+      const battlefield = this.battlefield();
+      const card = battlefield[index].card;
+      
+      // Remove from battlefield and add back to hand
+      this.battlefield.update(bf => bf.filter((_, i) => i !== index));
+      this.currentHand.update(hand => [...hand, card]);
+      
+      this.clickTimeout = null;
+    }, 250); // 250ms delay to detect double-click
+  }
+  
+  onBattlefieldCardDoubleClick(index: number) {
+    // Cancel the pending single-click action
+    if (this.clickTimeout) {
+      clearTimeout(this.clickTimeout);
+      this.clickTimeout = null;
+    }
+    
+    // Execute tap action
+    this.toggleTap(index);
   }
 
   onHandCardDragEnded(event: CdkDragEnd, card: string, index: number) {
@@ -188,15 +333,8 @@ export class HandCollectionComponent {
       
       if (dropPoint.x >= rect.left && dropPoint.x <= rect.right &&
           dropPoint.y >= rect.top && dropPoint.y <= rect.bottom) {
-        // Get actual computed card width from the CSS variable
-        const computedStyle = getComputedStyle(document.documentElement);
-        const cardWidthStr = computedStyle.getPropertyValue('--card-width').trim();
-        
-        // Parse the min(9vw, 15vh) value by computing both and taking the min
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const cardWidth = Math.min(viewportWidth * 0.09, viewportHeight * 0.15);
-        const cardHeight = cardWidth * 1.4; // MTG card aspect ratio
+        // Get card dimensions
+        const { width: cardWidth, height: cardHeight } = this.calculateCardDimensions();
         
         // Calculate position using the stored drag offset to maintain cursor position
         const x = dropPoint.x - rect.left - this.dragOffsetX;
