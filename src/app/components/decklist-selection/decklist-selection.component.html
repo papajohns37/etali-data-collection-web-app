@@ -22,7 +22,7 @@
   </div>
 </div>
 
-@if (showModal) {
+@if (showModal()) {
   <div class="modal-overlay" (click)="closeAddDecklistModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">

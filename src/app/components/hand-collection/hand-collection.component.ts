@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectorRef, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,7 +32,6 @@ export class HandCollectionComponent {
   
   private decklistService = inject(DecklistService);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
 
   get selectedDecklist() {
     return this.decklistService.selectedDecklist();
@@ -89,7 +88,6 @@ export class HandCollectionComponent {
         this.canCastEtali = false;
         this.minimumCardsToCastEtali = 8;
         this.isLoading = false;
-        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to fetch hand:', err);
@@ -101,7 +99,6 @@ export class HandCollectionComponent {
           this.evaluationMessage = 'Failed to fetch hand from server';
         }
         this.isLoading = false;
-        this.cdr.detectChanges();
       }
     });
   }
@@ -212,7 +209,6 @@ export class HandCollectionComponent {
       next: (response) => {
         this.evaluationMessage = 'Hand evaluation submitted successfully!';
         this.isLoading = false;
-        this.cdr.detectChanges();
         // Reset form for next hand
         setTimeout(() => {
           this.currentHand.set([]);
@@ -231,7 +227,6 @@ export class HandCollectionComponent {
         console.error('Failed to submit evaluation:', err);
         this.evaluationMessage = 'Failed to submit evaluation. Please try again.';
         this.isLoading = false;
-        this.cdr.detectChanges();
       }
     });
   }

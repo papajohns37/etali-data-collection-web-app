@@ -6,7 +6,7 @@ export const decklistGuard: CanActivateFn = (route, state) => {
   const decklistService = inject(DecklistService);
   const router = inject(Router);
 
-  if (decklistService.hasSelectedDecklist()) {
+  if (decklistService.selectedDecklist() !== null) {
     return true;
   }
 

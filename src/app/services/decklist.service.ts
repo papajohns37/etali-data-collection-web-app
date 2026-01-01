@@ -1,6 +1,5 @@
-import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Decklist } from '../models/decklist.model';
@@ -11,7 +10,6 @@ import { Hand } from '../models/hand.model';
 })
 export class DecklistService {
   private http = inject(HttpClient);
-  private platformId = inject(PLATFORM_ID);
   private readonly baseUrl = 'https://localhost:7194';
 
   // State management
@@ -62,12 +60,7 @@ export class DecklistService {
       `${this.baseUrl}/decklist?link=${encodeURIComponent(moxfieldLink)}&name=${encodeURIComponent(name)}`,
       {}
     ).pipe(
-      tap(() => {
-        // Reload decklists after successful addition
-        if (isPlatformBrowser(this.platformId)) {
-          this.loadDecklists().subscribe();
-        }
-      })
+      tap(() => this.loadDecklists().subscribe())
     );
   }
 
@@ -77,12 +70,5 @@ export class DecklistService {
   selectDecklist(decklist: Decklist | null): void {
     this.selectedDecklist.set(decklist);
     console.log('Selected decklist:', decklist);
-  }
-
-  /**
-   * Check if a decklist is currently selected
-   */
-  hasSelectedDecklist(): boolean {
-    return this.selectedDecklist() !== null;
   }
 }

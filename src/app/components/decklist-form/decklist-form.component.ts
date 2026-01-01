@@ -1,5 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { DecklistService } from '../../services/decklist.service';
 
@@ -10,30 +9,19 @@ import { DecklistService } from '../../services/decklist.service';
   templateUrl: './decklist-form.component.html',
   styleUrl: './decklist-form.component.css'
 })
-export class DecklistFormComponent implements OnInit {
+export class DecklistFormComponent {
   @Output() decklistAdded = new EventEmitter<void>();
   newDecklistForm: FormGroup;
 
   private decklistService = inject(DecklistService);
-  private platformId = inject(PLATFORM_ID);
+  private fb = inject(FormBuilder);
 
-  constructor(private fb: FormBuilder) {
+  constructor() {
     // Initialize new decklist form with validation
     this.newDecklistForm = this.fb.group({
       deckName: ['', [Validators.required, Validators.minLength(3)]],
       moxfieldLink: ['', [Validators.required, this.moxfieldUrlValidator]]
     });
-  }
-
-  ngOnInit(): void {
-    // Only load decklists in browser, not during SSR
-    if (isPlatformBrowser(this.platformId)) {
-      this.decklistService.loadDecklists().subscribe({
-        error: (err) => {
-          console.error('Failed to load decklists:', err);
-        }
-      });
-    }
   }
 
   /**
