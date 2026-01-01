@@ -1,52 +1,54 @@
 <div class="decklist-form-container">
   <form [formGroup]="newDecklistForm" (ngSubmit)="onSubmitNewDecklist()">
     <div class="form-group">
-      <label for="deckName">Deck Name:</label>
+      <label for="deckName">Deck Name</label>
       <input 
         type="text" 
         id="deckName" 
+        pInputText
         formControlName="deckName"
-        class="form-control"
+        class="w-full"
         placeholder="Enter deck name">
       @if (newDecklistForm.get('deckName')?.invalid && newDecklistForm.get('deckName')?.touched) {
-        <div class="error-message">
+        <small class="p-error block mt-1">
           @if (newDecklistForm.get('deckName')?.errors?.['required']) {
-            <span>Deck name is required</span>
+            Deck name is required
           }
           @if (newDecklistForm.get('deckName')?.errors?.['minlength']) {
-            <span>Deck name must be at least 3 characters</span>
+            Deck name must be at least 3 characters
           }
-        </div>
+        </small>
       }
     </div>
 
     <div class="form-group">
-      <label for="moxfieldLink">Moxfield Link:</label>
+      <label for="moxfieldLink">Moxfield Link</label>
       <input 
         type="url" 
         id="moxfieldLink" 
+        pInputText
         formControlName="moxfieldLink"
-        class="form-control"
+        class="w-full"
         placeholder="https://www.moxfield.com/decks/...">
       @if (newDecklistForm.get('moxfieldLink')?.invalid && newDecklistForm.get('moxfieldLink')?.touched) {
-        <div class="error-message">
+        <small class="p-error block mt-1">
           @if (newDecklistForm.get('moxfieldLink')?.errors?.['required']) {
-            <span>Moxfield link is required</span>
+            Moxfield link is required
           }
           @if (newDecklistForm.get('moxfieldLink')?.errors?.['invalidMoxfieldUrl']) {
-            <span>Link must be from moxfield.com</span>
+            Link must be from moxfield.com
           }
-        </div>
+        </small>
       }
     </div>
 
     <div class="form-group">
-      <button 
+      <p-button 
         type="submit" 
-        class="submit-button"
-        [disabled]="newDecklistForm.invalid">
-        Add Decklist
-      </button>
+        label="Add Decklist"
+        icon="pi pi-plus"
+        styleClass="w-full"
+        [disabled]="newDecklistForm.invalid"></p-button>
     </div>
   </form>
 </div>

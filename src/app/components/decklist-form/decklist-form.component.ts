@@ -1,11 +1,15 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { DecklistService } from '../../services/decklist.service';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-decklist-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, ButtonModule, InputTextModule, MessageModule],
   templateUrl: './decklist-form.component.html',
   styleUrl: './decklist-form.component.css'
 })
@@ -46,15 +50,9 @@ export class DecklistFormComponent {
   onSubmitNewDecklist(): void {
     if (this.newDecklistForm.valid) {
       const formData = this.newDecklistForm.value;
-      
-      console.log('New decklist form submitted:', {
-        deckName: formData.deckName,
-        moxfieldLink: formData.moxfieldLink
-      });
 
       this.decklistService.addDecklist(formData.moxfieldLink, formData.deckName).subscribe({
         next: (response) => {
-          console.log('Decklist saved successfully:', response);
           
           // Reset form after successful submission
           this.newDecklistForm.reset();

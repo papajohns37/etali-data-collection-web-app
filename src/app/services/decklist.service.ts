@@ -23,7 +23,6 @@ export class DecklistService {
     return this.http.get<Decklist[]>(`${this.baseUrl}/decklists`).pipe(
       tap(decklists => {
         this.decklists.set(decklists);
-        console.log('Loaded decklists:', decklists);
       })
     );
   }
@@ -69,6 +68,5 @@ export class DecklistService {
    */
   selectDecklist(decklist: Decklist | null): void {
     this.selectedDecklist.set(decklist);
-    console.log('Selected decklist:', decklist);
   }
 }

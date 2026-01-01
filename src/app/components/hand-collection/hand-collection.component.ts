@@ -4,11 +4,33 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { DecklistService } from '../../services/decklist.service';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-hand-collection',
   standalone: true,
-  imports: [DragDropModule, CommonModule, CdkDrag, CdkDropList, FormsModule],
+  imports: [
+    DragDropModule, 
+    CommonModule, 
+    CdkDrag, 
+    CdkDropList, 
+    FormsModule,
+    ButtonModule,
+    CardModule,
+    CheckboxModule,
+    InputNumberModule,
+    DialogModule,
+    InputTextModule,
+    MessageModule,
+    TooltipModule
+  ],
   templateUrl: './hand-collection.component.html',
   styleUrl: './hand-collection.component.css'
 })
@@ -133,8 +155,6 @@ export class HandCollectionComponent {
       return;
     }
     
-    console.log('Requesting hand from server. Currently selected decklist:', selectedDecklist.name);
-    
     this.isLoading = true;
     this.evaluationMessage = '';
     
@@ -195,8 +215,6 @@ export class HandCollectionComponent {
     this.mouseDownX = event.clientX;
     this.mouseDownY = event.clientY;
     this.isDragging = false;
-    
-    console.log('Mouse down - offset:', this.dragOffsetX, this.dragOffsetY, 'mouse:', {x: event.clientX, y: event.clientY}, 'rect:', rect);
   }
   
   onMouseMove(event: MouseEvent) {

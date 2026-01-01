@@ -1,87 +1,80 @@
 .decklist-selection-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 3rem 2rem;
+  font-family: var(--font-family);
+  min-height: 100vh;
+  background: var(--surface-ground);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #333;
+  font-size: 2.5rem;
+  color: var(--text-color);
+  margin: 0;
+  font-weight: 700;
 }
 
 .decklists-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.decklist-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
-  padding: 2rem;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: white;
-  min-height: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.decklist-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-}
-
-.decklist-card h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.5rem;
-}
-
-.decklist-card p {
-  margin: 0;
-  opacity: 0.9;
-}
-
-.decklist-card.add-card {
-  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-  border: 2px dashed rgba(255, 255, 255, 0.5);
-}
-
-.decklist-card.add-card:hover {
-  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
-}
-
-.plus-icon {
-  font-size: 4rem;
-  line-height: 1;
-  margin-bottom: 0.5rem;
-  font-weight: 300;
 }
 
 .empty-state {
   grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--surface-section);
+  border-radius: var(--border-radius);
+  border: 2px dashed var(--surface-border);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 1rem;
 }
 
 .no-decklists {
-  text-align: center;
-  color: #666;
-  font-style: italic;
-  font-size: 1.2rem;
-  margin: 2rem 0;
+  font-size: 1.25rem;
+  color: var(--text-color-secondary);
+  margin: 0;
 }
 
-/* Modal Content Specific Styles */
-.modal-content {
-  max-width: 600px;
-  overflow-y: auto;
+::ng-deep .decklist-card {
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+::ng-deep .decklist-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow);
+}
+
+::ng-deep .cursor-pointer {
+  cursor: pointer;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  color: var(--text-color-secondary);
+}
+
+.card-content i {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.card-count {
+  font-weight: 600;
 }

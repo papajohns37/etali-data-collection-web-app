@@ -1,35 +1,42 @@
 <div class="decklist-selection-container">
-  <h1>Select a Decklist</h1>
+  <div class="header">
+    <h1>Select a Decklist</h1>
+    <p-button 
+      (onClick)="openAddDecklistModal()" 
+      label="Add New Decklist"
+      icon="pi pi-plus"
+      severity="success"></p-button>
+  </div>
   
   <div class="decklists-grid">
     @if (decklistService.decklists().length === 0) {
       <div class="empty-state">
-        <p class="no-decklists">No decklists yet.</p>
+        <i class="pi pi-inbox empty-icon"></i>
+        <p class="no-decklists">No decklists yet. Create your first decklist to get started!</p>
       </div>
     }
     
     @for (decklist of decklistService.decklists(); track decklist.id) {
-      <div class="decklist-card" (click)="onDecklistSelected(decklist)">
-        <h3>{{ decklist.name }}</h3>
-        <p>{{ decklist.cardNames.length }} cards</p>
-      </div>
+      <p-card 
+        [header]="decklist.name"
+        styleClass="decklist-card cursor-pointer"
+        (click)="onDecklistSelected(decklist)">
+        <div class="card-content">
+          <i class="pi pi-list"></i>
+          <span class="card-count">{{ decklist.cardNames.length }} cards</span>
+        </div>
+      </p-card>
     }
-    
-    <div class="decklist-card add-card" (click)="openAddDecklistModal()">
-      <div class="plus-icon">+</div>
-      <p>Add New Decklist</p>
-    </div>
   </div>
 </div>
 
-@if (showModal()) {
-  <div class="modal-overlay" (click)="closeAddDecklistModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2>Add New Decklist</h2>
-        <button class="close-button" (click)="closeAddDecklistModal()">&times;</button>
-      </div>
-      <app-decklist-form (decklistAdded)="onDecklistAdded()"></app-decklist-form>
-    </div>
-  </div>
-}
+<p-dialog 
+  [visible]="showModal()"
+  (visibleChange)="showModal.set($event)"
+  header="Add New Decklist"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  [draggable]="false"
+  [resizable]="false">
+  <app-decklist-form (decklistAdded)="onDecklistAdded()"></app-decklist-form>
+</p-dialog>

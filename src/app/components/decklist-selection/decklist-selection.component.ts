@@ -4,11 +4,14 @@ import { Router } from '@angular/router';
 import { DecklistService } from '../../services/decklist.service';
 import { DecklistFormComponent } from '../decklist-form/decklist-form.component';
 import { Decklist } from '../../models/decklist.model';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-decklist-selection',
   standalone: true,
-  imports: [CommonModule, DecklistFormComponent],
+  imports: [CommonModule, DecklistFormComponent, ButtonModule, CardModule, DialogModule],
   templateUrl: './decklist-selection.component.html',
   styleUrl: './decklist-selection.component.css'
 })

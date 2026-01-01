@@ -1,1 +1,7 @@
 /* Root app styles - minimal since routing handles content */
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--surface-ground);
+  color: var(--text-color);
+}
