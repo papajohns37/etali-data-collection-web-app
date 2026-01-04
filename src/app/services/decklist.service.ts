@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Decklist } from '../models/decklist.model';
 import { Hand } from '../models/hand.model';
+import { Card } from '../models/card.model';
+import { DecklistStatistics } from '../models/statistics.model';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +42,7 @@ export class DecklistService {
    */
   submitHandEvaluation(evaluation: {
     id: number;
-    cards: string[];
+    cards: Card[];
     seatOrder: number;
     stickers: number[];
     canCastEtali: boolean;
@@ -68,5 +70,12 @@ export class DecklistService {
    */
   selectDecklist(decklist: Decklist | null): void {
     this.selectedDecklist.set(decklist);
+  }
+
+  /**
+   * Get statistics for a specific decklist
+   */
+  getStatistics(decklistId: number): Observable<DecklistStatistics> {
+    return this.http.get<DecklistStatistics>(`${this.baseUrl}/decklists/${decklistId}/statistics`);
   }
 }

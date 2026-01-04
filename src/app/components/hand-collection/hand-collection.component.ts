@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { DecklistService } from '../../services/decklist.service';
+import { Card } from '../../models/card.model';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -36,9 +37,9 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class HandCollectionComponent {
   protected readonly title = signal('mtg-data');
-  currentHand = signal<string[]>([]);
-  originalHand = signal<string[]>([]); // Store original hand for reset
-  battlefield = signal<{card: string, x: number, y: number, tapped: boolean}[]>([]);
+  currentHand = signal<Card[]>([]);
+  originalHand = signal<Card[]>([]); // Store original hand for reset
+  battlefield = signal<{card: Card, x: number, y: number, tapped: boolean}[]>([]);
   currentHandId: number = 0;
   currentDecklistId: number = 0;
   currentDecklistName: string = '';
@@ -88,7 +89,7 @@ export class HandCollectionComponent {
 
   // Check if Gamble card is in hand
   hasGambleInHand = computed(() => {
-    return this.currentHand().some(card => card.toLowerCase().includes('gamble'));
+    return this.currentHand().some(card => card.name.toLowerCase().includes('gamble'));
   });
 
   // Calculate current gamble odds (cards needed / cards in hand)
@@ -124,14 +125,14 @@ export class HandCollectionComponent {
   // Computed signal for library cards (cards not in hand or battlefield)
   libraryCards = computed(() => {
     const decklist = this.decklistService.selectedDecklist();
-    if (!decklist) return [];
+    if (!decklist || !decklist.cards) return [];
     
-    const allCards = decklist.cardNames;
-    const inHand = new Set(this.currentHand());
-    const onBattlefield = new Set(this.battlefield().map(c => c.card));
+    const allCards = decklist.cards;
+    const inHand = new Set(this.currentHand().map(c => c.name));
+    const onBattlefield = new Set(this.battlefield().map(c => c.card.name));
     
     return allCards.filter(card => 
-      !inHand.has(card) && !onBattlefield.has(card)
+      !inHand.has(card.name) && !onBattlefield.has(card.name)
     );
   });
 
@@ -140,10 +141,10 @@ export class HandCollectionComponent {
     const cards = this.libraryCards();
     const query = this.searchQuery().toLowerCase();
     
-    let filtered = query ? cards.filter(card => card.toLowerCase().includes(query)) : cards;
+    let filtered = query ? cards.filter(card => card.name.toLowerCase().includes(query)) : cards;
     
     // Sort alphabetically
-    return filtered.sort((a, b) => a.localeCompare(b));
+    return filtered.sort((a, b) => a.name.localeCompare(b.name));
   });
 
   onRequestHand() {
@@ -193,7 +194,7 @@ export class HandCollectionComponent {
     return `https://api.scryfall.com/cards/named?exact=${formattedName}&format=image`;
   }
 
-  onHandDrop(event: CdkDragDrop<string[]>) {
+  onHandDrop(event: CdkDragDrop<Card[]>) {
     if (event.previousContainer === event.container) {
       this.currentHand.update(hand => {
         const newHand = [...hand];
@@ -237,7 +238,7 @@ export class HandCollectionComponent {
     return { width: cardWidth, height: cardHeight };
   }
   
-  onHandCardClick(card: string, index: number) {
+  onHandCardClick(card: Card, index: number) {
     // Only place card if this was a click, not a drag
     if (this.isDragging) {
       return;
@@ -344,7 +345,7 @@ export class HandCollectionComponent {
     this.toggleTap(index);
   }
 
-  onHandCardDragEnded(event: CdkDragEnd, card: string, index: number) {
+  onHandCardDragEnded(event: CdkDragEnd, card: Card, index: number) {
     const dropPoint = event.dropPoint;
     const battlefieldZone = document.querySelector('.battlefield-zone');
     
@@ -421,6 +422,13 @@ export class HandCollectionComponent {
     }
   }
 
+  onCanCastEtaliChange() {
+    if (this.canCastEtali) {
+      // Set minimum cards to 7 - number of cards in hand
+      this.minimumCardsToCastEtali = 7 - this.currentHand().length;
+    }
+  }
+
   onSubmitEvaluation() {
     const payload = {
       id: this.currentHandId,
@@ -465,6 +473,13 @@ export class HandCollectionComponent {
     this.router.navigate(['/decklists']);
   }
 
+  viewStatistics() {
+    const selectedDecklist = this.decklistService.selectedDecklist();
+    if (selectedDecklist) {
+      this.router.navigate(['/decklists', selectedDecklist.id, 'statistics']);
+    }
+  }
+
   // Library search modal methods
   openLibraryModal() {
     this.showLibraryModal.set(true);
@@ -489,8 +504,8 @@ export class HandCollectionComponent {
     this.cardsNeeded.set(1);
   }
 
-  onAddCardToHand(cardName: string) {
-    this.currentHand.update(hand => [...hand, cardName]);
+  onAddCardToHand(card: Card) {
+    this.currentHand.update(hand => [...hand, card]);
     // Card will be automatically filtered from library on next render due to computed signal
     this.closeLibraryModal();
   }

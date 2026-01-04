@@ -30,6 +30,14 @@ export class DecklistSelectionComponent {
     this.router.navigate(['/hand-collection']);
   }
 
+  viewDecklist(decklist: Decklist): void {
+    this.router.navigate(['/decklists/view', decklist.id]);
+  }
+
+  viewStatistics(decklist: Decklist): void {
+    this.router.navigate(['/decklists', decklist.id, 'statistics']);
+  }
+
   openAddDecklistModal(): void {
     this.showModal.set(true);
   }

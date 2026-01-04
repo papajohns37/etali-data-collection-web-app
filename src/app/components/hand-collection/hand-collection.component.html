@@ -1,14 +1,26 @@
 <div class="hand-collection-container">
   <div class="top-bar">
-    <p-button 
-      (onClick)="goBackToDecklists()" 
-      icon="pi pi-arrow-left" 
-      label="Back"
-      severity="secondary"
-      [text]="true"></p-button>
-    @if (selectedDecklist) {
-      <span class="deck-name">{{ selectedDecklist.name }}</span>
-    }
+    <div class="top-bar-left">
+      <p-button 
+        (onClick)="goBackToDecklists()" 
+        icon="pi pi-arrow-left" 
+        label="Back"
+        severity="secondary"
+        [text]="true"></p-button>
+      @if (selectedDecklist) {
+        <span class="deck-name">{{ selectedDecklist.name }}</span>
+      }
+    </div>
+    <div class="top-bar-right">
+      @if (selectedDecklist) {
+        <p-button 
+          (onClick)="viewStatistics()" 
+          icon="pi pi-chart-bar" 
+          label="View Statistics"
+          severity="secondary"
+          [outlined]="true"></p-button>
+      }
+    </div>
   </div>
 
   <div class="main-area">
@@ -25,7 +37,7 @@
           [style.left.px]="cardData.x"
           [style.top.px]="cardData.y"
           class="battlefield-card card">
-          <img [src]="getImageUrl(cardData.card)" [alt]="cardData.card" />
+          <img [src]="getImageUrl(cardData.card.name)" [alt]="cardData.card.name" />
         </div>
       }
     </div>
@@ -104,6 +116,7 @@
         <div class="checkbox-wrapper">
           <p-checkbox 
             [(ngModel)]="canCastEtali" 
+            (onChange)="onCanCastEtaliChange()"
             [binary]="true"
             [disabled]="isLoading"
             inputId="castEtali"></p-checkbox>
@@ -161,7 +174,7 @@
         (click)="onHandCardClick(card, i)"
         (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
         class="hand-card card">
-        <img [src]="getImageUrl(card)" [alt]="card" />
+        <img [src]="getImageUrl(card.name)" [alt]="card.name" />
       </div>
     }
   </div>
@@ -191,9 +204,9 @@
     </span>
     
     <div class="library-card-list">
-      @for (card of filteredLibraryCards(); track card) {
+      @for (card of filteredLibraryCards(); track card.name) {
         <div class="library-card-item" (click)="onAddCardToHand(card)">
-          {{ card }}
+          {{ card.name }}
         </div>
       } @empty {
         <div class="no-results">

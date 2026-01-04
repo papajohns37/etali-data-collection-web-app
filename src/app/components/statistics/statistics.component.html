@@ -1,0 +1,201 @@
+<div class="statistics-container">
+  <!-- Loading State -->
+  @if (loading()) {
+    <p-card>
+      <div class="loading-state">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Loading statistics...</p>
+      </div>
+    </p-card>
+  }
+
+  <!-- Error State -->
+  @else if (error()) {
+    <p-card>
+      <p-message severity="error" [text]="error()!"></p-message>
+      <div class="error-actions">
+        <p-button label="Back to Decklists" icon="pi pi-arrow-left" (onClick)="goBack()"></p-button>
+      </div>
+    </p-card>
+  }
+
+  <!-- Empty State -->
+  @else if (!hasData()) {
+    <p-card>
+      <div class="empty-state">
+        <i class="pi pi-chart-bar" style="font-size: 3rem; color: var(--text-color-secondary)"></i>
+        <h2>No Data Available</h2>
+        <p>No hands have been tested for this decklist yet.</p>
+        <p>Start collecting data to see statistics.</p>
+        <div class="empty-actions">
+          <p-button label="Test Hands" icon="pi pi-play" (onClick)="goToHandCollection()"></p-button>
+          <p-button label="Back to Decklists" icon="pi pi-arrow-left" severity="secondary" (onClick)="goBack()"></p-button>
+        </div>
+      </div>
+    </p-card>
+  }
+
+  <!-- Statistics Display -->
+  @else {
+    <div class="statistics-content">
+      <!-- Header -->
+      <div class="statistics-header">
+        <div class="header-title">
+          <h1>{{ statistics()?.decklistName }}</h1>
+          <p class="subtitle">Statistical Analysis</p>
+        </div>
+        <div class="header-actions">
+          <p-button 
+            label="Refresh" 
+            icon="pi pi-refresh" 
+            severity="secondary"
+            (onClick)="refreshStatistics()">
+          </p-button>
+          <p-button 
+            label="Test More Hands" 
+            icon="pi pi-play" 
+            (onClick)="goToHandCollection()">
+          </p-button>
+          <p-button 
+            label="Back" 
+            icon="pi pi-arrow-left" 
+            severity="secondary"
+            (onClick)="goBack()">
+          </p-button>
+        </div>
+      </div>
+
+      <!-- Sample Size Warning -->
+      @if (hasLowSampleSize()) {
+        <p-message 
+          severity="warn" 
+          text="Limited data ({{ statistics()?.totalHandsTested }} hands tested). Results may not be statistically significant. Consider testing more hands for reliable statistics.">
+        </p-message>
+      }
+
+      <!-- Overall Success Rate Card -->
+      <p-card styleClass="overall-card">
+        <div class="overall-stat">
+          <div class="overall-header">
+            <h2>Overall Success Rate</h2>
+            <i 
+              class="pi pi-info-circle info-icon" 
+              pTooltip="Probability of casting Etali by turn 2 after going through the full mulligan sequence: TWO 7-card hands (opening + 1 mulligan), ONE 6-card hand, ONE 5-card hand, ONE 4-card hand, ONE 3-card hand. Formula: 1 - (1 - p₇)² × (1 - p₆) × (1 - p₅) × (1 - p₄) × (1 - p₃)"
+              tooltipPosition="bottom">
+            </i>
+          </div>
+          <div class="overall-probability">
+            {{ overallProbability() }}
+          </div>
+          <div class="overall-ci">
+            90% Confidence Interval: {{ overallConfidenceInterval() }}
+          </div>
+          <div class="overall-sample">
+            Based on {{ statistics()?.totalHandsTested }} tested hands
+          </div>
+          <p-progressBar 
+            [value]="statistics()!.overallMulliganProbability * 100" 
+            [showValue]="false"
+            styleClass="overall-progress">
+          </p-progressBar>
+        </div>
+      </p-card>
+
+      <!-- Hand Size Statistics Table -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <h3>Hand Size Breakdown</h3>
+        </ng-template>
+        
+        <p-table 
+          [value]="handSizeData()" 
+          styleClass="p-datatable-sm"
+          [tableStyle]="{'min-width': '50rem'}">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Hand Size</th>
+              <th>Success Rate</th>
+              <th>90% Confidence Interval</th>
+              <th>Sample Size</th>
+              <th>Visual</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <strong>{{ row.handSize }} Cards</strong>
+              </td>
+              <td>
+                <span class="probability-value">{{ row.probability }}</span>
+              </td>
+              <td>
+                <span [class]="getSeverityClass(row.ciWidth)">
+                  {{ row.confidenceInterval }}
+                </span>
+                @if (row.ciWidth > 0.3) {
+                  <span class="confidence-badge low">Low Confidence</span>
+                }
+              </td>
+              <td>
+                <span class="sample-size">
+                  {{ row.sampleSize }}
+                  <span class="sample-detail">({{ row.successfulHands }} successful)</span>
+                </span>
+              </td>
+              <td>
+                <div class="progress-cell">
+                  <p-progressBar 
+                    [value]="row.probabilityValue" 
+                    [showValue]="false">
+                  </p-progressBar>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="table-note">
+          <i class="pi pi-info-circle"></i>
+          <span>Each hand size represents the probability of casting Etali after mulliganing down to that number of cards.</span>
+        </div>
+      </p-card>
+
+      <!-- Explanation Card -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <h3>Understanding the Statistics</h3>
+        </ng-template>
+        
+        <div class="explanation">
+          <div class="explanation-section">
+            <h4>Hand Size Logic</h4>
+            <p>
+              A hand that can cast Etali with 4 cards counts as a <strong>success</strong> for hand sizes 4, 5, 6, and 7.
+              This represents "can I cast Etali if I mulligan down to N cards?"
+            </p>
+          </div>
+
+          <div class="explanation-section">
+            <h4>Confidence Intervals</h4>
+            <p>
+              The 90% confidence interval shows the range where the true probability likely falls. 
+              <strong>Wider intervals</strong> indicate less certainty (fewer tested hands), while 
+              <strong>narrower intervals</strong> indicate more certainty (more tested hands).
+            </p>
+          </div>
+
+          <div class="explanation-section">
+            <h4>Overall Mulligan Probability</h4>
+            <p>
+              This is the <strong>most important statistic</strong> - it answers: 
+              "What's my chance of casting Etali by turn 2 in an actual game after using my mulligans?"
+            </p>
+            <p class="formula">
+              Formula: 1 - (1 - p₇)² × (1 - p₆) × (1 - p₅) × (1 - p₄) × (1 - p₃)
+            </p>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  }
+</div>

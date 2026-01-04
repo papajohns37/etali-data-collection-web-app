@@ -19,11 +19,32 @@
     @for (decklist of decklistService.decklists(); track decklist.id) {
       <p-card 
         [header]="decklist.name"
-        styleClass="decklist-card cursor-pointer"
-        (click)="onDecklistSelected(decklist)">
+        styleClass="decklist-card">
         <div class="card-content">
           <i class="pi pi-list"></i>
-          <span class="card-count">{{ decklist.cardNames.length }} cards</span>
+          <span class="card-count">{{ decklist.cards.length }} cards</span>
+        </div>
+        <div class="card-actions">
+          <p-button 
+            label="View Decklist"
+            icon="pi pi-eye"
+            severity="secondary"
+            (onClick)="viewDecklist(decklist)"
+            styleClass="action-button">
+          </p-button>
+          <p-button 
+            label="Test Hands"
+            icon="pi pi-play"
+            (onClick)="onDecklistSelected(decklist)"
+            styleClass="action-button">
+          </p-button>
+          <p-button 
+            label="Statistics"
+            icon="pi pi-chart-bar"
+            severity="secondary"
+            (onClick)="viewStatistics(decklist)"
+            styleClass="action-button">
+          </p-button>
         </div>
       </p-card>
     }

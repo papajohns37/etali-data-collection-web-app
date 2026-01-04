@@ -1,6 +1,8 @@
+import { Card } from './card.model';
+
 export interface Hand {
   id: number;
-  cards: string[];
+  cards: Card[];
   seatOrder: number;
   stickers: number[];
   lowestGambleOdds: number;

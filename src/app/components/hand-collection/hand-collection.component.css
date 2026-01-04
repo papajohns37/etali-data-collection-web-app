@@ -21,12 +21,19 @@
 /* Top Bar */
 .top-bar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
   padding: 12px 16px;
   background: var(--surface-section);
   border-bottom: 1px solid var(--surface-border);
   flex-shrink: 0;
+}
+
+.top-bar-left,
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .deck-name {

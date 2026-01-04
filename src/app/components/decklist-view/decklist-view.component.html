@@ -1,0 +1,115 @@
+<div class="decklist-view-container">
+  @if (isLoading()) {
+    <div class="loading-container">
+      <p-card>
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Loading decklist...</p>
+      </p-card>
+    </div>
+  } @else if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()"></p-message>
+    <p-button 
+      label="Back to Decklists"
+      icon="pi pi-arrow-left"
+      (onClick)="goBack()"
+      styleClass="mt-3"></p-button>
+  } @else if (decklist()) {
+    <div class="decklist-content">
+      <!-- Header Section -->
+      <div class="decklist-header">
+        <div class="header-top">
+          <h1>{{ decklist()!.name }}</h1>
+          <p-button 
+            label="Back"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            (onClick)="goBack()"></p-button>
+        </div>
+        
+        <div class="header-info">
+          @if (decklist()!.moxfieldUrl) {
+            <div class="moxfield-link">
+              <i class="pi pi-external-link"></i>
+              <a [href]="decklist()!.moxfieldUrl" target="_blank" rel="noopener noreferrer">
+                View on Moxfield
+              </a>
+            </div>
+          }
+          
+          @if (formattedDate()) {
+            <div class="created-date">
+              <i class="pi pi-calendar"></i>
+              <span>Added {{ formattedDate() }}</span>
+              <span class="disclaimer">(Moxfield list may have changed since)</span>
+            </div>
+          }
+          
+          <div class="card-count">
+            <i class="pi pi-list"></i>
+            <span>{{ totalCards() }} cards</span>
+          </div>
+        </div>
+        
+        <!-- View Mode Toggle -->
+        <div class="view-toggle">
+          <p-button 
+            [label]="viewMode() === 'text' ? 'Show Images' : 'Show Text'"
+            [icon]="viewMode() === 'text' ? 'pi pi-image' : 'pi pi-list'"
+            (onClick)="toggleViewMode()"
+            severity="secondary"></p-button>
+        </div>
+      </div>
+      
+      <!-- Cards Display -->
+      <div class="cards-container" [class.text-mode]="viewMode() === 'text'" [class.image-mode]="viewMode() === 'image'">
+        @for (group of cardGroups(); track group.type) {
+          <div class="card-group">
+            <h2 class="group-header">
+              {{ pluralize(group.type) }} ({{ group.cards.length }})
+            </h2>
+            
+            @if (viewMode() === 'text') {
+              <!-- Text Mode -->
+              <ul class="card-list-text">
+                @for (card of group.cards; track card.name) {
+                  <li 
+                    class="card-item-with-preview"
+                    (mouseenter)="onCardHover(card.name, $event)"
+                    (mousemove)="onCardMouseMove($event)"
+                    (mouseleave)="onCardLeave()">
+                    <span class="card-name">{{ card.name }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <!-- Image Mode -->
+              <div class="card-grid">
+                @for (card of group.cards; track card.name) {
+                  <div class="card-image-wrapper">
+                    <img 
+                      [src]="getCardImageUrl(card.name)" 
+                      [alt]="card.name"
+                      [pTooltip]="card.name"
+                      [tooltipPosition]="'top'"
+                      class="card-image"
+                      loading="lazy">
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+  
+  <!-- Card Preview Overlay -->
+  @if (hoveredCard()) {
+    <div 
+      class="card-preview-overlay"
+      [style.left.px]="mouseX()"
+      [style.top.px]="mouseY()">
+      <img [src]="getCardImageUrl(hoveredCard()!)" [alt]="hoveredCard()" />
+    </div>
+  }
+</div>
