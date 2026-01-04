@@ -1,0 +1,77 @@
+{
+  "decklists": [
+    {
+      "id": 1,
+      "name": "Test Red Deck",
+      "cards": [
+        { "name": "Sol Ring", "type": "Artifact" },
+        { "name": "Command Tower", "type": "Land" },
+        { "name": "Lightning Bolt", "type": "Instant" },
+        { "name": "Gamble", "type": "Sorcery" },
+        { "name": "Mountain", "type": "Basic Land — Mountain" },
+        { "name": "Etali, Primal Storm", "type": "Legendary Creature — Elder Dinosaur" },
+        { "name": "Ruby Medallion", "type": "Artifact" },
+        { "name": "Mana Crypt", "type": "Artifact" },
+        { "name": "Seething Song", "type": "Instant" },
+        { "name": "Pyretic Ritual", "type": "Instant" }
+      ],
+      "moxfieldUrl": "https://www.moxfield.com/decks/test-deck",
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Empty Deck",
+      "cards": [],
+      "createdAt": "2024-01-16T14:20:00Z"
+    }
+  ],
+  "randomHand": {
+    "id": 1,
+    "cards": [
+      { "name": "Sol Ring", "type": "Artifact" },
+      { "name": "Command Tower", "type": "Land" },
+      { "name": "Lightning Bolt", "type": "Instant" },
+      { "name": "Gamble", "type": "Sorcery" },
+      { "name": "Mountain", "type": "Basic Land — Mountain" },
+      { "name": "Etali, Primal Storm", "type": "Legendary Creature — Elder Dinosaur" },
+      { "name": "Ruby Medallion", "type": "Artifact" }
+    ],
+    "seatOrder": 2,
+    "stickers": [1, 3],
+    "lowestGambleOdds": 0.6,
+    "decklistId": 1,
+    "decklistName": "Test Red Deck"
+  },
+  "statistics": {
+    "decklistId": 1,
+    "decklistName": "Test Red Deck",
+    "totalHands": 42,
+    "averageSeatOrder": 2.3,
+    "canCastEtaliCount": 18,
+    "canCastEtaliPercentage": 42.86,
+    "averageMinimumCardsToCastEtali": 5.2,
+    "stickerDistribution": {
+      "1": 15,
+      "2": 12,
+      "3": 8,
+      "4": 7
+    },
+    "cardFrequency": [
+      { "cardName": "Sol Ring", "count": 38 },
+      { "cardName": "Command Tower", "count": 35 },
+      { "cardName": "Gamble", "count": 22 },
+      { "cardName": "Lightning Bolt", "count": 20 }
+    ]
+  },
+  "errors": {
+    "decklistNotFound": {
+      "error": "Decklist not found"
+    },
+    "noHandsAvailable": {
+      "error": "No hands available for this decklist"
+    },
+    "invalidRequest": {
+      "error": "Invalid request data"
+    }
+  }
+}

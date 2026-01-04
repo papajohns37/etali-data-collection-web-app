@@ -23,7 +23,6 @@ Issues:
 None reported
 
 Refactor:
-Integrate moxfield api
 Create E2E tests with playwright
 Check that test coverage is full with integration and unit tests
 Use ai tools to refactor and improve code

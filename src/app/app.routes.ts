@@ -27,5 +27,9 @@ export const routes: Routes = [
     path: 'hand-collection',
     component: HandCollectionComponent,
     canActivate: [decklistGuard]
+  },
+  {
+    path: '**',
+    redirectTo: '/decklists'
   }
 ];
