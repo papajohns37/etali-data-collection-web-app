@@ -1,8 +1,4 @@
 import { Routes } from '@angular/router';
-import { DecklistSelectionComponent } from './components/decklist-selection/decklist-selection.component';
-import { DecklistViewComponent } from './components/decklist-view/decklist-view.component';
-import { HandCollectionComponent } from './components/hand-collection/hand-collection.component';
-import { StatisticsComponent } from './components/statistics/statistics.component';
 import { decklistGuard } from './guards/decklist.guard';
 
 export const routes: Routes = [
@@ -13,19 +9,19 @@ export const routes: Routes = [
   },
   {
     path: 'decklists',
-    component: DecklistSelectionComponent
+    loadComponent: () => import('./components/decklist-selection/decklist-selection.component').then(m => m.DecklistSelectionComponent)
   },
   {
     path: 'decklists/view/:id',
-    component: DecklistViewComponent
+    loadComponent: () => import('./components/decklist-view/decklist-view.component').then(m => m.DecklistViewComponent)
   },
   {
     path: 'decklists/:id/statistics',
-    component: StatisticsComponent
+    loadComponent: () => import('./components/statistics/statistics.component').then(m => m.StatisticsComponent)
   },
   {
     path: 'hand-collection',
-    component: HandCollectionComponent,
+    loadComponent: () => import('./components/hand-collection/hand-collection.component').then(m => m.HandCollectionComponent),
     canActivate: [decklistGuard]
   },
   {

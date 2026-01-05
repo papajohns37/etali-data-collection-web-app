@@ -1,17 +1,24 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, ErrorHandler } from '@angular/core';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService } from 'primeng/api';
 import Aura from '@primeuix/themes/aura';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { GlobalErrorHandler } from './core/error-handler';
+import { httpErrorInterceptor } from './core/http-error.interceptor';
+import { API_BASE_URL } from './core/tokens';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), 
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    { provide: API_BASE_URL, useValue: environment.apiUrl },
+    MessageService,
+    provideRouter(routes, withViewTransitions()), 
     provideClientHydration(withEventReplay()),
     provideAnimationsAsync(),
     providePrimeNG({
@@ -23,6 +30,6 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor]))
   ]
 };

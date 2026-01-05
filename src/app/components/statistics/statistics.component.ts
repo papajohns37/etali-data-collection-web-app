@@ -8,7 +8,8 @@ import { MessageModule } from 'primeng/message';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { DecklistService } from '../../services/decklist.service';
-import { DecklistStatistics, HandSizeStatistics } from '../../models/statistics.model';
+import { DecklistStatistics } from '../../models/statistics.model';
+import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
 
 @Component({
   selector: 'app-statistics',
@@ -20,7 +21,8 @@ import { DecklistStatistics, HandSizeStatistics } from '../../models/statistics.
     ButtonModule,
     MessageModule,
     ProgressBarModule,
-    TooltipModule
+    TooltipModule,
+    PercentagePipe
   ],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.css'
@@ -49,29 +51,26 @@ export class StatisticsComponent implements OnInit {
     const stats = this.statistics();
     if (!stats) return [];
     
-    // Sort by hand size descending (7, 6, 5, 4, 3)
-    return [...stats.handSizeStatistics].sort((a, b) => b.handSize - a.handSize).map(hs => ({
-      handSize: hs.handSize,
-      probability: this.toPercent(hs.probability),
-      confidenceInterval: `${this.toPercent(hs.confidenceIntervalLower)} - ${this.toPercent(hs.confidenceIntervalUpper)}`,
-      ciWidth: hs.confidenceIntervalUpper - hs.confidenceIntervalLower,
-      sampleSize: `${hs.successfulHands}/${hs.totalHands}`,
-      probabilityValue: hs.probability * 100,
-      successfulHands: hs.successfulHands,
-      totalHands: hs.totalHands
-    }));
+    return [...stats.handSizeStatistics]
+      .sort((a, b) => b.handSize - a.handSize)
+      .map(hs => ({
+        handSize: hs.handSize,
+        probability: hs.probability,
+        confidenceIntervalLower: hs.confidenceIntervalLower,
+        confidenceIntervalUpper: hs.confidenceIntervalUpper,
+        ciWidth: hs.confidenceIntervalUpper - hs.confidenceIntervalLower,
+        sampleSize: `${hs.successfulHands}/${hs.totalHands}`,
+        probabilityValue: hs.probability * 100,
+        successfulHands: hs.successfulHands,
+        totalHands: hs.totalHands
+      }));
   });
 
-  overallProbability = computed(() => {
-    const stats = this.statistics();
-    return stats ? this.toPercent(stats.overallMulliganProbability) : '0.0%';
-  });
+  overallProbability = computed(() => this.statistics()?.overallMulliganProbability ?? 0);
 
-  overallConfidenceInterval = computed(() => {
-    const stats = this.statistics();
-    if (!stats) return '';
-    return `${this.toPercent(stats.overallMulliganConfidenceIntervalLower)} - ${this.toPercent(stats.overallMulliganConfidenceIntervalUpper)}`;
-  });
+  overallConfidenceIntervalLower = computed(() => this.statistics()?.overallMulliganConfidenceIntervalLower ?? 0);
+
+  overallConfidenceIntervalUpper = computed(() => this.statistics()?.overallMulliganConfidenceIntervalUpper ?? 0);
 
   ngOnInit(): void {
     const decklistId = this.route.snapshot.paramMap.get('id');
@@ -100,10 +99,6 @@ export class StatisticsComponent implements OnInit {
         this.loading.set(false);
       }
     });
-  }
-
-  toPercent(value: number): string {
-    return `${(value * 100).toFixed(1)}%`;
   }
 
   getSeverityClass(ciWidth: number): string {

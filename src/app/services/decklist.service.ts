@@ -6,13 +6,14 @@ import { Decklist } from '../models/decklist.model';
 import { Hand } from '../models/hand.model';
 import { Card } from '../models/card.model';
 import { DecklistStatistics } from '../models/statistics.model';
+import { API_BASE_URL } from '../core/tokens';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DecklistService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'https://localhost:7194';
+  private readonly baseUrl = inject(API_BASE_URL);
 
   // State management
   decklists = signal<Decklist[]>([]);
@@ -53,9 +54,6 @@ export class DecklistService {
     return this.http.post(`${this.baseUrl}/hand/evaluate`, evaluation);
   }
 
-  /**
-   * Add a new decklist from a Moxfield link
-   */
   addDecklist(moxfieldLink: string, name: string): Observable<any> {
     return this.http.post(
       `${this.baseUrl}/decklist?link=${encodeURIComponent(moxfieldLink)}&name=${encodeURIComponent(name)}`,

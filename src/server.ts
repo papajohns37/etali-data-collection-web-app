@@ -9,8 +9,10 @@ import { join } from 'node:path';
 
 // Disable SSL certificate validation for development with self-signed certificates
 // WARNING: Only use this in development environments, never in production
-if (process.env['NODE_ENV'] !== 'production') {
+const isDevelopment = process.env['NODE_ENV'] !== 'production';
+if (isDevelopment) {
   process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+  console.warn('⚠️  SSL certificate validation disabled for development');
 }
 
 const browserDistFolder = join(import.meta.dirname, '../browser');

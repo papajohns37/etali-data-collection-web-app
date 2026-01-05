@@ -1,5 +1,5 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Component, EventEmitter, inject, Output, output } from '@angular/core';
+import { NonNullableFormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { DecklistService } from '../../services/decklist.service';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,11 +14,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './decklist-form.component.css'
 })
 export class DecklistFormComponent {
-  @Output() decklistAdded = new EventEmitter<void>();
-  newDecklistForm: FormGroup;
+  decklistAdded = output<void>();
+  
+  newDecklistForm: FormGroup<{
+    deckName: FormControl<string>;
+    moxfieldLink: FormControl<string>;
+  }>;
 
   private decklistService = inject(DecklistService);
-  private fb = inject(FormBuilder);
+  private fb = inject(NonNullableFormBuilder);
 
   constructor() {
     // Initialize new decklist form with validation
@@ -29,16 +33,21 @@ export class DecklistFormComponent {
   }
 
   /**
-   * Custom validator to ensure the URL contains "moxfield.com"
+   * Custom validator to ensure the URL is a valid Moxfield URL
    */
   private moxfieldUrlValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) {
       return null;
     }
 
-    const url = control.value.toLowerCase();
-    if (url.includes('moxfield.com')) {
-      return null;
+    try {
+      const url = new URL(control.value);
+      if (url.hostname === 'www.moxfield.com' || url.hostname === 'moxfield.com') {
+        return null;
+      }
+    } catch {
+      // Invalid URL format
+      return { invalidMoxfieldUrl: true };
     }
 
     return { invalidMoxfieldUrl: true };
@@ -49,11 +58,10 @@ export class DecklistFormComponent {
    */
   onSubmitNewDecklist(): void {
     if (this.newDecklistForm.valid) {
-      const formData = this.newDecklistForm.value;
+      const formData = this.newDecklistForm.getRawValue();
 
       this.decklistService.addDecklist(formData.moxfieldLink, formData.deckName).subscribe({
-        next: (response) => {
-          
+        next: () => {
           // Reset form after successful submission
           this.newDecklistForm.reset();
           

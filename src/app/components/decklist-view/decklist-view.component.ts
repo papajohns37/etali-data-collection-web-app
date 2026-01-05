@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DecklistService } from '../../services/decklist.service';
 import { Decklist } from '../../models/decklist.model';
 import { Card } from '../../models/card.model';
+import { CardImageUrlPipe } from '../../shared/pipes/card-image-url.pipe';
+import { PluralizePipe } from '../../shared/pipes/pluralize.pipe';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
@@ -22,7 +24,9 @@ interface CardGroup {
     ButtonModule,
     CardModule,
     MessageModule,
-    TooltipModule
+    TooltipModule,
+    CardImageUrlPipe,
+    PluralizePipe
   ],
   templateUrl: './decklist-view.component.html',
   styleUrl: './decklist-view.component.css'
@@ -115,21 +119,6 @@ export class DecklistViewComponent implements OnInit {
     });
   });
   
-  pluralize(type: string): string {
-    // Handle special pluralization cases
-    const specialCases: { [key: string]: string } = {
-      'Sorcery': 'Sorceries',
-      'Conspiracy': 'Conspiracies'
-    };
-    
-    if (specialCases[type]) {
-      return specialCases[type];
-    }
-    
-    // Default: add 's'
-    return type + 's';
-  }
-  
   ngOnInit() {
     const decklistId = this.route.snapshot.paramMap.get('id');
     
@@ -188,11 +177,6 @@ export class DecklistViewComponent implements OnInit {
     
     // Fallback to first part if all are supertypes (shouldn't happen)
     return parts[0] || 'Other';
-  }
-  
-  getCardImageUrl(cardName: string): string {
-    const formattedName = cardName.replace(/ /g, '+').replace(/'/g, '%27').replace(/,/g, '%2C');
-    return `https://api.scryfall.com/cards/named?exact=${formattedName}&format=image`;
   }
   
   toggleViewMode() {

@@ -1,10 +1,15 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { MessageService } from 'primeng/api';
 import { DecklistService } from '../../services/decklist.service';
+import { BattlefieldLayoutService } from '../../services/battlefield-layout.service';
 import { Card } from '../../models/card.model';
+import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
+import { CardImageUrlPipe } from '../../shared/pipes/card-image-url.pipe';
+import { TIMING_CONSTANTS } from '../../shared/constants';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -30,7 +35,9 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     InputTextModule,
     MessageModule,
-    TooltipModule
+    TooltipModule,
+    PercentagePipe,
+    CardImageUrlPipe
   ],
   templateUrl: './hand-collection.component.html',
   styleUrl: './hand-collection.component.css'
@@ -58,6 +65,10 @@ export class HandCollectionComponent {
   showLibraryModal = signal(false);
   searchQuery = signal('');
   
+  // Signal-based DOM queries
+  battlefieldZone = viewChild<ElementRef<HTMLDivElement>>('battlefieldZone');
+  handZone = viewChild<ElementRef<HTMLDivElement>>('handZone');
+  
   // Track drag offset for accurate card placement
   private dragOffsetX: number = 0;
   private dragOffsetY: number = 0;
@@ -76,6 +87,8 @@ export class HandCollectionComponent {
   private clickTimeout: any = null;
   
   private decklistService = inject(DecklistService);
+  private messageService = inject(MessageService);
+  private battlefieldLayout = inject(BattlefieldLayoutService);
   private router = inject(Router);
 
   constructor() {
@@ -117,11 +130,6 @@ export class HandCollectionComponent {
     return 7 - (this.currentHand().length - this.minCardsForGamblePass());
   });
 
-  // Format percentage for display
-  formatPercentage(value: number): string {
-    return (value * 100).toFixed(2) + '%';
-  }
-
   // Computed signal for library cards (cards not in hand or battlefield)
   libraryCards = computed(() => {
     const decklist = this.decklistService.selectedDecklist();
@@ -151,7 +159,12 @@ export class HandCollectionComponent {
     const selectedDecklist = this.decklistService.selectedDecklist();
     
     if (!selectedDecklist) {
-      this.evaluationMessage = 'Please select a decklist first';
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'No Decklist Selected',
+        detail: 'Please select a decklist first',
+        life: 3000,
+      });
       this.router.navigate(['/decklists']);
       return;
     }
@@ -175,23 +188,8 @@ export class HandCollectionComponent {
         this.cardsNeeded.set(1);
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Failed to fetch hand:', err);
-        if (err.status === 404) {
-          this.evaluationMessage = `Decklist "${selectedDecklist.name}" not found`;
-        } else if (err.error?.error) {
-          this.evaluationMessage = err.error.error;
-        } else {
-          this.evaluationMessage = 'Failed to fetch hand from server';
-        }
-        this.isLoading = false;
-      }
+      error: () => this.isLoading = false
     });
-  }
-
-  getImageUrl(cardName: string): string {
-    const formattedName = cardName.replace(/ /g, '+').replace(/'/g, '%27').replace(/,/g, '%2C');
-    return `https://api.scryfall.com/cards/named?exact=${formattedName}&format=image`;
   }
 
   onHandDrop(event: CdkDragDrop<Card[]>) {
@@ -228,68 +226,21 @@ export class HandCollectionComponent {
     }
   }
   
-  private calculateCardDimensions(): { width: number, height: number } {
-    // Get actual computed card width from the CSS variable
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const cardWidth = Math.min(viewportWidth * 0.09, viewportHeight * 0.15);
-    const cardHeight = cardWidth * 1.4; // MTG card aspect ratio
-    
-    return { width: cardWidth, height: cardHeight };
-  }
-  
   onHandCardClick(card: Card, index: number) {
-    // Only place card if this was a click, not a drag
-    if (this.isDragging) {
-      return;
-    }
+    if (this.isDragging) return;
     
-    const battlefieldZone = document.querySelector('.battlefield-zone');
-    if (!battlefieldZone) return;
+    const battlefieldEl = this.battlefieldZone()?.nativeElement;
+    if (!battlefieldEl) return;
     
-    const rect = battlefieldZone.getBoundingClientRect();
-    const { width: cardWidth, height: cardHeight } = this.calculateCardDimensions();
-    const gap = 10; // Fixed gap between cards
+    const rect = battlefieldEl.getBoundingClientRect();
+    const cardDimensions = this.battlefieldLayout.calculateCardDimensions();
+    const position = this.battlefieldLayout.findNextAvailablePosition(
+      rect,
+      this.battlefield(),
+      cardDimensions
+    );
     
-    // Find the next available position (bottom-left, filling left-to-right, wrapping up)
-    let x = 0;
-    let y = rect.height - cardHeight;
-    
-    // Check each potential position for overlap with existing cards
-    const battlefield = this.battlefield();
-    let positionFound = false;
-    
-    while (!positionFound && y >= 0) {
-      // Try positions left-to-right in current row
-      while (x + cardWidth <= rect.width) {
-        // Check if this position overlaps with any existing card
-        const overlaps = battlefield.some(existingCard => {
-          const overlapX = x < existingCard.x + cardWidth && x + cardWidth > existingCard.x;
-          const overlapY = y < existingCard.y + cardHeight && y + cardHeight > existingCard.y;
-          return overlapX && overlapY;
-        });
-        
-        if (!overlaps) {
-          positionFound = true;
-          break;
-        }
-        
-        x += cardWidth + gap;
-      }
-      
-      if (!positionFound) {
-        // Move to next row up
-        x = 0;
-        y -= cardHeight + gap;
-      }
-    }
-    
-    // Constrain within bounds
-    const constrainedX = Math.max(0, Math.min(x, rect.width - cardWidth));
-    const constrainedY = Math.max(0, Math.min(y, rect.height - cardHeight));
-    
-    // Add card to battlefield and remove from hand
-    this.battlefield.update(bf => [...bf, { card, x: constrainedX, y: constrainedY, tapped: false }]);
+    this.battlefield.update(bf => [...bf, { card, x: position.x, y: position.y, tapped: false }]);
     this.currentHand.update(hand => hand.filter((_, i) => i !== index));
   }
   
@@ -323,15 +274,13 @@ export class HandCollectionComponent {
     
     // Wait to see if a double-click occurs
     this.clickTimeout = setTimeout(() => {
-      const battlefield = this.battlefield();
-      const card = battlefield[index].card;
+      const card = this.battlefield()[index].card;
       
-      // Remove from battlefield and add back to hand
       this.battlefield.update(bf => bf.filter((_, i) => i !== index));
       this.currentHand.update(hand => [...hand, card]);
       
       this.clickTimeout = null;
-    }, 250); // 250ms delay to detect double-click
+    }, TIMING_CONSTANTS.DOUBLE_CLICK_DELAY_MS);
   }
   
   onBattlefieldCardDoubleClick(index: number) {
@@ -346,43 +295,41 @@ export class HandCollectionComponent {
   }
 
   onHandCardDragEnded(event: CdkDragEnd, card: Card, index: number) {
-    const dropPoint = event.dropPoint;
-    const battlefieldZone = document.querySelector('.battlefield-zone');
+    const battlefieldEl = this.battlefieldZone()?.nativeElement;
+    if (!battlefieldEl) return;
     
-    if (battlefieldZone) {
-      const rect = battlefieldZone.getBoundingClientRect();
+    const rect = battlefieldEl.getBoundingClientRect();
+    const dropPoint = event.dropPoint;
+    
+    if (dropPoint.x >= rect.left && dropPoint.x <= rect.right &&
+        dropPoint.y >= rect.top && dropPoint.y <= rect.bottom) {
+      const cardDimensions = this.battlefieldLayout.calculateCardDimensions();
+      const position = this.battlefieldLayout.constrainToBounds(
+        {
+          x: dropPoint.x - rect.left - this.dragOffsetX,
+          y: dropPoint.y - rect.top - this.dragOffsetY
+        },
+        rect,
+        cardDimensions
+      );
       
-      if (dropPoint.x >= rect.left && dropPoint.x <= rect.right &&
-          dropPoint.y >= rect.top && dropPoint.y <= rect.bottom) {
-        // Get card dimensions
-        const { width: cardWidth, height: cardHeight } = this.calculateCardDimensions();
-        
-        // Calculate position using the stored drag offset to maintain cursor position
-        const x = dropPoint.x - rect.left - this.dragOffsetX;
-        const y = dropPoint.y - rect.top - this.dragOffsetY;
-        
-        // Constrain within bounds
-        const constrainedX = Math.max(0, Math.min(x, rect.width - cardWidth));
-        const constrainedY = Math.max(0, Math.min(y, rect.height - cardHeight));
-        
-        this.battlefield.update(bf => [...bf, { card, x: constrainedX, y: constrainedY, tapped: false }]);
-        this.currentHand.update(hand => hand.filter((_, i) => i !== index));
-      }
+      this.battlefield.update(bf => [...bf, { card, x: position.x, y: position.y, tapped: false }]);
+      this.currentHand.update(hand => hand.filter((_, i) => i !== index));
     }
   }
 
   onBattlefieldCardDragEnded(event: CdkDragEnd, index: number) {
     const dropPoint = event.dropPoint;
-    const battlefieldZone = document.querySelector('.battlefield-zone');
-    const handZone = document.querySelector('.hand-zone');
+    const battlefieldEl = this.battlefieldZone()?.nativeElement;
+    const handEl = this.handZone()?.nativeElement;
     
     // Store original position for potential reset
     const originalX = this.battlefield()[index].x;
     const originalY = this.battlefield()[index].y;
     
     // Check if card was dropped back on hand zone
-    if (handZone) {
-      const handRect = handZone.getBoundingClientRect();
+    if (handEl) {
+      const handRect = handEl.getBoundingClientRect();
       
       if (dropPoint.x >= handRect.left && dropPoint.x <= handRect.right &&
           dropPoint.y >= handRect.top && dropPoint.y <= handRect.bottom) {
@@ -394,30 +341,22 @@ export class HandCollectionComponent {
     }
     
     // Calculate new position and constrain to battlefield bounds
-    if (battlefieldZone) {
-      const battlefieldRect = battlefieldZone.getBoundingClientRect();
-      const distance = event.distance;
+    if (battlefieldEl) {
+      const battlefieldRect = battlefieldEl.getBoundingClientRect();
+      const cardDimensions = this.battlefieldLayout.calculateCardDimensions();
+      const newPosition = this.battlefieldLayout.calculateDragPosition(
+        { x: originalX, y: originalY },
+        event.distance,
+        battlefieldRect,
+        cardDimensions
+      );
       
-      // Calculate new position based on original position plus drag distance
-      let newX = originalX + distance.x;
-      let newY = originalY + distance.y;
-      
-      // Get card width dynamically from CSS variable
-      const cardWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--card-width')) || 120;
-      const cardHeight = cardWidth * 1.4; // MTG card aspect ratio
-      
-      // Constrain position to battlefield bounds (snap to nearest valid position)
-      newX = Math.max(0, Math.min(newX, battlefieldRect.width - cardWidth));
-      newY = Math.max(0, Math.min(newY, battlefieldRect.height - cardHeight));
-      
-      // Update to constrained position
       this.battlefield.update(bf => {
         const newBf = [...bf];
-        newBf[index] = { ...newBf[index], x: newX, y: newY };
+        newBf[index] = { ...newBf[index], x: newPosition.x, y: newPosition.y };
         return newBf;
       });
       
-      // Reset the drag position to prevent double-transform
       event.source.reset();
     }
   }
@@ -444,20 +383,18 @@ export class HandCollectionComponent {
 
     this.isLoading = true;
     this.decklistService.submitHandEvaluation(payload).subscribe({
-      next: (response) => {
-        this.evaluationMessage = 'Hand evaluation submitted successfully!';
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Hand evaluation submitted successfully!',
+          life: TIMING_CONSTANTS.TOAST_LIFE_MS,
+        });
+        this.evaluationMessage = '';
         this.isLoading = false;
-        // Automatically request a new hand after brief delay
-        setTimeout(() => {
-          this.evaluationMessage = '';
-          this.onRequestHand();
-        }, 1500);
+        setTimeout(() => this.onRequestHand(), TIMING_CONSTANTS.SUCCESS_MESSAGE_DELAY_MS);
       },
-      error: (err) => {
-        console.error('Failed to submit evaluation:', err);
-        this.evaluationMessage = 'Failed to submit evaluation. Please try again.';
-        this.isLoading = false;
-      }
+      error: () => this.isLoading = false
     });
   }
 

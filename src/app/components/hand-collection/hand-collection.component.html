@@ -24,7 +24,7 @@
   </div>
 
   <div class="main-area">
-    <div class="battlefield-zone">
+    <div #battlefieldZone class="battlefield-zone">
       @for (cardData of battlefield(); track $index; let i = $index) {
         <div 
           cdkDrag
@@ -37,7 +37,7 @@
           [style.left.px]="cardData.x"
           [style.top.px]="cardData.y"
           class="battlefield-card card">
-          <img [src]="getImageUrl(cardData.card.name)" [alt]="cardData.card.name" />
+          <img [src]="cardData.card.name | cardImageUrl" [alt]="cardData.card.name" />
         </div>
       }
     </div>
@@ -55,6 +55,11 @@
       </p-card>
 
       @if (hasGambleInHand()) {
+        @let currentOdds = currentGambleOdds();
+        @let minCards = minCardsForGamblePass();
+        @let minHandSize = minHandSizeForPass();
+        @let handLength = currentHand().length;
+        
         <p-card header="Gamble Calculator" styleClass="gamble-card">
           <p class="gamble-instructions">
             Play out the hand, leaving all unused cards and Gamble in your hand.
@@ -81,16 +86,16 @@
             @if (gamblePasses()) {
               <p-message 
                 severity="success"
-                [text]="'Minimum hand size: ' + minHandSizeForPass()"
+                [text]="'Minimum hand size: ' + minHandSize"
                 styleClass="gamble-message"
-                [pTooltip]="'Calculation: 7 - (' + currentHand().length + ' current cards - ' + minCardsForGamblePass() + ' min cards for pass) = ' + minHandSizeForPass() + '. Gamble odds: ' + formatPercentage(currentGambleOdds()) + ' ≥ ' + formatPercentage(lowestGambleOdds) + ' required.'"
+                [pTooltip]="'Calculation: 7 - (' + handLength + ' current cards - ' + minCards + ' min cards for pass) = ' + minHandSize + '. Gamble odds: ' + (currentOdds | percentage:2) + ' ≥ ' + (lowestGambleOdds | percentage:2) + ' required.'"
                 tooltipPosition="top"></p-message>
             } @else {
               <p-message 
                 severity="error"
                 text="Gamble failed"
                 styleClass="gamble-message"
-                [pTooltip]="'Current odds ' + formatPercentage(currentGambleOdds()) + ' < ' + formatPercentage(lowestGambleOdds) + ' required. With ' + cardsNeeded() + ' cards needed and ' + currentHand().length + ' in hand, you need at most ' + minCardsForGamblePass() + ' cards in hand to pass.'"
+                [pTooltip]="'Current odds ' + (currentOdds | percentage:2) + ' < ' + (lowestGambleOdds | percentage:2) + ' required. With ' + cardsNeeded() + ' cards needed and ' + handLength + ' in hand, you need at most ' + minCards + ' cards in hand to pass.'"
                 tooltipPosition="top"></p-message>
             }
           </div>
@@ -159,7 +164,8 @@
     </div>
   </div>
 
-  <div class="hand-zone" 
+  <div #handZone
+    class="hand-zone" 
     cdkDropList 
     #handList="cdkDropList"
     [cdkDropListData]="currentHand()"
@@ -174,7 +180,7 @@
         (click)="onHandCardClick(card, i)"
         (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
         class="hand-card card">
-        <img [src]="getImageUrl(card.name)" [alt]="card.name" />
+        <img [src]="card.name | cardImageUrl" [alt]="card.name" />
       </div>
     }
   </div>

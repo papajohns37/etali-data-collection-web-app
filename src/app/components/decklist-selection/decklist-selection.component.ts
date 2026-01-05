@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { DecklistService } from '../../services/decklist.service';
 import { DecklistFormComponent } from '../decklist-form/decklist-form.component';
 import { Decklist } from '../../models/decklist.model';
@@ -17,6 +18,7 @@ import { DialogModule } from 'primeng/dialog';
 })
 export class DecklistSelectionComponent {
   private router = inject(Router);
+  private messageService = inject(MessageService);
   protected decklistService = inject(DecklistService);
   showModal = signal(false);
 
@@ -47,6 +49,12 @@ export class DecklistSelectionComponent {
   }
 
   onDecklistAdded(): void {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Decklist added successfully!',
+      life: 3000,
+    });
     this.closeAddDecklistModal();
   }
 }

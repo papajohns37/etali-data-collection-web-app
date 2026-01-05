@@ -65,7 +65,7 @@
         @for (group of cardGroups(); track group.type) {
           <div class="card-group">
             <h2 class="group-header">
-              {{ pluralize(group.type) }} ({{ group.cards.length }})
+              {{ group.type | pluralize }} ({{ group.cards.length }})
             </h2>
             
             @if (viewMode() === 'text') {
@@ -87,7 +87,7 @@
                 @for (card of group.cards; track card.name) {
                   <div class="card-image-wrapper">
                     <img 
-                      [src]="getCardImageUrl(card.name)" 
+                      [src]="card.name | cardImageUrl" 
                       [alt]="card.name"
                       [pTooltip]="card.name"
                       [tooltipPosition]="'top'"
@@ -109,7 +109,7 @@
       class="card-preview-overlay"
       [style.left.px]="mouseX()"
       [style.top.px]="mouseY()">
-      <img [src]="getCardImageUrl(hoveredCard()!)" [alt]="hoveredCard()" />
+      <img [src]="hoveredCard()! | cardImageUrl" [alt]="hoveredCard()" />
     </div>
   }
 </main>

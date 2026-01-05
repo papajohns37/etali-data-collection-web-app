@@ -85,10 +85,10 @@
             </i>
           </div>
           <div class="overall-probability">
-            {{ overallProbability() }}
+            {{ overallProbability() | percentage }}
           </div>
           <div class="overall-ci">
-            90% Confidence Interval: {{ overallConfidenceInterval() }}
+            90% Confidence Interval: {{ overallConfidenceIntervalLower() | percentage }} - {{ overallConfidenceIntervalUpper() | percentage }}
           </div>
           <div class="overall-sample">
             Based on {{ statistics()?.totalHandsTested }} tested hands
@@ -126,11 +126,11 @@
                 <strong>{{ row.handSize }} Cards</strong>
               </td>
               <td>
-                <span class="probability-value">{{ row.probability }}</span>
+                <span class="probability-value">{{ row.probability | percentage }}</span>
               </td>
               <td>
                 <span [class]="getSeverityClass(row.ciWidth)">
-                  {{ row.confidenceInterval }}
+                  {{ row.confidenceIntervalLower | percentage }} - {{ row.confidenceIntervalUpper | percentage }}
                 </span>
                 @if (row.ciWidth > 0.3) {
                   <span class="confidence-badge low">Low Confidence</span>
