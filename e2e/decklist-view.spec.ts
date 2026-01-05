@@ -96,10 +96,23 @@ test.describe('Decklist View', () => {
   });
 
   test('should navigate back to decklist selection', async ({ page }) => {
-    await page.getByRole('button', { name: 'Back' }).click();
+    // First navigate from decklists list so there's a history entry
+    await page.goto('/decklists');
+    await page.waitForLoadState('networkidle');
     
-    // Should navigate to decklist selection page
-    await expect(page).toHaveURL('/decklists');
+    const viewButton = page.getByRole('button', { name: 'View Details' }).first();
+    if (await viewButton.isVisible().catch(() => false)) {
+      await viewButton.click();
+      await page.waitForURL(/\/decklists\/view\/\d+/);
+      
+      // Now click back button
+      await page.getByRole('button', { name: 'Back' }).click();
+      
+      // Should navigate back to decklist selection page
+      await expect(page).toHaveURL('/decklists');
+    } else {
+      test.skip(true, 'No decklists available');
+    }
   });
 
   test('should display Moxfield link if available', async ({ page }) => {

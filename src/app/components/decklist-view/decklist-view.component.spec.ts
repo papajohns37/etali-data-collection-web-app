@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DecklistViewComponent } from './decklist-view.component';
 import { DecklistService } from '../../services/decklist.service';
+import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { of } from 'rxjs';
 import { signal } from '@angular/core';
 import { vi } from 'vitest';
@@ -10,7 +12,9 @@ describe('DecklistViewComponent', () => {
   let component: DecklistViewComponent;
   let fixture: ComponentFixture<DecklistViewComponent>;
   let mockDecklistService: any;
+  let mockComparisonService: any;
   let mockRouter: any;
+  let mockLocation: any;
 
   beforeEach(async () => {
     mockDecklistService = {
@@ -32,15 +36,25 @@ describe('DecklistViewComponent', () => {
       loadDecklists: vi.fn().mockReturnValue(of([]))
     };
 
+    mockComparisonService = {
+      loadComparisons: vi.fn().mockReturnValue(of([]))
+    };
+
     mockRouter = {
       navigate: vi.fn()
+    };
+
+    mockLocation = {
+      back: vi.fn()
     };
 
     await TestBed.configureTestingModule({
       imports: [DecklistViewComponent],
       providers: [
         { provide: DecklistService, useValue: mockDecklistService },
+        { provide: DeckComparisonService, useValue: mockComparisonService },
         { provide: Router, useValue: mockRouter },
+        { provide: Location, useValue: mockLocation },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -86,21 +100,7 @@ describe('DecklistViewComponent', () => {
     });
   });
 
-  describe('pluralize', () => {
-    it('should pluralize regular types by adding s', () => {
-      expect(component.pluralize('Artifact')).toBe('Artifacts');
-      expect(component.pluralize('Creature')).toBe('Creatures');
-      expect(component.pluralize('Land')).toBe('Lands');
-    });
-
-    it('should handle special pluralization for Sorcery', () => {
-      expect(component.pluralize('Sorcery')).toBe('Sorceries');
-    });
-
-    it('should handle special pluralization for Conspiracy', () => {
-      expect(component.pluralize('Conspiracy')).toBe('Conspiracies');
-    });
-  });
+  // Note: PluralizePipe is tested separately in pluralize.pipe.spec.ts
 
   describe('cardGroups', () => {
     it('should group cards by primary type', () => {
@@ -214,6 +214,55 @@ describe('DecklistViewComponent', () => {
       
       component.onCardMouseMove(mockEvent);
       
+
+  describe('navigation', () => {
+    it('should use Location.back() for goBack', () => {
+      component.goBack();
+      
+      expect(mockLocation.back).toHaveBeenCalled();
+      expect(mockRouter.navigate).not.toHaveBeenCalled();
+    });
+
+    it('should navigate to comparison view', () => {
+      const mockComparison = {
+        id: 5,
+        deck1Id: 1,
+        deck2Id: 2,
+        deck1Name: 'Deck 1',
+        deck2Name: 'Deck 2',
+        deck1N: 10,
+        deck2N: 10,
+        createdAt: new Date()
+      };
+
+      component.viewComparison(mockComparison);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/comparisons', 5]);
+    });
+
+    it('should navigate to comparison statistics', () => {
+      const mockComparison = {
+        id: 5,
+        deck1Id: 1,
+        deck2Id: 2,
+        deck1Name: 'Deck 1',
+        deck2Name: 'Deck 2',
+        deck1N: 10,
+        deck2N: 10,
+        createdAt: new Date()
+      };
+
+      component.viewComparisonStatistics(mockComparison);
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/comparisons', 5, 'statistics']);
+    });
+
+    it('should navigate to deck compare', () => {
+      component.compareDeck();
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/decklists', 1, 'compare']);
+    });
+  });
       expect(component.mouseX()).toBe(150);
       expect(component.mouseY()).toBe(250);
     });

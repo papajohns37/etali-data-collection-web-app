@@ -7,7 +7,6 @@ Allow user to select existing decklist with data to open
 Setup logit regression
 
 Sprints:
-List comparison tool
 Authentication
 Implement SQLLite database to store data
 Hosting app
