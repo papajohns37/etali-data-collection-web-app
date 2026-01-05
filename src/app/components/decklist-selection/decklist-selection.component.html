@@ -1,4 +1,4 @@
-<div class="decklist-selection-container">
+<main class="decklist-selection-container">
   <div class="header">
     <h1>Select a Decklist</h1>
     <p-button 
@@ -49,7 +49,7 @@
       </p-card>
     }
   </div>
-</div>
+</main>
 
 <p-dialog 
   [visible]="showModal()"
@@ -58,6 +58,7 @@
   [modal]="true"
   [style]="{width: '600px'}"
   [draggable]="false"
-  [resizable]="false">
+  [resizable]="false"
+  [closeButtonProps]="{ariaLabel: 'Close dialog'}">
   <app-decklist-form (decklistAdded)="onDecklistAdded()"></app-decklist-form>
 </p-dialog>

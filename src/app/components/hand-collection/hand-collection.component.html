@@ -1,4 +1,4 @@
-<div class="hand-collection-container">
+<main class="hand-collection-container">
   <div class="top-bar">
     <div class="top-bar-left">
       <p-button 
@@ -8,7 +8,7 @@
         severity="secondary"
         [text]="true"></p-button>
       @if (selectedDecklist) {
-        <span class="deck-name">{{ selectedDecklist.name }}</span>
+        <h1 class="deck-name">{{ selectedDecklist.name }}</h1>
       }
     </div>
     <div class="top-bar-right">
@@ -178,7 +178,6 @@
       </div>
     }
   </div>
-</div>
 
 <!-- Library Search Modal -->
 <p-dialog 
@@ -220,3 +219,4 @@
     </div>
   </div>
 </p-dialog>
+</main>

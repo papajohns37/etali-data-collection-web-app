@@ -1,5 +1,4 @@
 TODO:
-Add hand data functionality
 Update image getters to cache or store images on load
 Retrieve list from moxfield list
 Implement C# dbs to store hand and decklist data
@@ -23,7 +22,6 @@ Issues:
 None reported
 
 Refactor:
-Create E2E tests with playwright
 Check that test coverage is full with integration and unit tests
 Use ai tools to refactor and improve code
 

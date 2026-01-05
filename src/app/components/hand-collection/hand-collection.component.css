@@ -40,6 +40,7 @@
   font-size: 1.125rem;
   color: var(--text-color);
   font-weight: 600;
+  margin: 0;
 }
 
 /* Main Layout */
