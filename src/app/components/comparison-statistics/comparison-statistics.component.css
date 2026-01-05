@@ -1,0 +1,208 @@
+.comparison-statistics-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.overall-results,
+.hand-size-results {
+  margin-bottom: 2.5rem;
+}
+
+.overall-results h3,
+.hand-size-results h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.overall-summary {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  background: var(--surface-50);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
+.versus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.difference-display {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 2px solid;
+}
+
+.difference-display.sig-better {
+  background: var(--green-50);
+  border-color: var(--green-500);
+  color: var(--green-900);
+}
+
+.difference-display.sig-worse {
+  background: var(--red-50);
+  border-color: var(--red-500);
+  color: var(--red-900);
+}
+
+.difference-display.sig-neutral {
+  background: var(--gray-50);
+  border-color: var(--gray-400);
+  color: var(--text-color);
+}
+
+.diff-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.diff-label {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.confidence-interval {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.interpretation {
+  margin-top: 1.5rem;
+}
+
+.message-content {
+  line-height: 1.6;
+}
+
+.section-note {
+  color: var(--text-color-secondary);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.hands-count {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  margin-left: 0.5rem;
+}
+
+.ci-column {
+  font-size: 0.9rem;
+}
+
+.sig-better {
+  color: var(--green-600);
+  font-weight: 600;
+}
+
+.sig-worse {
+  color: var(--red-600);
+  font-weight: 600;
+}
+
+.sig-neutral {
+  color: var(--text-color-secondary);
+}
+
+.chip-sig-better {
+  background: var(--green-100);
+  color: var(--green-900);
+}
+
+.chip-sig-worse {
+  background: var(--red-100);
+  color: var(--red-900);
+}
+
+.chip-sig-neutral {
+  background: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.note-section {
+  margin-top: 2rem;
+}
+
+.note-content ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+.note-content li {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+}
+
+.back-button {
+  margin-top: 1rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background-color: var(--surface-100);
+  font-weight: 600;
+}
+
+:host ::ng-deep .result-message .p-message-wrapper {
+  padding: 1rem;
+}

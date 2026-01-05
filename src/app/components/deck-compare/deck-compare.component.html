@@ -1,0 +1,67 @@
+<main class="deck-compare-container">
+  @if (isLoading()) {
+    <div class="loading-container">
+      <p-card>
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p>Loading decklist...</p>
+      </p-card>
+    </div>
+  } @else if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()"></p-message>
+    <p-button 
+      label="Back"
+      icon="pi pi-arrow-left"
+      (onClick)="goBack()"
+      styleClass="mt-3">
+    </p-button>
+  } @else if (currentDeck()) {
+    <div class="compare-content">
+      <!-- Header -->
+      <div class="compare-header">
+        <div class="header-row">
+          <p-button 
+            label="Back"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            (onClick)="goBack()">
+          </p-button>
+          <h1>Compare {{ currentDeck()!.name }}</h1>
+        </div>
+      </div>
+
+      <!-- Deck Selector -->
+      <div class="deck-selector-section">
+        <p-card>
+          <div class="selector-content">
+            <label for="deck-selector">Select a deck to compare with:</label>
+            <p-select
+              inputId="deck-selector"
+              [options]="availableDecksForComparison()"
+              [(ngModel)]="compareToDeckId"
+              (onChange)="onCompareToChange($event.value)"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Choose a deck..."
+              [showClear]="true"
+              styleClass="deck-selector">
+            </p-select>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Comparison Results -->
+      @if (isLoadingComparison()) {
+        <div class="loading-small">
+          <i class="pi pi-spin pi-spinner"></i>
+          <span>Comparing decks...</span>
+        </div>
+      } @else if (cardDifferences() && currentDeck() && comparedDeckName()) {
+        <app-card-differences-display
+          [cardDifferences]="cardDifferences()!"
+          [deck1Name]="currentDeck()!.name"
+          [deck2Name]="comparedDeckName()">
+        </app-card-differences-display>
+      }
+    </div>
+  }
+</main>

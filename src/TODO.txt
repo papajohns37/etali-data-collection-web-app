@@ -7,7 +7,6 @@ Allow user to select existing decklist with data to open
 Setup logit regression
 
 Sprints:
-Refactor
 List comparison tool
 Authentication
 Implement SQLLite database to store data
@@ -21,14 +20,11 @@ V2 Release
 Issues:
 None reported
 
-Refactor:
-Check that test coverage is full with integration and unit tests
-Use ai tools to refactor and improve code
-
 List comparison tool:
 Determine cards that were cut
 Create large sample of hands and only send the user ones that are included
 Setup storage system for list comparisons that does not include them in overall list reporting (separate table)
+Use existing and new main decklist hands to update comparison tool? (We could include the hands from the main datasets when comparing too, should be done in the stats part)
 
 V1 Release:
 Securely store moxfield credentials
@@ -39,7 +35,7 @@ Create a page where I can view recently submitted hands and fix data as well as 
 
 Hand Queue:
 Add an api feature that holds onto unevaluated hands and an endpoint that pulls these hands
-Add ui features to mass add to the queue (100 hands from one decklist and a hundred for another etc)
+Add ui features to mass add to the queue (100 hands from one decklist and a hundred for a comparison etc)
 Add ui feature to test hands in the queue (indicator on decklist selector page that notifies user of unprocesssed hands)
 
 Sample HTTP Requests:

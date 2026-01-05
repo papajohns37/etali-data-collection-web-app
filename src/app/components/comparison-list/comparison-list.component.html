@@ -1,0 +1,89 @@
+<div class="comparison-list-container">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <div class="header-left">
+          <p-button 
+            label="Back to Decklists"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            [text]="true"
+            (onClick)="goBackToDecklists()">
+          </p-button>
+          <h2>Deck Comparisons</h2>
+        </div>
+        <p-button 
+          label="Create New Comparison" 
+          icon="pi pi-plus"
+          (onClick)="createComparison()">
+        </p-button>
+      </div>
+    </ng-template>
+
+    <div class="content">
+      @if (isLoading()) {
+        <div class="loading">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <p>Loading comparisons...</p>
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()"></p-message>
+      }
+
+      @if (!isLoading() && !errorMessage()) {
+        @if (comparisons().length === 0) {
+          <p-message 
+            severity="info" 
+            text="No comparisons yet. Create one to get started!">
+          </p-message>
+        } @else {
+          <p-table 
+            [value]="comparisons()" 
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-striped">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Deck 1</th>
+                <th>Deck 2</th>
+                <th>Deck 1 (N)</th>
+                <th>Deck 2 (N)</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-comparison>
+              <tr>
+                <td>{{ comparison.deck1Name }}</td>
+                <td>{{ comparison.deck2Name }}</td>
+                <td>{{ comparison.deck1N }}</td>
+                <td>{{ comparison.deck2N }}</td>
+                <td>{{ comparison.createdAt | date:'short' }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <p-button 
+                      label="View" 
+                      icon="pi pi-eye"
+                      [outlined]="true"
+                      size="small"
+                      (onClick)="viewComparison(comparison)">
+                    </p-button>
+                    <p-button 
+                      label="Statistics" 
+                      icon="pi pi-chart-bar"
+                      [outlined]="true"
+                      size="small"
+                      [disabled]="!hasData(comparison)"
+                      (onClick)="viewStatistics(comparison)">
+                    </p-button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        }
+      }
+    </div>
+  </p-card>
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
@@ -31,6 +31,7 @@ export class StatisticsComponent implements OnInit {
   private decklistService = inject(DecklistService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
 
   statistics = signal<DecklistStatistics | null>(null);
   loading = signal<boolean>(true);
@@ -108,7 +109,7 @@ export class StatisticsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/decklists']);
+    this.location.back();
   }
 
   goToHandCollection(): void {

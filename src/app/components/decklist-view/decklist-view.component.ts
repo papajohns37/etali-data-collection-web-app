@@ -1,8 +1,10 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DecklistService } from '../../services/decklist.service';
+import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { Decklist } from '../../models/decklist.model';
+import { DeckComparison } from '../../models/comparison.model';
 import { Card } from '../../models/card.model';
 import { CardImageUrlPipe } from '../../shared/pipes/card-image-url.pipe';
 import { PluralizePipe } from '../../shared/pipes/pluralize.pipe';
@@ -34,10 +36,14 @@ interface CardGroup {
 export class DecklistViewComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
   private decklistService = inject(DecklistService);
+  private comparisonService = inject(DeckComparisonService);
   
   decklist = signal<Decklist | null>(null);
+  comparisons = signal<DeckComparison[]>([]);
   isLoading = signal(true);
+  isLoadingComparisons = signal(true);
   errorMessage = signal('');
   viewMode = signal<'text' | 'image'>('text');
   
@@ -128,7 +134,9 @@ export class DecklistViewComponent implements OnInit {
       return;
     }
     
-    this.loadDecklist(Number(decklistId));
+    const id = Number(decklistId);
+    this.loadDecklist(id);
+    this.loadComparisons(id);
   }
   
   private loadDecklist(id: number) {
@@ -156,6 +164,19 @@ export class DecklistViewComponent implements OnInit {
         console.error('Failed to load decklists:', err);
         this.errorMessage.set('Failed to load decklist. Please try again.');
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  private loadComparisons(decklistId: number) {
+    this.comparisonService.getComparisonsForDeck(decklistId).subscribe({
+      next: (comparisons) => {
+        this.comparisons.set(comparisons);
+        this.isLoadingComparisons.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load comparisons:', err);
+        this.isLoadingComparisons.set(false);
       }
     });
   }
@@ -188,6 +209,22 @@ export class DecklistViewComponent implements OnInit {
     this.mouseX.set(event.clientX);
     this.mouseY.set(event.clientY);
   }
+
+  createComparison() {
+    this.router.navigate(['/comparisons/create']);
+  }
+
+  viewComparison(comparison: DeckComparison) {
+    this.router.navigate(['/comparisons', comparison.id]);
+  }
+
+  viewComparisonStatistics(comparison: DeckComparison) {
+    this.router.navigate(['/comparisons', comparison.id, 'statistics']);
+  }
+
+  hasComparisonData(comparison: DeckComparison): boolean {
+    return comparison.deck1N > 0 || comparison.deck2N > 0;
+  }
   
   onCardMouseMove(event: MouseEvent) {
     this.mouseX.set(event.clientX);
@@ -198,7 +235,14 @@ export class DecklistViewComponent implements OnInit {
     this.hoveredCard.set(null);
   }
   
+  compareDeck() {
+    const deckId = this.decklist()?.id;
+    if (deckId) {
+      this.router.navigate(['/decklists', deckId, 'compare']);
+    }
+  }
+  
   goBack() {
-    this.router.navigate(['/decklists']);
+    this.location.back();
   }
 }

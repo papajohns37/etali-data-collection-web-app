@@ -40,6 +40,10 @@ export class DecklistSelectionComponent {
     this.router.navigate(['/decklists', decklist.id, 'statistics']);
   }
 
+  viewComparisons(): void {
+    this.router.navigate(['/comparisons']);
+  }
+
   openAddDecklistModal(): void {
     this.showModal.set(true);
   }

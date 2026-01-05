@@ -19,11 +19,20 @@
       <div class="decklist-header">
         <div class="header-top">
           <h1>{{ decklist()!.name }}</h1>
-          <p-button 
-            label="Back"
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            (onClick)="goBack()"></p-button>
+          <div class="header-actions">
+            <p-button 
+              label="Compare Deck"
+              icon="pi pi-clone"
+              severity="secondary"
+              (onClick)="compareDeck()">
+            </p-button>
+            <p-button 
+              label="Back"
+              icon="pi pi-arrow-left"
+              severity="secondary"
+              (onClick)="goBack()">
+            </p-button>
+          </div>
         </div>
         
         <div class="header-info">

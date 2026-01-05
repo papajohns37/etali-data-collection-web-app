@@ -1,0 +1,173 @@
+<div class="comparison-statistics-container">
+  @if (isLoading()) {
+    <div class="loading">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <p>Loading statistics...</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()"></p-message>
+    <p-button 
+      label="Back"
+      icon="pi pi-arrow-left"
+      (onClick)="goBack()"
+      styleClass="back-button">
+    </p-button>
+  }
+
+  @if (statistics() && !isLoading()) {
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <h2>{{ statistics()!.deck1Name }} vs {{ statistics()!.deck2Name }}</h2>
+          <p-button
+            label="Back"
+            icon="pi pi-arrow-left"
+            [outlined]="true"
+            (onClick)="goBack()">
+          </p-button>
+        </div>
+      </ng-template>
+
+      <div class="content">
+        <!-- Overall Results -->
+        <div class="overall-results">
+          <h3>Overall Comparison</h3>
+          
+          <div class="overall-summary">
+            <div class="summary-card">
+              <div class="summary-label">{{ statistics()!.deck1Name }}</div>
+              <div class="summary-stats">
+                <span class="stat-value">{{ statistics()!.deck1TotalHandsEvaluated }}</span>
+                <span class="stat-label">Hands Evaluated</span>
+              </div>
+              <div class="summary-stats">
+                <span class="stat-value">{{ statistics()!.deck1N }}</span>
+                <span class="stat-label">Total Generated (N)</span>
+              </div>
+            </div>
+
+            <div class="versus">
+              <div class="difference-display" [class]="getSignificanceClass(statistics()!.overallConfidenceIntervalLower, statistics()!.overallConfidenceIntervalUpper)">
+                <div class="diff-value">{{ getDifferenceDisplay(statistics()!.overallProbabilityDifference) }}</div>
+                <div class="diff-label">{{ getSignificanceText(statistics()!.overallConfidenceIntervalLower, statistics()!.overallConfidenceIntervalUpper) }}</div>
+                <div class="confidence-interval">
+                  90% CI: {{ getConfidenceIntervalDisplay(statistics()!.overallConfidenceIntervalLower, statistics()!.overallConfidenceIntervalUpper) }}
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-label">{{ statistics()!.deck2Name }}</div>
+              <div class="summary-stats">
+                <span class="stat-value">{{ statistics()!.deck2TotalHandsEvaluated }}</span>
+                <span class="stat-label">Hands Evaluated</span>
+              </div>
+              <div class="summary-stats">
+                <span class="stat-value">{{ statistics()!.deck2N }}</span>
+                <span class="stat-label">Total Generated (N)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="interpretation">
+            @if (getSignificance(statistics()!.overallConfidenceIntervalLower, statistics()!.overallConfidenceIntervalUpper) === 'better') {
+              <p-message severity="success" styleClass="result-message">
+                <div class="message-content">
+                  <strong>{{ statistics()!.deck1Name }}</strong> performs significantly better at casting Etali by turn 2.
+                </div>
+              </p-message>
+            } @else if (getSignificance(statistics()!.overallConfidenceIntervalLower, statistics()!.overallConfidenceIntervalUpper) === 'worse') {
+              <p-message severity="info" styleClass="result-message">
+                <div class="message-content">
+                  <strong>{{ statistics()!.deck2Name }}</strong> performs significantly better at casting Etali by turn 2.
+                </div>
+              </p-message>
+            } @else {
+              <p-message severity="warn" styleClass="result-message">
+                <div class="message-content">
+                  No significant difference detected between the decks. More data may be needed.
+                </div>
+              </p-message>
+            }
+          </div>
+        </div>
+
+        <!-- By Hand Size -->
+        <div class="hand-size-results">
+          <h3>Results by Hand Size</h3>
+          <p class="section-note">
+            Positive differences indicate {{ statistics()!.deck1Name }} performs better.
+            Negative differences indicate {{ statistics()!.deck2Name }} performs better.
+          </p>
+
+          <p-table 
+            [value]="statistics()!.handSizeDeltaStatistics" 
+            [tableStyle]="{ 'min-width': '50rem' }"
+            styleClass="p-datatable-striped">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Hand Size</th>
+                <th>{{ statistics()!.deck1Name }}</th>
+                <th>{{ statistics()!.deck2Name }}</th>
+                <th>Difference</th>
+                <th>90% CI</th>
+                <th>Significance</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-stat>
+              <tr>
+                <td><strong>{{ stat.handSize }}</strong></td>
+                <td>
+                  {{ stat.deck1Probability | percentage:1 }}
+                  <span class="hands-count">({{ stat.deck1SuccessfulHands }} hands)</span>
+                </td>
+                <td>
+                  {{ stat.deck2Probability | percentage:1 }}
+                  <span class="hands-count">({{ stat.deck2SuccessfulHands }} hands)</span>
+                </td>
+                <td [class]="getSignificanceClass(stat.confidenceIntervalLower, stat.confidenceIntervalUpper)">
+                  <strong>{{ getDifferenceDisplay(stat.probabilityDifference) }}</strong>
+                </td>
+                <td class="ci-column">
+                  {{ getConfidenceIntervalDisplay(stat.confidenceIntervalLower, stat.confidenceIntervalUpper) }}
+                </td>
+                <td>
+                  <p-chip 
+                    [label]="getSignificanceText(stat.confidenceIntervalLower, stat.confidenceIntervalUpper)"
+                    [styleClass]="'chip-' + getSignificanceClass(stat.confidenceIntervalLower, stat.confidenceIntervalUpper)">
+                  </p-chip>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <div class="note-section">
+          <p-message severity="info">
+            <div class="note-content">
+              <strong>Understanding Results:</strong>
+              <ul>
+                <li>Positive differences mean Deck 1 ({{ statistics()!.deck1Name }}) performs better</li>
+                <li>Negative differences mean Deck 2 ({{ statistics()!.deck2Name }}) performs better</li>
+                <li>If the 90% confidence interval includes zero, the difference is not statistically significant</li>
+                <li>N represents total hands generated (including rejected hands without unique cards)</li>
+              </ul>
+            </div>
+          </p-message>
+        </div>
+
+        <div class="note-section">
+          <p-message severity="info" styleClass="info-message">
+            <div class="message-content">
+              <strong>Note:</strong> The comparison sample uses existing decklist data filtered to hands with unique cards from each deck. 
+              Collecting hands via "Evaluate Hands" skips hands that would be filtered out, making it faster for similar decklists. 
+              For very different decklists, consider using the individual decklist data collection since those datasets can be reused for other comparisons.
+            </div>
+          </p-message>
+        </div>
+      </div>
+    </p-card>
+  }
+</div>

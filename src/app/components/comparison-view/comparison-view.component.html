@@ -1,0 +1,78 @@
+<div class="comparison-view-container">
+  @if (isLoading()) {
+    <div class="loading">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <p>Loading comparison...</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <p-message severity="error" [text]="errorMessage()"></p-message>
+  }
+
+  @if (comparison() && !isLoading()) {
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <h2>{{ comparison()!.deck1Name }} vs {{ comparison()!.deck2Name }}</h2>
+          <div class="header-actions">
+            <p-button
+              label="Back"
+              icon="pi pi-arrow-left"
+              [outlined]="true"
+              (onClick)="goBack()">
+            </p-button>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="content">
+        <div class="comparison-info">
+          <div class="info-section">
+            <h3>{{ comparison()!.deck1Name }}</h3>
+            <p-button
+              label="View Deck"
+              icon="pi pi-eye"
+              size="small"
+              [outlined]="true"
+              (onClick)="viewDeck1()">
+            </p-button>
+          </div>
+          <div class="versus">VS</div>
+          <div class="info-section">
+            <h3>{{ comparison()!.deck2Name }}</h3>
+            <p-button
+              label="View Deck"
+              icon="pi pi-eye"
+              size="small"
+              [outlined]="true"
+              (onClick)="viewDeck2()">
+            </p-button>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <p-button
+            label="Evaluate Hands"
+            icon="pi pi-play"
+            (onClick)="startEvaluation()">
+          </p-button>
+          <p-button
+            label="View Statistics"
+            icon="pi pi-chart-bar"
+            [outlined]="true"
+            (onClick)="viewStatistics()">
+          </p-button>
+        </div>
+
+        @if (cardDifferences() && comparison()) {
+          <app-card-differences-display
+            [cardDifferences]="cardDifferences()!"
+            [deck1Name]="comparison()!.deck1Name"
+            [deck2Name]="comparison()!.deck2Name">
+          </app-card-differences-display>
+        }
+      </div>
+    </p-card>
+  }
+</div>

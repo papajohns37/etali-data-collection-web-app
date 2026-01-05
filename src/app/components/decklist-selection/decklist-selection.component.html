@@ -1,11 +1,20 @@
 <main class="decklist-selection-container">
   <div class="header">
-    <h1>Select a Decklist</h1>
-    <p-button 
-      (onClick)="openAddDecklistModal()" 
-      label="Add New Decklist"
-      icon="pi pi-plus"
-      severity="success"></p-button>
+    <div class="header-left">
+      <h1>Select a Decklist</h1>
+    </div>
+    <div class="header-right">
+      <p-button 
+        (onClick)="viewComparisons()" 
+        label="Deck Comparisons"
+        icon="pi pi-arrows-h"
+        [outlined]="true"></p-button>
+      <p-button 
+        (onClick)="openAddDecklistModal()" 
+        label="Add New Decklist"
+        icon="pi pi-plus"
+        severity="success"></p-button>
+    </div>
   </div>
   
   <div class="decklists-grid">

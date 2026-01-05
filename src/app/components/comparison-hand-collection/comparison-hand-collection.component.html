@@ -1,0 +1,19 @@
+<app-shared-hand-evaluation
+  [hand]="currentHand()"
+  [originalHand]="originalHand()"
+  [metadata]="handMetadata()"
+  [allCards]="allCards()"
+  [isLoading]="isLoading()"
+  [evaluationMessage]="evaluationMessage()"
+  [handId]="currentHandData()?.id || 0"
+  [showStatisticsButton]="false"
+  [showLibrarySearch]="true"
+  [showResetButton]="true"
+  [showSkipButton]="true"
+  [backButtonLabel]="'Back'"
+  [submitButtonLabel]="'Submit'"
+  (requestHand)="onRequestHand()"
+  (submitEvaluation)="onSubmitEvaluation($event)"
+  (goBack)="goBack()"
+  (handChanged)="onHandChanged($event)">
+</app-shared-hand-evaluation>

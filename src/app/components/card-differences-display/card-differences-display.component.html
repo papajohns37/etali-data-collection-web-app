@@ -1,0 +1,189 @@
+<div class="card-differences-display">
+  <div class="differences-header">
+    <h3>Card Differences</h3>
+    <p-button 
+      [label]="viewMode() === 'text' ? 'Show Images' : 'Show Text'"
+      [icon]="viewMode() === 'text' ? 'pi pi-image' : 'pi pi-list'"
+      (onClick)="toggleViewMode()"
+      severity="secondary"
+      size="small">
+    </p-button>
+  </div>
+
+  <p-accordion [value]="['0', '1', '2']" [multiple]="true">
+    <!-- Cards only in deck 1 -->
+    <p-accordionpanel value="0">
+      <p-accordionheader>
+        <div class="accordion-header-content">
+          <span>Only in {{ deck1Name() }}</span>
+          <p-chip 
+            [label]="cardDifferences().cardsOnlyInDeck1.length.toString()" 
+            styleClass="ml-2">
+          </p-chip>
+        </div>
+      </p-accordionheader>
+      <p-accordioncontent>
+        @if (cardDifferences().cardsOnlyInDeck1.length === 0) {
+          <p class="no-cards">No unique cards in this deck</p>
+        } @else {
+          @if (viewMode() === 'text') {
+            <!-- Text Mode - Staggered Layout -->
+            <div class="cards-staggered">
+              @for (group of groupCardsByType(cardDifferences().cardsOnlyInDeck1); track group.type) {
+                <div class="card-type-group">
+                  <h4>{{ group.type | pluralize }} ({{ group.cards.length }})</h4>
+                  <ul class="card-list-text">
+                    @for (card of group.cards; track card.name) {
+                      <li 
+                        class="card-item-with-preview"
+                        (mouseenter)="onCardHover(card.name, $event)"
+                        (mousemove)="onCardMouseMove($event)"
+                        (mouseleave)="onCardLeave()">
+                        <span class="card-name">{{ card.name }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Image Mode -->
+            <div class="card-grid">
+              @for (card of cardDifferences().cardsOnlyInDeck1; track card.name) {
+                <div class="card-image-wrapper">
+                  <img 
+                    [src]="card.name | cardImageUrl" 
+                    [alt]="card.name"
+                    [pTooltip]="card.name"
+                    [tooltipPosition]="'top'"
+                    class="card-image"
+                    loading="lazy">
+                </div>
+              }
+            </div>
+          }
+        }
+      </p-accordioncontent>
+    </p-accordionpanel>
+
+    <!-- Cards only in deck 2 -->
+    <p-accordionpanel value="1">
+      <p-accordionheader>
+        <div class="accordion-header-content">
+          <span>Only in {{ deck2Name() }}</span>
+          <p-chip 
+            [label]="cardDifferences().cardsOnlyInDeck2.length.toString()" 
+            styleClass="ml-2">
+          </p-chip>
+        </div>
+      </p-accordionheader>
+      <p-accordioncontent>
+        @if (cardDifferences().cardsOnlyInDeck2.length === 0) {
+          <p class="no-cards">No unique cards in this deck</p>
+        } @else {
+          @if (viewMode() === 'text') {
+            <!-- Text Mode - Staggered Layout -->
+            <div class="cards-staggered">
+              @for (group of groupCardsByType(cardDifferences().cardsOnlyInDeck2); track group.type) {
+                <div class="card-type-group">
+                  <h4>{{ group.type | pluralize }} ({{ group.cards.length }})</h4>
+                  <ul class="card-list-text">
+                    @for (card of group.cards; track card.name) {
+                      <li 
+                        class="card-item-with-preview"
+                        (mouseenter)="onCardHover(card.name, $event)"
+                        (mousemove)="onCardMouseMove($event)"
+                        (mouseleave)="onCardLeave()">
+                        <span class="card-name">{{ card.name }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Image Mode -->
+            <div class="card-grid">
+              @for (card of cardDifferences().cardsOnlyInDeck2; track card.name) {
+                <div class="card-image-wrapper">
+                  <img 
+                    [src]="card.name | cardImageUrl" 
+                    [alt]="card.name"
+                    [pTooltip]="card.name"
+                    [tooltipPosition]="'top'"
+                    class="card-image"
+                    loading="lazy">
+                </div>
+              }
+            </div>
+          }
+        }
+      </p-accordioncontent>
+    </p-accordionpanel>
+
+    <!-- Shared cards -->
+    <p-accordionpanel value="2">
+      <p-accordionheader>
+        <div class="accordion-header-content">
+          <span>Shared Cards</span>
+          <p-chip 
+            [label]="cardDifferences().sharedCards.length.toString()" 
+            styleClass="ml-2">
+          </p-chip>
+        </div>
+      </p-accordionheader>
+      <p-accordioncontent>
+        @if (cardDifferences().sharedCards.length === 0) {
+          <p class="no-cards">No shared cards between these decks</p>
+        } @else {
+          @if (viewMode() === 'text') {
+            <!-- Text Mode - Staggered Layout -->
+            <div class="cards-staggered">
+              @for (group of groupCardsByType(cardDifferences().sharedCards); track group.type) {
+                <div class="card-type-group">
+                  <h4>{{ group.type | pluralize }} ({{ group.cards.length }})</h4>
+                  <ul class="card-list-text">
+                    @for (card of group.cards; track card.name) {
+                      <li 
+                        class="card-item-with-preview"
+                        (mouseenter)="onCardHover(card.name, $event)"
+                        (mousemove)="onCardMouseMove($event)"
+                        (mouseleave)="onCardLeave()">
+                        <span class="card-name">{{ card.name }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Image Mode -->
+            <div class="card-grid">
+              @for (card of cardDifferences().sharedCards; track card.name) {
+                <div class="card-image-wrapper">
+                  <img 
+                    [src]="card.name | cardImageUrl" 
+                    [alt]="card.name"
+                    [pTooltip]="card.name"
+                    [tooltipPosition]="'top'"
+                    class="card-image"
+                    loading="lazy">
+                </div>
+              }
+            </div>
+          }
+        }
+      </p-accordioncontent>
+    </p-accordionpanel>
+  </p-accordion>
+</div>
+
+<!-- Card Preview Overlay -->
+@if (hoveredCard()) {
+  <div 
+    class="card-preview-overlay"
+    [style.left.px]="mouseX()"
+    [style.top.px]="mouseY()">
+    <img [src]="hoveredCard()! | cardImageUrl" [alt]="hoveredCard()" />
+  </div>
+}

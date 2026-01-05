@@ -1,0 +1,77 @@
+<div class="comparison-create-container">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h2>Create Deck Comparison</h2>
+      </div>
+    </ng-template>
+
+    <div class="content">
+      @if (isLoadingDecklists()) {
+        <div class="loading">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <p>Loading decklists...</p>
+        </div>
+      } @else {
+        <div class="form-container">
+          <p class="description">
+            Compare two decklists to determine which performs better at casting Etali by turn 2.
+            The comparison will focus on hands containing cards unique to each deck.
+          </p>
+
+          @if (errorMessage()) {
+            <p-message severity="error" [text]="errorMessage()"></p-message>
+          }
+
+          <div class="form-field">
+            <label for="deck1">First Deck</label>
+            <p-select
+              inputId="deck1"
+              [options]="decklists()"
+              [(ngModel)]="selectedDeck1"
+              optionLabel="name"
+              placeholder="Select first deck"
+              [style]="{'width': '100%'}"
+              [disabled]="isLoading()">
+            </p-select>
+          </div>
+
+          <div class="versus">
+            <span>VS</span>
+          </div>
+
+          <div class="form-field">
+            <label for="deck2">Second Deck</label>
+            <p-select
+              inputId="deck2"
+              [options]="decklists()"
+              [(ngModel)]="selectedDeck2"
+              optionLabel="name"
+              placeholder="Select second deck"
+              [style]="{'width': '100%'}"
+              [disabled]="isLoading()">
+            </p-select>
+          </div>
+
+          <div class="button-group">
+            <p-button
+              label="Create Comparison"
+              icon="pi pi-check"
+              [disabled]="!canCreate()"
+              [loading]="isLoading()"
+              (onClick)="createComparison()">
+            </p-button>
+            <p-button
+              label="Cancel"
+              icon="pi pi-times"
+              severity="secondary"
+              [outlined]="true"
+              [disabled]="isLoading()"
+              (onClick)="cancel()">
+            </p-button>
+          </div>
+        </div>
+      }
+    </div>
+  </p-card>
+</div>
