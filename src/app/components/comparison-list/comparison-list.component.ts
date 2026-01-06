@@ -65,7 +65,7 @@ export class ComparisonListComponent implements OnInit {
   }
 
   goBackToDecklists(): void {
-    this.location.back();
+    this.router.navigate(['/decklists']);
   }
 
   hasData(comparison: DeckComparison): boolean {

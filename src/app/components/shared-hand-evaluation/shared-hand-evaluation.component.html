@@ -98,20 +98,37 @@
             </p-inputNumber>
           </div>
 
+          <div class="inline-group">
+            <label for="gambleCardsDrawn">Cards Drawn</label>
+            <p-inputNumber 
+              inputId="gambleCardsDrawn"
+              [ngModel]="gambleCardsDrawn()"
+              (ngModelChange)="gambleCardsDrawn.set($event)"
+              [min]="0"
+              [max]="2"
+              [disabled]="isLoading()"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              styleClass="compact-number-input">
+            </p-inputNumber>
+          </div>
+
           <div class="gamble-result">
             @if (gamblePasses()) {
               <p-message 
                 severity="success"
                 [text]="'Minimum hand size: ' + minHandSize"
                 styleClass="gamble-message"
-                [pTooltip]="'Calculation: 7 - (' + handLength + ' current cards - ' + minCards + ' min cards for pass) = ' + minHandSize + '. Gamble odds: ' + (currentOdds | percentage:2) + ' ≥ ' + (metadata().lowestGambleOdds | percentage:2) + ' required.'"
+                [pTooltip]="'Calculation: 7 - (' + handLength + ' current cards + ' + gambleCardsDrawn() + ' drawn - ' + minCards + ' min cards for pass) = ' + minHandSize + '. Gamble odds: ' + (currentOdds | percentage:2) + ' ≥ ' + (metadata().lowestGambleOdds | percentage:2) + ' required.'"
                 tooltipPosition="top"></p-message>
             } @else {
               <p-message 
                 severity="error"
                 text="Gamble failed"
                 styleClass="gamble-message"
-                [pTooltip]="'Current odds ' + (currentOdds | percentage:2) + ' < ' + (metadata().lowestGambleOdds | percentage:2) + ' required. With ' + cardsNeeded() + ' cards needed and ' + handLength + ' in hand, you need at most ' + minCards + ' cards in hand to pass.'"
+                [pTooltip]="'Current odds ' + (currentOdds | percentage:2) + ' < ' + (metadata().lowestGambleOdds | percentage:2) + ' required. With ' + cardsNeeded() + ' cards needed and ' + (handLength + gambleCardsDrawn()) + ' cards total (' + handLength + ' in hand + ' + gambleCardsDrawn() + ' drawn), you need at most ' + minCards + ' cards total to pass.'"
                 tooltipPosition="top"></p-message>
             }
           </div>

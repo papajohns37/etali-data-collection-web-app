@@ -91,6 +91,7 @@ export class SharedHandEvaluationComponent {
   canCastEtali = signal<boolean>(false);
   minimumCardsToCastEtali = signal<number>(8);
   cardsNeeded = signal<number>(1);
+  gambleCardsDrawn = signal<number>(0);
   
   // Library search modal state
   showLibraryModal = signal(false);
@@ -148,7 +149,7 @@ export class SharedHandEvaluationComponent {
 
   // Calculate current gamble odds
   currentGambleOdds = computed(() => {
-    const cardsInHand = this.currentHand().length;
+    const cardsInHand = this.currentHand().length + this.gambleCardsDrawn();
     if (cardsInHand === 0) return 0;
     return (cardsInHand - this.cardsNeeded()) / cardsInHand;
   });
@@ -167,7 +168,7 @@ export class SharedHandEvaluationComponent {
 
   // Calculate minimum hand size that makes gamble pass
   minHandSizeForPass = computed(() => {
-    return 7 - (this.currentHand().length - this.minCardsForGamblePass());
+    return 7 - (this.currentHand().length + this.gambleCardsDrawn() - this.minCardsForGamblePass());
   });
 
   // Library cards (cards not in hand or battlefield)

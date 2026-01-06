@@ -1,0 +1,47 @@
+# Page snapshot
+
+```yaml
+- main [ref=e4]:
+  - generic [ref=e5]:
+    - heading "Select a Decklist" [level=1] [ref=e7]
+    - generic [ref=e8]:
+      - button " Deck Comparisons" [active] [ref=e10] [cursor=pointer]:
+        - generic [ref=e11]: 
+        - generic [ref=e12]: Deck Comparisons
+      - button " Add New Decklist" [ref=e14] [cursor=pointer]:
+        - generic [ref=e15]: 
+        - generic [ref=e16]: Add New Decklist
+  - generic [ref=e17]:
+    - generic [ref=e19]:
+      - generic [ref=e20]: Deck One
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: 
+          - generic [ref=e24]: 99 cards
+        - generic [ref=e25]:
+          - button " View Decklist" [ref=e27] [cursor=pointer]:
+            - generic [ref=e28]: 
+            - generic [ref=e29]: View Decklist
+          - button " Test Hands" [ref=e31] [cursor=pointer]:
+            - generic [ref=e32]: 
+            - generic [ref=e33]: Test Hands
+          - button " Statistics" [ref=e35] [cursor=pointer]:
+            - generic [ref=e36]: 
+            - generic [ref=e37]: Statistics
+    - generic [ref=e39]:
+      - generic [ref=e40]: Deck Two
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]: 
+          - generic [ref=e44]: 99 cards
+        - generic [ref=e45]:
+          - button " View Decklist" [ref=e47] [cursor=pointer]:
+            - generic [ref=e48]: 
+            - generic [ref=e49]: View Decklist
+          - button " Test Hands" [ref=e51] [cursor=pointer]:
+            - generic [ref=e52]: 
+            - generic [ref=e53]: Test Hands
+          - button " Statistics" [ref=e55] [cursor=pointer]:
+            - generic [ref=e56]: 
+            - generic [ref=e57]: Statistics
+```

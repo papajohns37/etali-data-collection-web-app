@@ -138,10 +138,10 @@ describe('ComparisonListComponent', () => {
   });
 
   describe('goBackToDecklists', () => {
-    it('should use Location.back() to navigate back', () => {
+    it('should navigate to decklists page', () => {
       component.goBackToDecklists();
 
-      expect(mockLocation.back).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/decklists']);
     });
   });
 

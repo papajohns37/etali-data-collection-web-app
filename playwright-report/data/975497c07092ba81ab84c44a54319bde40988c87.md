@@ -1,0 +1,226 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e5]:
+  - generic [ref=e7]:
+    - heading "Deck One vs Deck Two" [level=2] [ref=e8]
+    - button " Back" [ref=e11] [cursor=pointer]:
+      - generic [ref=e12]: 
+      - generic [ref=e13]: Back
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - heading "Deck One" [level=3] [ref=e19]
+        - button " View Deck" [ref=e21] [cursor=pointer]:
+          - generic [ref=e22]: 
+          - generic [ref=e23]: View Deck
+      - generic [ref=e24]: VS
+      - generic [ref=e25]:
+        - heading "Deck Two" [level=3] [ref=e26]
+        - button " View Deck" [ref=e28] [cursor=pointer]:
+          - generic [ref=e29]: 
+          - generic [ref=e30]: View Deck
+    - generic [ref=e31]:
+      - button " Evaluate Hands" [ref=e33] [cursor=pointer]:
+        - generic [ref=e34]: 
+        - generic [ref=e35]: Evaluate Hands
+      - button " View Statistics" [active] [ref=e37] [cursor=pointer]:
+        - generic [ref=e38]: 
+        - generic [ref=e39]: View Statistics
+    - generic [ref=e41]:
+      - generic [ref=e42]:
+        - heading "Card Differences" [level=3] [ref=e43]
+        - button " Show Images" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: 
+          - generic [ref=e47]: Show Images
+      - generic [ref=e48]:
+        - generic [ref=e49]:
+          - button "Only in Deck One 12" [expanded] [ref=e50] [cursor=pointer]:
+            - generic [ref=e51]:
+              - generic [ref=e52]: Only in Deck One
+              - generic "12" [ref=e53]:
+                - generic [ref=e54]: "12"
+            - img [ref=e55]
+          - region "Only in Deck One 12" [ref=e57]:
+            - generic [ref=e61]:
+              - generic [ref=e62]:
+                - heading "Lands (2)" [level=4] [ref=e63]
+                - list [ref=e64]:
+                  - listitem [ref=e65] [cursor=pointer]: Commercial District
+                  - listitem [ref=e66] [cursor=pointer]: Forest
+              - generic [ref=e67]:
+                - heading "Creatures (2)" [level=4] [ref=e68]
+                - list [ref=e69]:
+                  - listitem [ref=e70] [cursor=pointer]: Reckless Barbarian
+                  - listitem [ref=e71] [cursor=pointer]: Wild Cantor
+              - generic [ref=e72]:
+                - heading "Artifacts (4)" [level=4] [ref=e73]
+                - list [ref=e74]:
+                  - listitem [ref=e75] [cursor=pointer]: Arcane Signet
+                  - listitem [ref=e76] [cursor=pointer]: Fellwar Stone
+                  - listitem [ref=e77] [cursor=pointer]: Mox Opal
+                  - listitem [ref=e78] [cursor=pointer]: Talisman of Impulse
+              - generic [ref=e79]:
+                - heading "Enchantments (1)" [level=4] [ref=e80]
+                - list [ref=e81]:
+                  - listitem [ref=e82] [cursor=pointer]: Carpet of Flowers
+              - generic [ref=e83]:
+                - heading "Instants (2)" [level=4] [ref=e84]
+                - list [ref=e85]:
+                  - listitem [ref=e86] [cursor=pointer]: Lightning Bolt
+                  - listitem [ref=e87] [cursor=pointer]: Redirect Lightning
+              - generic [ref=e88]:
+                - heading "Sorceries (1)" [level=4] [ref=e89]
+                - list [ref=e90]:
+                  - listitem [ref=e91] [cursor=pointer]: Glimpse the Impossible
+        - generic [ref=e92]:
+          - button "Only in Deck Two 12" [expanded] [ref=e93] [cursor=pointer]:
+            - generic [ref=e94]:
+              - generic [ref=e95]: Only in Deck Two
+              - generic "12" [ref=e96]:
+                - generic [ref=e97]: "12"
+            - img [ref=e98]
+          - region "Only in Deck Two 12" [ref=e100]:
+            - generic [ref=e104]:
+              - generic [ref=e105]:
+                - heading "Lands (8)" [level=4] [ref=e106]
+                - list [ref=e107]:
+                  - listitem [ref=e108] [cursor=pointer]: Cragcrown Pathway // Timbercrown Pathway
+                  - listitem [ref=e109] [cursor=pointer]: Dwarven Ruins
+                  - listitem [ref=e110] [cursor=pointer]: Forbidden Orchard
+                  - listitem [ref=e111] [cursor=pointer]: Multiversal Passage
+                  - listitem [ref=e112] [cursor=pointer]: Prismatic Vista
+                  - listitem [ref=e113] [cursor=pointer]: Sandstone Needle
+                  - listitem [ref=e114] [cursor=pointer]: Snow-Covered Forest
+                  - listitem [ref=e115] [cursor=pointer]: Snow-Covered Mountain
+              - generic [ref=e116]:
+                - heading "Creatures (2)" [level=4] [ref=e117]
+                - list [ref=e118]:
+                  - listitem [ref=e119] [cursor=pointer]: Emrakul, the Promised End
+                  - listitem [ref=e120] [cursor=pointer]: Evendo Brushrazer
+              - generic [ref=e121]:
+                - heading "Instants (1)" [level=4] [ref=e122]
+                - list [ref=e123]:
+                  - listitem [ref=e124] [cursor=pointer]: Pyrokinesis
+              - generic [ref=e125]:
+                - heading "Sorceries (1)" [level=4] [ref=e126]
+                - list [ref=e127]:
+                  - listitem [ref=e128] [cursor=pointer]: Pick Your Poison
+        - generic [ref=e129]:
+          - button "Shared Cards 87" [expanded] [ref=e130] [cursor=pointer]:
+            - generic [ref=e131]:
+              - generic [ref=e132]: Shared Cards
+              - generic "87" [ref=e133]:
+                - generic [ref=e134]: "87"
+            - img [ref=e135]
+          - region "Shared Cards 87" [ref=e137]:
+            - generic [ref=e141]:
+              - generic [ref=e142]:
+                - heading "Lands (24)" [level=4] [ref=e143]
+                - list [ref=e144]:
+                  - listitem [ref=e145] [cursor=pointer]: Ancient Tomb
+                  - listitem [ref=e146] [cursor=pointer]: Arid Mesa
+                  - listitem [ref=e147] [cursor=pointer]: Bloodstained Mire
+                  - listitem [ref=e148] [cursor=pointer]: Boseiju, Who Endures
+                  - listitem [ref=e149] [cursor=pointer]: City of Brass
+                  - listitem [ref=e150] [cursor=pointer]: City of Traitors
+                  - listitem [ref=e151] [cursor=pointer]: Command Tower
+                  - listitem [ref=e152] [cursor=pointer]: Copperline Gorge
+                  - listitem [ref=e153] [cursor=pointer]: Crystal Vein
+                  - listitem [ref=e154] [cursor=pointer]: Gemstone Caverns
+                  - listitem [ref=e155] [cursor=pointer]: Grove of the Burnwillows
+                  - listitem [ref=e156] [cursor=pointer]: Karplusan Forest
+                  - listitem [ref=e157] [cursor=pointer]: Mana Confluence
+                  - listitem [ref=e158] [cursor=pointer]: Misty Rainforest
+                  - listitem [ref=e159] [cursor=pointer]: Mountain
+                  - listitem [ref=e160] [cursor=pointer]: Scalding Tarn
+                  - listitem [ref=e161] [cursor=pointer]: Spire Garden
+                  - listitem [ref=e162] [cursor=pointer]: Starting Town
+                  - listitem [ref=e163] [cursor=pointer]: Stomping Ground
+                  - listitem [ref=e164] [cursor=pointer]: Taiga
+                  - listitem [ref=e165] [cursor=pointer]: Thornspire Verge
+                  - listitem [ref=e166] [cursor=pointer]: Verdant Catacombs
+                  - listitem [ref=e167] [cursor=pointer]: Windswept Heath
+                  - listitem [ref=e168] [cursor=pointer]: Wooded Foothills
+              - generic [ref=e169]:
+                - heading "Creatures (18)" [level=4] [ref=e170]
+                - list [ref=e171]:
+                  - listitem [ref=e172] [cursor=pointer]: _____ Goblin
+                  - listitem [ref=e173] [cursor=pointer]: Birds of Paradise
+                  - listitem [ref=e174] [cursor=pointer]: Birgi, God of Storytelling // Harnfel, Horn of Bounty
+                  - listitem [ref=e175] [cursor=pointer]: Dualcaster Mage
+                  - listitem [ref=e176] [cursor=pointer]: Elvish Spirit Guide
+                  - listitem [ref=e177] [cursor=pointer]: Eternal Witness
+                  - listitem [ref=e178] [cursor=pointer]: Fury
+                  - listitem [ref=e179] [cursor=pointer]: Hellkite Courser
+                  - listitem [ref=e180] [cursor=pointer]: Hunting Velociraptor
+                  - listitem [ref=e181] [cursor=pointer]: Imperial Recruiter
+                  - listitem [ref=e182] [cursor=pointer]: Jaxis, the Troublemaker
+                  - listitem [ref=e183] [cursor=pointer]: Orcish Lumberjack
+                  - listitem [ref=e184] [cursor=pointer]: Ragavan, Nimble Pilferer
+                  - listitem [ref=e185] [cursor=pointer]: Rionya, Fire Dancer
+                  - listitem [ref=e186] [cursor=pointer]: Simian Spirit Guide
+                  - listitem [ref=e187] [cursor=pointer]: Squee, the Immortal
+                  - listitem [ref=e188] [cursor=pointer]: Tinder Wall
+                  - listitem [ref=e189] [cursor=pointer]: Treasonous Ogre
+              - generic [ref=e190]:
+                - heading "Planeswalkers (1)" [level=4] [ref=e191]
+                - list [ref=e192]:
+                  - listitem [ref=e193] [cursor=pointer]: Chandra, Flameshaper
+              - generic [ref=e194]:
+                - heading "Artifacts (9)" [level=4] [ref=e195]
+                - list [ref=e196]:
+                  - listitem [ref=e197] [cursor=pointer]: Chrome Mox
+                  - listitem [ref=e198] [cursor=pointer]: Cursed Mirror
+                  - listitem [ref=e199] [cursor=pointer]: Great Furnace
+                  - listitem [ref=e200] [cursor=pointer]: Grim Monolith
+                  - listitem [ref=e201] [cursor=pointer]: Lion's Eye Diamond
+                  - listitem [ref=e202] [cursor=pointer]: Lotus Petal
+                  - listitem [ref=e203] [cursor=pointer]: Mana Vault
+                  - listitem [ref=e204] [cursor=pointer]: Mox Diamond
+                  - listitem [ref=e205] [cursor=pointer]: Sol Ring
+              - generic [ref=e206]:
+                - heading "Enchantments (2)" [level=4] [ref=e207]
+                - list [ref=e208]:
+                  - listitem [ref=e209] [cursor=pointer]: Food Chain
+                  - listitem [ref=e210] [cursor=pointer]: Underworld Breach
+              - generic [ref=e211]:
+                - heading "Instants (18)" [level=4] [ref=e212]
+                - list [ref=e213]:
+                  - listitem [ref=e214] [cursor=pointer]: Autumn's Veil
+                  - listitem [ref=e215] [cursor=pointer]: Crop Rotation
+                  - listitem [ref=e216] [cursor=pointer]: Deflecting Swat
+                  - listitem [ref=e217] [cursor=pointer]: Desperate Ritual
+                  - listitem [ref=e218] [cursor=pointer]: Eldrazi Confluence
+                  - listitem [ref=e219] [cursor=pointer]: Emerald Charm
+                  - listitem [ref=e220] [cursor=pointer]: Flare of Duplication
+                  - listitem [ref=e221] [cursor=pointer]: Guttural Response
+                  - listitem [ref=e222] [cursor=pointer]: Natural State
+                  - listitem [ref=e223] [cursor=pointer]: Nature's Claim
+                  - listitem [ref=e224] [cursor=pointer]: Noxious Revival
+                  - listitem [ref=e225] [cursor=pointer]: Open the Omenpaths
+                  - listitem [ref=e226] [cursor=pointer]: Pyretic Ritual
+                  - listitem [ref=e227] [cursor=pointer]: Pyroblast
+                  - listitem [ref=e228] [cursor=pointer]: Red Elemental Blast
+                  - listitem [ref=e229] [cursor=pointer]: Seething Song
+                  - listitem [ref=e230] [cursor=pointer]: Veil of Summer
+                  - listitem [ref=e231] [cursor=pointer]: Worldly Tutor
+              - generic [ref=e232]:
+                - heading "Sorceries (15)" [level=4] [ref=e233]
+                - list [ref=e234]:
+                  - listitem [ref=e235] [cursor=pointer]: Devastating Onslaught
+                  - listitem [ref=e236] [cursor=pointer]: Eldritch Evolution
+                  - listitem [ref=e237] [cursor=pointer]: Electroduplicate
+                  - listitem [ref=e238] [cursor=pointer]: Gamble
+                  - listitem [ref=e239] [cursor=pointer]: Geosurge
+                  - listitem [ref=e240] [cursor=pointer]: Heat Shimmer
+                  - listitem [ref=e241] [cursor=pointer]: Infernal Plunge
+                  - listitem [ref=e242] [cursor=pointer]: Jeska's Will
+                  - listitem [ref=e243] [cursor=pointer]: Metamorphosis
+                  - listitem [ref=e244] [cursor=pointer]: Molten Duplication
+                  - listitem [ref=e245] [cursor=pointer]: Rite of Flame
+                  - listitem [ref=e246] [cursor=pointer]: Strike It Rich
+                  - listitem [ref=e247] [cursor=pointer]: Sylvan Tutor
+                  - listitem [ref=e248] [cursor=pointer]: Twinflame
+                  - listitem [ref=e249] [cursor=pointer]: Wheel of Fortune
+```

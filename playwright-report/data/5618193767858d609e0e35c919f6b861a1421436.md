@@ -1,0 +1,47 @@
+# Page snapshot
+
+```yaml
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - button " Back" [ref=e7] [cursor=pointer]:
+        - generic [ref=e8]: 
+        - generic [ref=e9]: Back
+      - heading "Deck One" [level=1] [ref=e10]
+    - button " View Statistics" [ref=e13] [cursor=pointer]:
+      - generic [ref=e14]: 
+      - generic [ref=e15]: View Statistics
+  - generic [ref=e18]:
+    - generic [ref=e20]:
+      - generic [ref=e21]: Hand Metadata
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]: "Seat Order:"
+          - generic [ref=e25]: "2"
+        - generic [ref=e26]:
+          - generic [ref=e27]: "Stickers:"
+          - generic [ref=e28]: 3, 4, 4
+    - button " Search Library" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: 
+      - generic [ref=e32]: Search Library
+    - button " Reset Hand" [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: 
+      - generic [ref=e36]: Reset Hand
+    - generic [ref=e38]:
+      - generic [ref=e39]: Evaluation
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - checkbox "This hand can cast Etali" [ref=e43] [cursor=pointer]
+          - generic [ref=e45] [cursor=pointer]: This hand can cast Etali
+        - button " Submit" [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: 
+          - generic [ref=e50]: Submit
+  - generic [ref=e51]:
+    - img "Spire Garden" [ref=e53]
+    - img "Fury" [ref=e55]
+    - img "Pyretic Ritual" [ref=e57]
+    - img "Geosurge" [ref=e59]
+    - img "Mana Vault" [ref=e61]
+    - img "Dualcaster Mage" [ref=e63]
+    - img "Food Chain" [ref=e65]
+```
