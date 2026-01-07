@@ -1,11 +1,21 @@
 import { Routes } from '@angular/router';
 import { decklistGuard } from './guards/decklist.guard';
+import { authGuard, adminGuard, contributorGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: '/decklists',
     pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'admin/users',
+    loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent),
+    canActivate: [adminGuard] // Admin only
   },
   {
     path: 'decklists',
@@ -26,7 +36,7 @@ export const routes: Routes = [
   {
     path: 'hand-collection',
     loadComponent: () => import('./components/hand-collection/hand-collection.component').then(m => m.HandCollectionComponent),
-    canActivate: [decklistGuard]
+    canActivate: [decklistGuard, authGuard] // Requires both decklist selection and authentication
   },
   {
     path: 'comparisons',
@@ -34,7 +44,8 @@ export const routes: Routes = [
   },
   {
     path: 'comparisons/create',
-    loadComponent: () => import('./components/comparison-create/comparison-create.component').then(m => m.ComparisonCreateComponent)
+    loadComponent: () => import('./components/comparison-create/comparison-create.component').then(m => m.ComparisonCreateComponent),
+    canActivate: [authGuard] // Requires authentication to create comparisons
   },
   {
     path: 'comparisons/:id',
@@ -42,7 +53,8 @@ export const routes: Routes = [
   },
   {
     path: 'comparisons/:id/collect',
-    loadComponent: () => import('./components/comparison-hand-collection/comparison-hand-collection.component').then(m => m.ComparisonHandCollectionComponent)
+    loadComponent: () => import('./components/comparison-hand-collection/comparison-hand-collection.component').then(m => m.ComparisonHandCollectionComponent),
+    canActivate: [authGuard] // Requires authentication to collect hands
   },
   {
     path: 'comparisons/:id/statistics',

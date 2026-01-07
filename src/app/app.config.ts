@@ -10,6 +10,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { routes } from './app.routes';
 import { GlobalErrorHandler } from './core/error-handler';
 import { httpErrorInterceptor } from './core/http-error.interceptor';
+import { authInterceptor } from './core/auth.interceptor';
 import { API_BASE_URL } from './core/tokens';
 import { environment } from '../environments/environment';
 
@@ -30,6 +31,6 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
-    provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor]))
+    provideHttpClient(withFetch(), withInterceptors([httpErrorInterceptor, authInterceptor]))
   ]
 };

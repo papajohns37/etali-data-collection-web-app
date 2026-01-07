@@ -1,2 +1,21 @@
-<p-toast position="top-right" />
-<router-outlet />
+<header class="app-header">
+  <div class="header-content">
+    <div class="brand">
+      <a routerLink="/" class="brand-link">
+        <h1>MTG Data Collection</h1>
+      </a>
+    </div>
+    <nav class="main-nav">
+      <a routerLink="/decklists" routerLinkActive="active">Decklists</a>
+      <a routerLink="/comparisons" routerLinkActive="active">Comparisons</a>
+    </nav>
+    <div class="user-section">
+      <app-user-menu />
+    </div>
+  </div>
+</header>
+
+<main class="app-main">
+  <p-toast position="top-right" />
+  <router-outlet />
+</main>

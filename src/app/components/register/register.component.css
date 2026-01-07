@@ -1,0 +1,116 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 2rem;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 550px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+}
+
+.card-header h2 {
+  margin: 0 0 0.5rem;
+  color: var(--text-color);
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-color-secondary);
+  font-size: 0.95rem;
+}
+
+.form-field {
+  margin-bottom: 1.5rem;
+}
+
+.form-field label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.checkbox-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  font-weight: normal;
+}
+
+.error-text {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--red-500);
+  font-size: 0.875rem;
+}
+
+.password-requirements {
+  padding: 1rem;
+  background: var(--surface-50);
+  border-left: 3px solid var(--blue-500);
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.requirements-title {
+  margin: 0 0 0.5rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.password-requirements ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.password-requirements li {
+  margin-bottom: 0.25rem;
+}
+
+.form-actions {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .register-container {
+    padding: 1rem;
+  }
+
+  .card-header {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+
+  .card-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

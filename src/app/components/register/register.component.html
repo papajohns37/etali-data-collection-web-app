@@ -1,0 +1,116 @@
+<div class="register-container">
+  <p-card class="register-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h2>Register New User</h2>
+        <p class="subtitle">Create a new user account (Admin only)</p>
+      </div>
+    </ng-template>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" styleClass="mb-4 w-full"></p-message>
+      }
+
+      <div class="form-field">
+        <label for="email" class="block mb-2">Email Address</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="user@example.com"
+          class="w-full"
+          [class.ng-invalid]="hasError('email', 'required') || hasError('email', 'email')"
+        />
+        @if (hasError('email', 'required')) {
+          <small class="error-text">Email is required</small>
+        }
+        @if (hasError('email', 'email')) {
+          <small class="error-text">Please enter a valid email address</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password" class="block mb-2">Password</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          placeholder="Enter password"
+          [toggleMask]="true"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          [feedback]="true"
+        ></p-password>
+        @if (hasError('password', 'required')) {
+          <small class="error-text">Password is required</small>
+        }
+        @if (hasError('password', 'minlength')) {
+          <small class="error-text">Password must be at least 6 characters</small>
+        }
+        @if (hasError('password', 'passwordRequirements')) {
+          <small class="error-text">Password does not meet requirements</small>
+        }
+      </div>
+
+      <div class="password-requirements">
+        <p class="requirements-title"><strong>Password Requirements:</strong></p>
+        <ul>
+          @for (requirement of passwordRequirements; track requirement) {
+            <li>{{ requirement }}</li>
+          }
+        </ul>
+      </div>
+
+      <div class="form-field">
+        <label for="confirmPassword" class="block mb-2">Confirm Password</label>
+        <p-password
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          placeholder="Confirm password"
+          [toggleMask]="true"
+          [feedback]="false"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+        ></p-password>
+        @if (hasError('confirmPassword', 'required')) {
+          <small class="error-text">Please confirm your password</small>
+        }
+        @if (hasFormError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+          <small class="error-text">Passwords do not match</small>
+        }
+      </div>
+
+      <div class="form-field checkbox-field">
+        <p-checkbox
+          formControlName="isAdmin"
+          inputId="isAdmin"
+          [binary]="true"
+        ></p-checkbox>
+        <label for="isAdmin" class="checkbox-label">
+          Grant Administrator privileges
+          <span class="hint">(Admin users can register new users and manage all data)</span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <p-button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="cancel()"
+          styleClass="flex-1"
+        ></p-button>
+        <p-button
+          type="submit"
+          label="Register User"
+          icon="pi pi-user-plus"
+          [loading]="isLoading()"
+          [disabled]="isLoading()"
+          styleClass="flex-1"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+</div>

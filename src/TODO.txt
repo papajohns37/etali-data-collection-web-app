@@ -19,14 +19,13 @@ V2 Release
 Issues:
 None reported
 
-List comparison tool:
-Determine cards that were cut
-Create large sample of hands and only send the user ones that are included
-Setup storage system for list comparisons that does not include them in overall list reporting (separate table)
-Use existing and new main decklist hands to update comparison tool? (We could include the hands from the main datasets when comparing too, should be done in the stats part)
+Authentication:
+Add blame feature to statistics
+Do a security audit for the app
 
 V1 Release:
-Securely store moxfield credentials
+Add paypal donate button and decide on reasonable monetization or purely donations
+Securely store moxfield credentials and admin creds
 Figure out best way to host
 
 Data editing tool:

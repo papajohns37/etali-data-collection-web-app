@@ -1,0 +1,36 @@
+<div class="user-menu-container">
+  @if (authService.isAuthenticated()) {
+    <!-- Authenticated user menu -->
+    <div class="user-info">
+      <span class="user-email">{{ authService.getCurrentUser()?.email }}</span>
+      <span [class]="getRoleBadgeClass()">{{ getUserRoleLabel() }}</span>
+    </div>
+    
+    @if (authService.isAdmin()) {
+      <p-button
+        icon="pi pi-users"
+        label="Manage Users"
+        routerLink="/admin/users"
+        [text]="true"
+        severity="secondary"
+      ></p-button>
+    }
+    
+    <p-button
+      icon="pi pi-sign-out"
+      label="Logout"
+      (onClick)="logout()"
+      [text]="true"
+      severity="secondary"
+    ></p-button>
+  } @else {
+    <!-- Login button for non-authenticated users -->
+    <p-button
+      icon="pi pi-sign-in"
+      label="Login"
+      routerLink="/login"
+      [text]="true"
+      severity="secondary"
+    ></p-button>
+  }
+</div>

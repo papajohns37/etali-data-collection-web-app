@@ -6,4 +6,6 @@ export const environment = {
   apiUrl: 'https://localhost:7194',
   enableSSLBypass: true,
   enableAnalytics: false,
+  tokenKey: 'mtg_auth_token',
+  userKey: 'mtg_auth_user',
 };

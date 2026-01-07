@@ -1,0 +1,71 @@
+<div class="login-container">
+  <p-card class="login-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h2>Login to MTG Data Collection</h2>
+        <p class="subtitle">Enter your credentials to access contributor features</p>
+      </div>
+    </ng-template>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage()!" styleClass="mb-4 w-full"></p-message>
+      }
+
+      <div class="form-field">
+        <label for="email" class="block mb-2">Email</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="user@example.com"
+          class="w-full"
+          [class.ng-invalid]="hasError('email', 'required') || hasError('email', 'email')"
+        />
+        @if (hasError('email', 'required')) {
+          <small class="error-text">Email is required</small>
+        }
+        @if (hasError('email', 'email')) {
+          <small class="error-text">Please enter a valid email address</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password" class="block mb-2">Password</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          [toggleMask]="true"
+          [feedback]="false"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+        ></p-password>
+        @if (hasError('password', 'required')) {
+          <small class="error-text">Password is required</small>
+        }
+      </div>
+
+      <div class="form-actions">
+        <p-button
+          type="submit"
+          label="Login"
+          icon="pi pi-sign-in"
+          [loading]="isLoading()"
+          [disabled]="isLoading()"
+          styleClass="w-full"
+        ></p-button>
+      </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+      <div class="card-footer">
+        <p class="info-text">
+          <i class="pi pi-info-circle"></i>
+          You can still browse decklists and view statistics without logging in.
+        </p>
+      </div>
+    </ng-template>
+  </p-card>
+</div>
