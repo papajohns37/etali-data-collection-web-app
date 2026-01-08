@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 // PrimeNG imports
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { TagModule } from 'primeng/tag';
 import { MenuItem } from 'primeng/api';
 
 /**
@@ -19,7 +20,8 @@ import { MenuItem } from 'primeng/api';
     CommonModule,
     RouterLink,
     ButtonModule,
-    MenuModule
+    MenuModule,
+    TagModule
   ],
   templateUrl: './user-menu.component.html',
   styleUrls: ['./user-menu.component.css']
@@ -42,7 +44,7 @@ export class UserMenuComponent {
     
     this.menuItems = [
       {
-        label: user?.email || 'User',
+        label: user?.username || 'User',
         icon: 'pi pi-user',
         disabled: true,
         styleClass: 'user-email-item'

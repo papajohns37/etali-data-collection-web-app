@@ -1,7 +1,7 @@
 <div class="comparison-statistics-container">
   @if (isLoading()) {
     <div class="loading">
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <p-progressSpinner styleClass="spinner" />
       <p>Loading statistics...</p>
     </div>
   }
@@ -109,8 +109,6 @@
             <ng-template pTemplate="header">
               <tr>
                 <th>Hand Size</th>
-                <th>{{ statistics()!.deck1Name }}</th>
-                <th>{{ statistics()!.deck2Name }}</th>
                 <th>Difference</th>
                 <th>90% CI</th>
                 <th>Significance</th>
@@ -119,14 +117,6 @@
             <ng-template pTemplate="body" let-stat>
               <tr>
                 <td><strong>{{ stat.handSize }}</strong></td>
-                <td>
-                  {{ stat.deck1Probability | percentage:1 }}
-                  <span class="hands-count">({{ stat.deck1SuccessfulHands }} hands)</span>
-                </td>
-                <td>
-                  {{ stat.deck2Probability | percentage:1 }}
-                  <span class="hands-count">({{ stat.deck2SuccessfulHands }} hands)</span>
-                </td>
                 <td [class]="getSignificanceClass(stat.confidenceIntervalLower, stat.confidenceIntervalUpper)">
                   <strong>{{ getDifferenceDisplay(stat.probabilityDifference) }}</strong>
                 </td>

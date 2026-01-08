@@ -141,6 +141,7 @@
           [disabled]="handId() === 0" 
           label="Search Library"
           icon="pi pi-search"
+          severity="success"
           styleClass="w-full mb-2"></p-button>
       }
       
@@ -197,6 +198,7 @@
             [disabled]="isLoading() || handId() === 0"
             [label]="isLoading() ? 'Submitting...' : submitButtonLabel()"
             icon="pi pi-check"
+            severity="success"
             styleClass="w-full"
             [loading]="isLoading()"></p-button>
           

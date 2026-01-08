@@ -2,8 +2,10 @@
   @if (isLoading()) {
     <div class="loading-container">
       <p-card>
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <p>Loading decklist...</p>
+        <div class="loading-content">
+          <p-progressSpinner styleClass="spinner" />
+          <p>Loading decklist...</p>
+        </div>
       </p-card>
     </div>
   } @else if (errorMessage()) {
@@ -16,16 +18,22 @@
   } @else if (decklist()) {
     <div class="decklist-content">
       <!-- Header Section -->
-      <div class="decklist-header">
-        <div class="header-top">
-          <h1>{{ decklist()!.name }}</h1>
+      <p-toolbar styleClass="decklist-toolbar">
+        <ng-template pTemplate="start">
+          <div class="toolbar-header">
+            <h1>{{ decklist()!.name }}</h1>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="end">
           <div class="header-actions">
-            <p-button 
-              label="Compare Deck"
-              icon="pi pi-clone"
-              severity="secondary"
-              (onClick)="compareDeck()">
-            </p-button>
+            @if (authService.isAuthenticated()) {
+              <p-button 
+                label="Compare Deck"
+                icon="pi pi-clone"
+                severity="secondary"
+                (onClick)="compareDeck()">
+              </p-button>
+            }
             <p-button 
               label="Back"
               icon="pi pi-arrow-left"
@@ -33,9 +41,11 @@
               (onClick)="goBack()">
             </p-button>
           </div>
-        </div>
-        
-        <div class="header-info">
+        </ng-template>
+      </p-toolbar>
+
+      <div class="header-metadata">
+        <div class="metadata-items">
           @if (decklist()!.moxfieldUrl) {
             <div class="moxfield-link">
               <i class="pi pi-external-link"></i>

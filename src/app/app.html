@@ -1,19 +1,20 @@
-<header class="app-header">
-  <div class="header-content">
+<p-toolbar styleClass="app-header">
+  <ng-template pTemplate="start">
     <div class="brand">
       <a routerLink="/" class="brand-link">
-        <h1>MTG Data Collection</h1>
+        <h1>Etali Data Collection</h1>
       </a>
     </div>
-    <nav class="main-nav">
-      <a routerLink="/decklists" routerLinkActive="active">Decklists</a>
-      <a routerLink="/comparisons" routerLinkActive="active">Comparisons</a>
-    </nav>
-    <div class="user-section">
-      <app-user-menu />
-    </div>
-  </div>
-</header>
+  </ng-template>
+  
+  <ng-template pTemplate="center">
+    <p-menubar [model]="menuItems" styleClass="main-nav" />
+  </ng-template>
+  
+  <ng-template pTemplate="end">
+    <app-user-menu />
+  </ng-template>
+</p-toolbar>
 
 <main class="app-main">
   <p-toast position="top-right" />

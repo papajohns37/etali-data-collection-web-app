@@ -1,12 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { DeckComparison, CardDifferences } from '../../models/comparison.model';
 import { CardDifferencesDisplayComponent } from '../card-differences-display/card-differences-display.component';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-comparison-view',
@@ -16,6 +18,7 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     CardModule,
     MessageModule,
+    ProgressSpinnerModule,
     CardDifferencesDisplayComponent
   ],
   templateUrl: './comparison-view.component.html',
@@ -26,6 +29,7 @@ export class ComparisonViewComponent implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private comparisonService = inject(DeckComparisonService);
+  protected authService = inject(AuthService);
 
   comparison = signal<DeckComparison | null>(null);
   cardDifferences = signal<CardDifferences | null>(null);

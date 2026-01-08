@@ -26,10 +26,6 @@ export interface DeckComparisonHand {
 
 export interface HandSizeDeltaStatistics {
   handSize: number;
-  deck1SuccessfulHands: number;
-  deck2SuccessfulHands: number;
-  deck1Probability: number;
-  deck2Probability: number;
   probabilityDifference: number;
   confidenceIntervalLower: number;
   confidenceIntervalUpper: number;

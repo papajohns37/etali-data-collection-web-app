@@ -1,29 +1,37 @@
 <div class="comparison-list-container">
-  <p-card>
-    <ng-template pTemplate="header">
-      <div class="card-header">
-        <div class="header-left">
-          <p-button 
-            label="Back to Decklists"
-            icon="pi pi-arrow-left"
-            severity="secondary"
-            [text]="true"
-            (onClick)="goBackToDecklists()">
-          </p-button>
-          <h2>Deck Comparisons</h2>
-        </div>
-        <p-button 
-          label="Create New Comparison" 
-          icon="pi pi-plus"
-          (onClick)="createComparison()">
-        </p-button>
+  <p-toolbar styleClass="page-header">
+    <ng-template pTemplate="start">
+      <div class="toolbar-title">
+        <i class="pi pi-arrows-h" style="font-size: 2rem; margin-right: 0.75rem;"></i>
+        <h1>Deck Comparisons</h1>
       </div>
     </ng-template>
+    <ng-template pTemplate="end">
+      <div class="toolbar-actions">
+        <p-button 
+          label="Back to Decklists"
+          icon="pi pi-arrow-left"
+          severity="secondary"
+          [text]="true"
+          (onClick)="goBackToDecklists()">
+        </p-button>
+        @if (authService.isAuthenticated()) {
+          <p-button 
+            label="Create New Comparison" 
+            icon="pi pi-plus"
+            severity="success"
+            (onClick)="createComparison()">
+          </p-button>
+        }
+      </div>
+    </ng-template>
+  </p-toolbar>
 
+  <p-card styleClass="content-card">
     <div class="content">
       @if (isLoading()) {
         <div class="loading">
-          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+          <p-progressSpinner styleClass="spinner" />
           <p>Loading comparisons...</p>
         </div>
       }
@@ -74,7 +82,6 @@
                       icon="pi pi-chart-bar"
                       [outlined]="true"
                       size="small"
-                      [disabled]="!hasData(comparison)"
                       (onClick)="viewStatistics(comparison)">
                     </p-button>
                   </div>

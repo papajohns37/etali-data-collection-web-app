@@ -32,6 +32,21 @@
 
 .form-field {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-field label {
+  min-width: 140px;
+  margin: 0;
+}
+
+.form-field input,
+.form-field .p-inputtext,
+.form-field .p-password,
+.form-field .p-password input {
+  flex: 1 1 auto;
 }
 
 .form-field label {
@@ -112,5 +127,10 @@
 
   .form-actions {
     flex-direction: column;
+  }
+
+  .form-field {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

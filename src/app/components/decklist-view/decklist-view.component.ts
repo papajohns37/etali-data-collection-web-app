@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { DecklistService } from '../../services/decklist.service';
 import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { Decklist } from '../../models/decklist.model';
@@ -12,6 +13,8 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 interface CardGroup {
   type: string;
@@ -27,6 +30,8 @@ interface CardGroup {
     CardModule,
     MessageModule,
     TooltipModule,
+    ToolbarModule,
+    ProgressSpinnerModule,
     CardImageUrlPipe,
     PluralizePipe
   ],
@@ -39,6 +44,7 @@ export class DecklistViewComponent implements OnInit {
   private location = inject(Location);
   private decklistService = inject(DecklistService);
   private comparisonService = inject(DeckComparisonService);
+  protected authService = inject(AuthService);
   
   decklist = signal<Decklist | null>(null);
   comparisons = signal<DeckComparison[]>([]);

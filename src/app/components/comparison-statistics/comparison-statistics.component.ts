@@ -3,12 +3,12 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { DeckComparisonStatistics, HandSizeDeltaStatistics } from '../../models/comparison.model';
-import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { MessageModule } from 'primeng/message';
 import { ChipModule } from 'primeng/chip';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-comparison-statistics',
@@ -20,7 +20,7 @@ import { ChipModule } from 'primeng/chip';
     TableModule,
     MessageModule,
     ChipModule,
-    PercentagePipe
+    ProgressSpinnerModule
   ],
   templateUrl: './comparison-statistics.component.html',
   styleUrl: './comparison-statistics.component.css'

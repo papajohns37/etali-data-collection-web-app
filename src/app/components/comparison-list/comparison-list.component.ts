@@ -1,12 +1,15 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { DeckComparison } from '../../models/comparison.model';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-comparison-list',
@@ -16,7 +19,9 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     CardModule,
     TableModule,
-    MessageModule
+    MessageModule,
+    ProgressSpinnerModule,
+    ToolbarModule
   ],
   templateUrl: './comparison-list.component.html',
   styleUrl: './comparison-list.component.css'
@@ -25,6 +30,7 @@ export class ComparisonListComponent implements OnInit {
   private router = inject(Router);
   private location = inject(Location);
   private comparisonService = inject(DeckComparisonService);
+  protected authService = inject(AuthService);
 
   comparisons = signal<DeckComparison[]>([]);
   isLoading = signal(true);
@@ -66,9 +72,5 @@ export class ComparisonListComponent implements OnInit {
 
   goBackToDecklists(): void {
     this.router.navigate(['/decklists']);
-  }
-
-  hasData(comparison: DeckComparison): boolean {
-    return comparison.deck1N > 0 || comparison.deck2N > 0;
   }
 }

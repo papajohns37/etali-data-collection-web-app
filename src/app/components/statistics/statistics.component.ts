@@ -6,7 +6,9 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToolbarModule } from 'primeng/toolbar';
 import { DecklistService } from '../../services/decklist.service';
 import { DecklistStatistics } from '../../models/statistics.model';
 import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
@@ -21,7 +23,9 @@ import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
     ButtonModule,
     MessageModule,
     ProgressBarModule,
+    ProgressSpinnerModule,
     TooltipModule,
+    ToolbarModule,
     PercentagePipe
   ],
   templateUrl: './statistics.component.html',

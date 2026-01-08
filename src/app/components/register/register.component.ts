@@ -56,7 +56,12 @@ export class RegisterComponent {
   constructor() {
     // Initialize form with validators
     this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(50),
+        Validators.pattern(/^[a-zA-Z0-9\-._]+$/)
+      ]],
       password: ['', [Validators.required, Validators.minLength(6), this.passwordValidator]],
       confirmPassword: ['', [Validators.required]],
       isAdmin: [false]
@@ -110,7 +115,7 @@ export class RegisterComponent {
     const formValue = this.registerForm.value;
 
     this.authService.register({
-      email: formValue.email,
+      username: formValue.username,
       password: formValue.password,
       confirmPassword: formValue.confirmPassword,
       isAdmin: formValue.isAdmin
@@ -120,7 +125,7 @@ export class RegisterComponent {
         this.messageService.add({
           severity: 'success',
           summary: 'User Registered',
-          detail: `User ${response.email} has been registered as ${response.role}`,
+          detail: `User ${response.username} has been registered as ${response.role}`,
           life: 5000
         });
         

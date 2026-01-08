@@ -32,6 +32,21 @@
 
 .form-field {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-field label {
+  min-width: 140px;
+  margin: 0; /* remove extra top/bottom space when inline */
+}
+
+.form-field input,
+.form-field .p-inputtext,
+.form-field .p-password,
+.form-field .p-password input {
+  flex: 1 1 auto;
 }
 
 .form-field label {
@@ -82,5 +97,10 @@
 
   .card-header h2 {
     font-size: 1.5rem;
+  }
+
+  .form-field {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

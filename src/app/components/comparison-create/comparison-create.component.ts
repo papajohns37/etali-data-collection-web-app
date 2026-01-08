@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-comparison-create',
@@ -19,7 +20,8 @@ import { MessageModule } from 'primeng/message';
     ButtonModule,
     CardModule,
     SelectModule,
-    MessageModule
+    MessageModule,
+    ProgressSpinnerModule
   ],
   templateUrl: './comparison-create.component.html',
   styleUrl: './comparison-create.component.css'

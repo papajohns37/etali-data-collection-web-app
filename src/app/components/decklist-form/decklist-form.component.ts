@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output, output } from '@angular/core';
+import { Component,  inject, output } from '@angular/core';
 import { NonNullableFormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { DecklistService } from '../../services/decklist.service';
 import { ButtonModule } from 'primeng/button';

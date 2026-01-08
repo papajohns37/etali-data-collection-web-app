@@ -3,7 +3,7 @@
   @if (loading()) {
     <p-card>
       <div class="loading-state">
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        <p-progressSpinner styleClass="spinner" />
         <p>Loading statistics...</p>
       </div>
     </p-card>
@@ -28,7 +28,7 @@
         <p>No hands have been tested for this decklist yet.</p>
         <p>Start collecting data to see statistics.</p>
         <div class="empty-actions">
-          <p-button label="Test Hands" icon="pi pi-play" (onClick)="goToHandCollection()"></p-button>
+          <p-button label="Test Hands" icon="pi pi-play" severity="success" (onClick)="goToHandCollection()"></p-button>
           <p-button label="Back to Decklists" icon="pi pi-arrow-left" severity="secondary" (onClick)="goBack()"></p-button>
         </div>
       </div>
@@ -39,31 +39,39 @@
   @else {
     <div class="statistics-content">
       <!-- Header -->
-      <div class="statistics-header">
-        <div class="header-title">
-          <h1>{{ statistics()?.decklistName }}</h1>
-          <p class="subtitle">Statistical Analysis</p>
-        </div>
-        <div class="header-actions">
-          <p-button 
-            label="Refresh" 
-            icon="pi pi-refresh" 
-            severity="secondary"
-            (onClick)="refreshStatistics()">
-          </p-button>
-          <p-button 
-            label="Test More Hands" 
-            icon="pi pi-play" 
-            (onClick)="goToHandCollection()">
-          </p-button>
-          <p-button 
-            label="Back" 
-            icon="pi pi-arrow-left" 
-            severity="secondary"
-            (onClick)="goBack()">
-          </p-button>
-        </div>
-      </div>
+      <p-toolbar styleClass="statistics-toolbar">
+        <ng-template pTemplate="start">
+          <div class="header-title">
+            <i class="pi pi-chart-bar" style="font-size: 2rem; margin-right: 0.75rem;"></i>
+            <div>
+              <h1>{{ statistics()?.decklistName }}</h1>
+              <p class="subtitle">Statistical Analysis</p>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="end">
+          <div class="header-actions">
+            <p-button 
+              label="Refresh" 
+              icon="pi pi-refresh" 
+              severity="secondary"
+              (onClick)="refreshStatistics()">
+            </p-button>
+            <p-button 
+              label="Test More Hands" 
+              icon="pi pi-play" 
+              severity="success"
+              (onClick)="goToHandCollection()">
+            </p-button>
+            <p-button 
+              label="Back" 
+              icon="pi pi-arrow-left" 
+              severity="secondary"
+              (onClick)="goBack()">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-toolbar>
 
       <!-- Sample Size Warning -->
       @if (hasLowSampleSize()) {

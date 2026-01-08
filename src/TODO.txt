@@ -8,7 +8,8 @@ Setup logit regression
 
 Sprints:
 Authentication
-Implement SQLLite database to store data
+Implement database to store data
+Data Migration
 Hosting app
 V1 Release
 Data editing tool
@@ -28,6 +29,8 @@ Add paypal donate button and decide on reasonable monetization or purely donatio
 Securely store moxfield credentials and admin creds
 Figure out best way to host
 
+Very list comparison tool stats are accurate
+
 Data editing tool:
 Create a page where I can view recently submitted hands and fix data as well as visit particular data sets and edit data for a hand
 
@@ -36,36 +39,20 @@ Add an api feature that holds onto unevaluated hands and an endpoint that pulls 
 Add ui features to mass add to the queue (100 hands from one decklist and a hundred for a comparison etc)
 Add ui feature to test hands in the queue (indicator on decklist selector page that notifies user of unprocesssed hands)
 
-Sample HTTP Requests:
-POST https://localhost:7194/hand/evaluate
-Content-Type: application/json
+UI Clean up
 
-{
-  "id": 9,
-  "cards": ["Guttural Response", "Worldly Tutor", "Devastating Onslaught", "Jaxis, the Troublemaker", "Crystal Vein", "Emerald Charm", "Strike It Rich"],
-  "seatOrder": 2,
-  "stickers": [4, 4, 6],
-  "canCastEtali": true,
-  "minimumCardsToCastEtali": 6
-}
-GET https://localhost:7194/hand
+Efficiency when submitting hands - requires caching scryfall images
+Reject decks that are identical?
 
-Response:
-{
-  "id": 10,
-  "cards": [
-    "Tinder Wall",
-    "Heat Shimmer",
-    "Crop Rotation",
-    "Desperate Ritual",
-    "Prismatic Vista",
-    "Ragavan, Nimble Pilferer",
-    "Autumn\"s Veil"
-  ],
-  "seatOrder": 1,
-  "stickers": [
-    4,
-    5,
-    3
-  ]
-}
+The decklist tab is not selected when starting the app
+Color of the x on the decklist page is not correct
+Text on the statistics page is too close to the edge of the boxes that bound them
+
+VPS and coolify - more control
+Serverless (Fly.io) - simpler
+
+Figure out how to store secrets
+Host backend on render - database is only free for 30 days, make sure to backup and start paying after that
+Host front end on whatever the cheapest service is - Render can do this
+
+Keep researching budget options for hosting, try Render since it is free for low traffic

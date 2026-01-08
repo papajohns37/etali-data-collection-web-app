@@ -1,13 +1,18 @@
 /* Container */
 .hand-collection-container {
-  height: 99vh;
-  width: 99vw;
+  /* Offset this fixed container below the sticky app header so the
+     header (which uses a high z-index) doesn't intercept clicks on
+     the top-bar controls (Back button, etc.). Adjust --header-height
+     if your header size differs. */
+  --header-height: 64px;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - var(--header-height));
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
   margin: 0;
   padding: 0;
   --card-width: min(9vw, 15vh);

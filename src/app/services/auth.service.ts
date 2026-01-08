@@ -39,10 +39,10 @@ export class AuthService {
   }
 
   /**
-   * Authenticate user with email and password
+   * Authenticate user with username and password
    */
-  login(email: string, password: string): Observable<LoginResponse> {
-    const request: LoginRequest = { email, password };
+  login(username: string, password: string): Observable<LoginResponse> {
+    const request: LoginRequest = { username, password };
     return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, request).pipe(
       tap(response => this.handleLoginSuccess(response))
     );
@@ -124,7 +124,7 @@ export class AuthService {
    */
   private handleLoginSuccess(response: LoginResponse): void {
     const user: AuthUser = {
-      email: response.email,
+      username: response.username,
       roles: response.roles,
       token: response.token,
       expiration: new Date(response.expiration)

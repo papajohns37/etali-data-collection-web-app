@@ -47,7 +47,12 @@ export class LoginComponent {
   constructor() {
     // Initialize form with validators
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(50),
+        Validators.pattern(/^[a-zA-Z0-9\-._]+$/)
+      ]],
       password: ['', [Validators.required]]
     });
 
@@ -78,15 +83,15 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { email, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
+    this.authService.login(username, password).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         this.messageService.add({
           severity: 'success',
           summary: 'Login Successful',
-          detail: `Welcome back, ${response.email}!`,
+          detail: `Welcome back, ${response.username}!`,
           life: 3000
         });
         
@@ -97,7 +102,7 @@ export class LoginComponent {
         this.isLoading.set(false);
         
         if (error.status === 401) {
-          this.errorMessage.set('Invalid email or password');
+          this.errorMessage.set('Invalid username or password');
         } else if (error.status === 0) {
           this.errorMessage.set('Unable to connect to server. Please try again later.');
         } else {

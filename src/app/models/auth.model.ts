@@ -6,7 +6,7 @@
  * Request payload for user login
  */
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -16,7 +16,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string;
   expiration: string;
-  email: string;
+  username: string;
   roles: string[];
 }
 
@@ -24,7 +24,7 @@ export interface LoginResponse {
  * Request payload for user registration (Admin only)
  */
 export interface RegisterRequest {
-  email: string;
+  username: string;
   password: string;
   confirmPassword: string;
   isAdmin: boolean;
@@ -35,7 +35,7 @@ export interface RegisterRequest {
  */
 export interface RegisterResponse {
   message: string;
-  email: string;
+  username: string;
   role: string;
 }
 
@@ -43,7 +43,7 @@ export interface RegisterResponse {
  * Authenticated user information
  */
 export interface AuthUser {
-  email: string;
+  username: string;
   roles: string[];
   token: string;
   expiration: Date;

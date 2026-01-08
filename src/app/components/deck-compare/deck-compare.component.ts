@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-deck-compare',
@@ -22,6 +23,7 @@ import { SelectModule } from 'primeng/select';
     CardModule,
     MessageModule,
     SelectModule,
+    ProgressSpinnerModule,
     CardDifferencesDisplayComponent
   ],
   templateUrl: './deck-compare.component.html',

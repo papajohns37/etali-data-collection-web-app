@@ -2,8 +2,10 @@
   @if (isLoading()) {
     <div class="loading-container">
       <p-card>
-        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-        <p>Loading decklist...</p>
+        <div class="loading-content">
+          <p-progressSpinner styleClass="spinner" />
+          <p>Loading decklist...</p>
+        </div>
       </p-card>
     </div>
   } @else if (errorMessage()) {
@@ -52,7 +54,7 @@
       <!-- Comparison Results -->
       @if (isLoadingComparison()) {
         <div class="loading-small">
-          <i class="pi pi-spin pi-spinner"></i>
+          <p-progressSpinner styleClass="small-spinner" />
           <span>Comparing decks...</span>
         </div>
       } @else if (cardDifferences() && currentDeck() && comparedDeckName()) {

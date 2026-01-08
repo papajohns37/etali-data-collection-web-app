@@ -1,28 +1,38 @@
 <main class="decklist-selection-container">
-  <div class="header">
-    <div class="header-left">
-      <h1>Select a Decklist</h1>
-    </div>
-    <div class="header-right">
-      <p-button 
-        (onClick)="viewComparisons()" 
-        label="Deck Comparisons"
-        icon="pi pi-arrows-h"
-        [outlined]="true"></p-button>
-      <p-button 
-        (onClick)="openAddDecklistModal()" 
-        label="Add New Decklist"
-        icon="pi pi-plus"
-        severity="success"></p-button>
-    </div>
-  </div>
+  <p-toolbar styleClass="page-header">
+    <ng-template pTemplate="start">
+      <div class="toolbar-title">
+        <h1>Select a Decklist</h1>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="end">
+      @if (authService.isAuthenticated()) {
+        <p-button 
+          (onClick)="openAddDecklistModal()" 
+          label="Add New Decklist"
+          icon="pi pi-plus"
+          severity="success"></p-button>
+      }
+    </ng-template>
+  </p-toolbar>
   
   <div class="decklists-grid">
     @if (decklistService.decklists().length === 0) {
-      <div class="empty-state">
-        <i class="pi pi-inbox empty-icon"></i>
-        <p class="no-decklists">No decklists yet. Create your first decklist to get started!</p>
-      </div>
+      <p-card styleClass="empty-state-card">
+        <div class="empty-state">
+          <i class="pi pi-inbox empty-icon"></i>
+          <h2>No decklists yet</h2>
+          <p class="no-decklists">Create your first decklist to get started!</p>
+          @if (authService.isAuthenticated()) {
+            <p-button 
+              (onClick)="openAddDecklistModal()" 
+              label="Add Your First Decklist"
+              icon="pi pi-plus"
+              severity="success"
+              styleClass="mt-4"></p-button>
+          }
+        </div>
+      </p-card>
     }
     
     @for (decklist of decklistService.decklists(); track decklist.id) {
@@ -41,12 +51,15 @@
             (onClick)="viewDecklist(decklist)"
             styleClass="action-button">
           </p-button>
-          <p-button 
-            label="Test Hands"
-            icon="pi pi-play"
-            (onClick)="onDecklistSelected(decklist)"
-            styleClass="action-button">
-          </p-button>
+          @if (authService.isAuthenticated()) {
+            <p-button 
+              label="Test Hands"
+              icon="pi pi-play"
+              severity="success"
+              (onClick)="onDecklistSelected(decklist)"
+              styleClass="action-button">
+            </p-button>
+          }
           <p-button 
             label="Statistics"
             icon="pi pi-chart-bar"
@@ -68,6 +81,6 @@
   [style]="{width: '600px'}"
   [draggable]="false"
   [resizable]="false"
-  [closeButtonProps]="{ariaLabel: 'Close dialog'}">
+  [closeButtonProps]="{ariaLabel: 'Close dialog', styleClass: 'dialog-close-success'}">
   <app-decklist-form (decklistAdded)="onDecklistAdded()"></app-decklist-form>
 </p-dialog>

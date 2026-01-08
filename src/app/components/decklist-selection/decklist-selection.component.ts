@@ -2,17 +2,19 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '../../services/auth.service';
 import { DecklistService } from '../../services/decklist.service';
 import { DecklistFormComponent } from '../decklist-form/decklist-form.component';
 import { Decklist } from '../../models/decklist.model';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-decklist-selection',
   standalone: true,
-  imports: [CommonModule, DecklistFormComponent, ButtonModule, CardModule, DialogModule],
+  imports: [CommonModule, DecklistFormComponent, ButtonModule, CardModule, DialogModule, ToolbarModule],
   templateUrl: './decklist-selection.component.html',
   styleUrl: './decklist-selection.component.css'
 })
@@ -20,6 +22,7 @@ export class DecklistSelectionComponent {
   private router = inject(Router);
   private messageService = inject(MessageService);
   protected decklistService = inject(DecklistService);
+  protected authService = inject(AuthService);
   showModal = signal(false);
 
   constructor() {

@@ -12,28 +12,26 @@
   text-align: center;
 }
 
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
 .decklist-content {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-/* Header Section */
-.decklist-header {
-  background: var(--surface-card);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Toolbar Section */
+:host ::ng-deep .decklist-toolbar {
   margin-bottom: 1rem;
+  border-radius: var(--border-radius);
 }
 
-.header-top h1 {
+.toolbar-header h1 {
   margin: 0;
   font-size: 2rem;
   color: var(--text-color);
@@ -44,16 +42,27 @@
   gap: 0.5rem;
 }
 
-.header-info {
+.header-metadata {
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.metadata-items {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin-bottom: 1rem;
   align-items: center;
   color: var(--text-color-secondary);
 }
 
-.header-info > div {
+.metadata-items > div {
   display: flex;
   align-items: center;
   gap: 0.5rem;

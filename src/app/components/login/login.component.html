@@ -2,7 +2,7 @@
   <p-card class="login-card">
     <ng-template pTemplate="header">
       <div class="card-header">
-        <h2>Login to MTG Data Collection</h2>
+        <h2>Login to Etali Data Collection</h2>
         <p class="subtitle">Enter your credentials to access contributor features</p>
       </div>
     </ng-template>
@@ -13,21 +13,27 @@
       }
 
       <div class="form-field">
-        <label for="email" class="block mb-2">Email</label>
+        <label for="username" class="block mb-2">Username</label>
         <input
           pInputText
-          id="email"
-          type="email"
-          formControlName="email"
-          placeholder="user@example.com"
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Enter your username"
           class="w-full"
-          [class.ng-invalid]="hasError('email', 'required') || hasError('email', 'email')"
+          [class.ng-invalid]="hasError('username', 'required') || hasError('username', 'minlength') || hasError('username', 'maxlength') || hasError('username', 'pattern')"
         />
-        @if (hasError('email', 'required')) {
-          <small class="error-text">Email is required</small>
+        @if (hasError('username', 'required')) {
+          <small class="error-text">Username is required</small>
         }
-        @if (hasError('email', 'email')) {
-          <small class="error-text">Please enter a valid email address</small>
+        @if (hasError('username', 'minlength')) {
+          <small class="error-text">Username must be at least 3 characters</small>
+        }
+        @if (hasError('username', 'maxlength')) {
+          <small class="error-text">Username must be less than 50 characters</small>
+        }
+        @if (hasError('username', 'pattern')) {
+          <small class="error-text">Username can only contain letters, numbers, hyphens, periods, and underscores</small>
         }
       </div>
 
@@ -63,7 +69,7 @@
       <div class="card-footer">
         <p class="info-text">
           <i class="pi pi-info-circle"></i>
-          You can still browse decklists and view statistics without logging in.
+          Logged in users can add decks and collect data, if you are interested in getting an account contact me at john542016@gmail.com
         </p>
       </div>
     </ng-template>

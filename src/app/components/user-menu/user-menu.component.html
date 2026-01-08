@@ -2,8 +2,11 @@
   @if (authService.isAuthenticated()) {
     <!-- Authenticated user menu -->
     <div class="user-info">
-      <span class="user-email">{{ authService.getCurrentUser()?.email }}</span>
-      <span [class]="getRoleBadgeClass()">{{ getUserRoleLabel() }}</span>
+      <span class="user-email">{{ authService.getCurrentUser()?.username }}</span>
+      <p-tag 
+        [value]="getUserRoleLabel()" 
+        [severity]="authService.isAdmin() ? 'danger' : 'info'"
+        [rounded]="true" />
     </div>
     
     @if (authService.isAdmin()) {

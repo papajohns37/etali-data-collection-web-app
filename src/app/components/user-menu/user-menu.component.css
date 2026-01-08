@@ -16,27 +16,6 @@
   font-weight: 500;
 }
 
-.role-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.role-badge.admin {
-  background-color: var(--red-100);
-  color: var(--red-700);
-  border: 1px solid var(--red-300);
-}
-
-.role-badge.contributor {
-  background-color: var(--blue-100);
-  color: var(--blue-700);
-  border: 1px solid var(--blue-300);
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .user-email {

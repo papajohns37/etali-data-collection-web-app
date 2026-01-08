@@ -1,7 +1,7 @@
 <div class="comparison-view-container">
   @if (isLoading()) {
     <div class="loading">
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <p-progressSpinner styleClass="spinner" />
       <p>Loading comparison...</p>
     </div>
   }
@@ -52,11 +52,14 @@
         </div>
 
         <div class="action-buttons">
-          <p-button
-            label="Evaluate Hands"
-            icon="pi pi-play"
-            (onClick)="startEvaluation()">
-          </p-button>
+          @if (authService.isAuthenticated()) {
+            <p-button
+              label="Evaluate Hands"
+              icon="pi pi-play"
+              severity="success"
+              (onClick)="startEvaluation()">
+            </p-button>
+          }
           <p-button
             label="View Statistics"
             icon="pi pi-chart-bar"
