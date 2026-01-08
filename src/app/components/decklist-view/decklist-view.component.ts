@@ -7,7 +7,7 @@ import { DeckComparisonService } from '../../services/deck-comparison.service';
 import { Decklist } from '../../models/decklist.model';
 import { DeckComparison } from '../../models/comparison.model';
 import { Card } from '../../models/card.model';
-import { CardImageUrlPipe } from '../../shared/pipes/card-image-url.pipe';
+import { CachedImageDirective } from '../../shared/directives/cached-image.directive';
 import { PluralizePipe } from '../../shared/pipes/pluralize.pipe';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -32,7 +32,7 @@ interface CardGroup {
     TooltipModule,
     ToolbarModule,
     ProgressSpinnerModule,
-    CardImageUrlPipe,
+    CachedImageDirective,
     PluralizePipe
   ],
   templateUrl: './decklist-view.component.html',

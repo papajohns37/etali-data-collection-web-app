@@ -2,7 +2,7 @@ import { Component, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardDifferences } from '../../models/comparison.model';
 import { Card } from '../../models/card.model';
-import { CardImageUrlPipe } from '../../shared/pipes/card-image-url.pipe';
+import { CachedImageDirective } from '../../shared/directives/cached-image.directive';
 import { PluralizePipe } from '../../shared/pipes/pluralize.pipe';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
@@ -18,7 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
     AccordionModule,
     ChipModule,
     TooltipModule,
-    CardImageUrlPipe,
+    CachedImageDirective,
     PluralizePipe
   ],
   templateUrl: './card-differences-display.component.html',

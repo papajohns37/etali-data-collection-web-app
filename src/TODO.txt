@@ -1,10 +1,7 @@
-TODO:
-Update image getters to cache or store images on load
-Retrieve list from moxfield list
+Ideas:
+✓ Update image getters to cache or store images on load (Implemented IndexedDB caching)
 Implement C# dbs to store hand and decklist data
-Implement graphic to display statistics on gathered data
-Allow user to select existing decklist with data to open
-Setup logit regression
+Add regression model?
 
 Sprints:
 Authentication
@@ -18,10 +15,10 @@ Automated hand system
 V2 Release
 
 Issues:
-None reported
+The decklist tab is not selected when starting the app
+Color of the x on the decklist page is not correct
 
 Authentication:
-Add blame feature to statistics
 Do a security audit for the app
 
 V1 Release:
@@ -44,10 +41,6 @@ UI Clean up
 Efficiency when submitting hands - requires caching scryfall images
 Reject decks that are identical?
 
-The decklist tab is not selected when starting the app
-Color of the x on the decklist page is not correct
-Text on the statistics page is too close to the edge of the boxes that bound them
-
 VPS and coolify - more control
 Serverless (Fly.io) - simpler
 
@@ -56,3 +49,6 @@ Host backend on render - database is only free for 30 days, make sure to backup 
 Host front end on whatever the cheapest service is - Render can do this
 
 Keep researching budget options for hosting, try Render since it is free for low traffic
+
+V2 Release:
+Add blame feature to statistics

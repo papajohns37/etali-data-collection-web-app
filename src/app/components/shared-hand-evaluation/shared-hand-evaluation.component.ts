@@ -5,7 +5,7 @@ import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, Cdk
 import { BattlefieldLayoutService } from '../../services/battlefield-layout.service';
 import { Card } from '../../models/card.model';
 import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
-import { CardImageUrlPipe } from '../../shared/pipes/card-image-url.pipe';
+import { CachedImageDirective } from '../../shared/directives/cached-image.directive';
 import { TIMING_CONSTANTS } from '../../shared/constants';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -52,7 +52,7 @@ export interface HandEvaluationData {
     TooltipModule,
     ChipModule,
     PercentagePipe,
-    CardImageUrlPipe
+    CachedImageDirective
   ],
   templateUrl: './shared-hand-evaluation.component.html',
   styleUrl: './shared-hand-evaluation.component.css'

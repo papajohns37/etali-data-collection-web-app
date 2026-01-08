@@ -41,7 +41,7 @@
           [style.left.px]="cardData.x"
           [style.top.px]="cardData.y"
           class="battlefield-card card">
-          <img [src]="cardData.card.name | cardImageUrl" [alt]="cardData.card.name" />
+          <img [cachedSrc]="cardData.card.name" [alt]="cardData.card.name" />
         </div>
       }
     </div>
@@ -233,7 +233,7 @@
         (click)="onHandCardClick(card, i)"
         (cdkDragEnded)="onHandCardDragEnded($event, card, i)"
         class="hand-card card">
-        <img [src]="card.name | cardImageUrl" [alt]="card.name" />
+        <img [cachedSrc]="card.name" [alt]="card.name" />
       </div>
     }
   </div>

@@ -106,7 +106,7 @@
                 @for (card of group.cards; track card.name) {
                   <div class="card-image-wrapper">
                     <img 
-                      [src]="card.name | cardImageUrl" 
+                      [cachedSrc]="card.name" 
                       [alt]="card.name"
                       [pTooltip]="card.name"
                       [tooltipPosition]="'top'"
@@ -128,7 +128,7 @@
       class="card-preview-overlay"
       [style.left.px]="mouseX()"
       [style.top.px]="mouseY()">
-      <img [src]="hoveredCard()! | cardImageUrl" [alt]="hoveredCard()" />
+      <img [cachedSrc]="hoveredCard()!" [alt]="hoveredCard()" />
     </div>
   }
 </main>
