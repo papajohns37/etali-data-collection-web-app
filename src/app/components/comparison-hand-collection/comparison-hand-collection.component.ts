@@ -40,6 +40,7 @@ export class ComparisonHandCollectionComponent {
         stickers: [],
         lowestGambleOdds: 0,
         decklistName: '',
+        whichDeck: 1,
         generationAttempts: 0
       };
     }
@@ -48,6 +49,7 @@ export class ComparisonHandCollectionComponent {
       stickers: data.stickers,
       lowestGambleOdds: data.lowestGambleOdds,
       decklistName: data.decklistName,
+      whichDeck: data.whichDeck,
       generationAttempts: data.generationAttempts
     };
   });
@@ -100,6 +102,7 @@ export class ComparisonHandCollectionComponent {
 
     this.comparisonService.submitEvaluation(
       this.comparisonId(),
+      handData.whichDeck,
       handData.generationAttempts,
       {
         id: handData.id,
