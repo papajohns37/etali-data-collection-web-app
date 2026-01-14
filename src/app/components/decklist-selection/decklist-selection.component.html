@@ -36,9 +36,63 @@
     }
     
     @for (decklist of decklistService.decklists(); track decklist.id) {
-      <p-card 
-        [header]="decklist.name"
-        styleClass="decklist-card">
+      <p-card styleClass="decklist-card">
+        <ng-template pTemplate="header">
+          <div class="card-header-container">
+            @if (editingDecklistId() === decklist.id) {
+              <div class="rename-container">
+                <input 
+                  pInputText
+                  type="text"
+                  [(ngModel)]="newName"
+                  (keydown)="onRenameKeyDown($event, decklist)"
+                  [disabled]="isRenaming()"
+                  maxlength="500"
+                  class="rename-input"
+                  placeholder="Enter decklist name"
+                  autofocus />
+                <div class="rename-actions">
+                  <p-button 
+                    icon="pi pi-check"
+                    [rounded]="true"
+                    severity="success"
+                    size="small"
+                    (onClick)="saveRename(decklist)"
+                    [disabled]="isRenaming()"
+                    [loading]="isRenaming()"
+                    pTooltip="Save"
+                    tooltipPosition="top"></p-button>
+                  <p-button 
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    severity="secondary"
+                    size="small"
+                    (onClick)="cancelRename()"
+                    [disabled]="isRenaming()"
+                    pTooltip="Cancel"
+                    tooltipPosition="top"></p-button>
+                </div>
+                <small class="char-counter">{{ newName().length }}/500</small>
+              </div>
+            } @else {
+              <div class="card-title-container">
+                <h3 class="card-title">{{ decklist.name }}</h3>
+                @if (canRename(decklist)) {
+                  <p-button 
+                    icon="pi pi-pencil"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    severity="secondary"
+                    (onClick)="startRename(decklist)"
+                    pTooltip="Rename decklist"
+                    tooltipPosition="top"
+                    class="rename-button"></p-button>
+                }
+              </div>
+            }
+          </div>
+        </ng-template>
         <div class="card-content">
           <i class="pi pi-list"></i>
           <span class="card-count">{{ decklist.cards.length }} cards</span>

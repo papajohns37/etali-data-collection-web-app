@@ -113,3 +113,57 @@
 ::ng-deep .action-button {
   width: 100%;
 }
+
+/* Rename UI Styles */
+.card-header-container {
+  padding: 1.25rem 1.25rem 0.5rem 1.25rem;
+}
+
+.card-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  flex: 1;
+  word-break: break-word;
+}
+
+::ng-deep .rename-button {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+::ng-deep .rename-button:hover {
+  opacity: 1;
+}
+
+.rename-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rename-input {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.rename-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.char-counter {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

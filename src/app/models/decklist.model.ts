@@ -19,4 +19,20 @@ export interface Decklist {
    * The UTC timestamp when this decklist was added to the system.
    */
   createdAt: Date;
+  
+  /**
+   * The ID of the user who created this decklist.
+   * Optional for legacy decklists created before user tracking.
+   */
+  createdByUserId?: string;
+}
+
+/**
+ * Response from renaming a decklist
+ */
+export interface RenameResponse {
+  message: string;
+  id: number;
+  oldName: string;
+  newName: string;
 }

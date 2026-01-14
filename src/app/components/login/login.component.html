@@ -23,19 +23,19 @@
           class="w-full"
           [class.ng-invalid]="hasError('username', 'required') || hasError('username', 'minlength') || hasError('username', 'maxlength') || hasError('username', 'pattern')"
         />
-        @if (hasError('username', 'required')) {
-          <small class="error-text">Username is required</small>
-        }
-        @if (hasError('username', 'minlength')) {
-          <small class="error-text">Username must be at least 3 characters</small>
-        }
-        @if (hasError('username', 'maxlength')) {
-          <small class="error-text">Username must be less than 50 characters</small>
-        }
-        @if (hasError('username', 'pattern')) {
-          <small class="error-text">Username can only contain letters, numbers, hyphens, periods, and underscores</small>
-        }
       </div>
+      @if (hasError('username', 'required')) {
+        <small class="error-text">Username is required</small>
+      }
+      @if (hasError('username', 'minlength')) {
+        <small class="error-text">Username must be at least 3 characters</small>
+      }
+      @if (hasError('username', 'maxlength')) {
+        <small class="error-text">Username must be less than 50 characters</small>
+      }
+      @if (hasError('username', 'pattern')) {
+        <small class="error-text">Username can only contain letters, numbers, hyphens, periods, and underscores</small>
+      }
 
       <div class="form-field">
         <label for="password" class="block mb-2">Password</label>
@@ -48,10 +48,10 @@
           styleClass="w-full"
           inputStyleClass="w-full"
         ></p-password>
-        @if (hasError('password', 'required')) {
-          <small class="error-text">Password is required</small>
-        }
       </div>
+      @if (hasError('password', 'required')) {
+        <small class="error-text">Password is required</small>
+      }
 
       <div class="form-actions">
         <p-button

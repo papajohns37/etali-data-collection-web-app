@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { Decklist } from '../models/decklist.model';
+import { Decklist, RenameResponse } from '../models/decklist.model';
 import { Hand } from '../models/hand.model';
 import { Card } from '../models/card.model';
 import { DecklistStatistics } from '../models/statistics.model';
@@ -75,5 +75,36 @@ export class DecklistService {
    */
   getStatistics(decklistId: number): Observable<DecklistStatistics> {
     return this.http.get<DecklistStatistics>(`${this.baseUrl}/decklists/${decklistId}/statistics`);
+  }
+
+  /**
+   * Rename a decklist
+   */
+  renameDecklist(decklistId: number, newName: string, token: string): Observable<RenameResponse> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    
+    return this.http.patch<RenameResponse>(
+      `${this.baseUrl}/decklist/${decklistId}/rename?newName=${encodeURIComponent(newName)}`,
+      {},
+      { headers }
+    ).pipe(
+      tap((response) => {
+        // Update the decklist in the local cache
+        const decklists = this.decklists();
+        const index = decklists.findIndex(d => d.id === decklistId);
+        if (index !== -1) {
+          const updatedDecklists = [...decklists];
+          updatedDecklists[index] = { ...updatedDecklists[index], name: response.newName };
+          this.decklists.set(updatedDecklists);
+          
+          // Update selected decklist if it's the one being renamed
+          if (this.selectedDecklist()?.id === decklistId) {
+            this.selectedDecklist.set(updatedDecklists[index]);
+          }
+        }
+      })
+    );
   }
 }

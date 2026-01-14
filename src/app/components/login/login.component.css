@@ -31,32 +31,36 @@
 }
 
 .form-field {
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.form-field label {
-  min-width: 140px;
-  margin: 0; /* remove extra top/bottom space when inline */
-}
-
-.form-field input,
-.form-field .p-inputtext,
-.form-field .p-password,
-.form-field .p-password input {
-  flex: 1 1 auto;
+  margin-bottom: 0.75rem;
 }
 
 .form-field label {
   font-weight: 500;
   color: var(--text-color);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-field input,
+.form-field .p-inputtext {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-field ::ng-deep .p-password {
+  display: block;
+  width: 100%;
+}
+
+.form-field ::ng-deep .p-password .p-inputtext {
+  width: 100%;
 }
 
 .error-text {
   display: block;
   margin-top: 0.25rem;
+  margin-bottom: 1rem;
   color: var(--red-500);
   font-size: 0.875rem;
 }
@@ -97,10 +101,5 @@
 
   .card-header h2 {
     font-size: 1.5rem;
-  }
-
-  .form-field {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

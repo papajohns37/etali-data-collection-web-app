@@ -25,16 +25,13 @@ Authentication:
 Do a security audit for the app
 
 V1 Release:
-Add renaming decklists
 Change database strucutre to store unique cards and use ids to reference them everywhere
-Add paypal donate button and decide on reasonable monetization or purely donations
-Securely store moxfield credentials and admin creds
-Figure out best way to host
 
 Verify list comparison tool stats are accurate
 
 Data editing tool:
 Create a page where I can view recently submitted hands and fix data as well as visit particular data sets and edit data for a hand
+Allow public users to access this page to view and filter hands
 
 Hand Queue:
 Add an api feature that holds onto unevaluated hands and an endpoint that pulls these hands

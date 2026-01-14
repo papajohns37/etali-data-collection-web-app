@@ -124,6 +124,7 @@ export class AuthService {
    */
   private handleLoginSuccess(response: LoginResponse): void {
     const user: AuthUser = {
+      userId: response.userId,
       username: response.username,
       roles: response.roles,
       token: response.token,

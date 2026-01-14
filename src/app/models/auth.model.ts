@@ -17,6 +17,7 @@ export interface LoginResponse {
   token: string;
   expiration: string;
   username: string;
+  userId: string;
   roles: string[];
 }
 
@@ -43,6 +44,7 @@ export interface RegisterResponse {
  * Authenticated user information
  */
 export interface AuthUser {
+  userId: string;
   username: string;
   roles: string[];
   token: string;
