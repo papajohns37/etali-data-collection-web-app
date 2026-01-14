@@ -3,11 +3,11 @@
 
 services:
   # Static Site for Angular Frontend
-  - type: web
+  - type: static_site
     name: mtg-data-frontend
-    runtime: static
+    env: static
     buildCommand: npm ci && npm run build:prod
-    staticPublishPath: ./dist/mtg-data/browser
+    publishPath: dist/mtg-data/browser
     envVars:
       - key: NODE_VERSION
         value: 20
