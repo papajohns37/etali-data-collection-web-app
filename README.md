@@ -34,7 +34,28 @@ To build the project run:
 ng build
 ```
 
+For production builds with environment variable injection:
+
+```bash
+npm run build:prod
+```
+
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+### Production Deployment
+
+See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for detailed instructions on deploying to Render.com with proper secret management.
+
+#### Environment Variables
+
+The following environment variables can be configured for production:
+
+- `API_URL` - Backend API endpoint (required)
+- `ENABLE_ANALYTICS` - Enable/disable analytics (`true`/`false`)
+- `TOKEN_KEY` - Local storage key for auth token
+- `USER_KEY` - Local storage key for user data
+
+See [.env.example](.env.example) for a template.
 
 ## Running unit tests
 

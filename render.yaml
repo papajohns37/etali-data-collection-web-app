@@ -1,0 +1,35 @@
+# Render.com deployment configuration
+# This file configures the deployment settings for Render
+
+services:
+  # Static Site for Angular Frontend
+  - type: web
+    name: mtg-data-frontend
+    runtime: static
+    buildCommand: npm ci && npm run build:prod
+    staticPublishPath: ./dist/mtg-data/browser
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: API_URL
+        sync: false # Set this manually in Render dashboard or use environment groups
+      - key: ENABLE_ANALYTICS
+        value: true
+      - key: TOKEN_KEY
+        value: mtg_auth_token
+      - key: USER_KEY
+        value: mtg_auth_user
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-XSS-Protection
+        value: 1; mode=block
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
