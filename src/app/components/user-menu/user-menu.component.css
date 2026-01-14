@@ -22,7 +22,18 @@
     display: none;
   }
   
+  .user-info {
+    gap: 0.25rem;
+  }
+
   .user-menu-container {
-    gap: 0.5rem;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Hide role tag on very small screens to save space */
+  .user-info :host ::ng-deep .p-tag {
+    display: none;
   }
 }

@@ -65,10 +65,18 @@
   border-radius: 0;
 }
 
+:host ::ng-deep .app-header .p-toolbar-group-start,
+:host ::ng-deep .app-header .p-toolbar-group-center,
+:host ::ng-deep .app-header .p-toolbar-group-end {
+  display: flex;
+  align-items: center;
+}
+
 :host ::ng-deep .app-header .p-toolbar-center {
   flex: 1;
   display: flex;
   justify-content: center;
+  position: relative;
 }
 
 .brand h1 {
@@ -118,29 +126,39 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  /* Force toolbar to proper flex layout */
   :host ::ng-deep .app-header .p-toolbar {
     padding: 0.75rem 1rem;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
   }
 
   :host ::ng-deep .app-header .p-toolbar-start,
   :host ::ng-deep .app-header .p-toolbar-center,
   :host ::ng-deep .app-header .p-toolbar-end {
-    flex: 0 1 auto;
-    min-width: 0;
+    position: relative !important;
+    transform: none !important;
+    left: auto !important;
+    top: auto !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   :host ::ng-deep .app-header .p-toolbar-start {
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    margin-right: 0.5rem;
   }
 
   :host ::ng-deep .app-header .p-toolbar-center {
-    flex: 1;
+    flex: 1 1 auto;
     justify-content: center;
-    overflow: visible;
+    min-width: 0;
   }
 
   :host ::ng-deep .app-header .p-toolbar-end {
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    margin-left: 0.5rem;
   }
 
   .brand h1 {
@@ -150,6 +168,11 @@
   :host ::ng-deep .main-nav-wrapper {
     justify-content: center;
     gap: 0.35rem;
+  }
+
+  :host ::ng-deep .main-nav .p-menubar {
+    background: transparent;
+    border: none;
   }
 
   :host ::ng-deep .main-nav .p-menubar-root-list {
@@ -175,6 +198,19 @@
     font-size: 0.85rem;
   }
 
+  /* Hide button labels on mobile, keep icons */
+  :host ::ng-deep .user-menu-container .p-button-label {
+    display: none;
+  }
+
+  :host ::ng-deep .user-menu-container .p-button {
+    padding: 0.5rem;
+  }
+
+  :host ::ng-deep .user-menu-container .p-button-icon {
+    margin: 0;
+  }
+
   .app-main {
     padding: 1rem;
   }
@@ -186,7 +222,7 @@
   }
 
   .brand h1 {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   :host ::ng-deep .main-nav-wrapper {
@@ -199,7 +235,7 @@
 
   :host ::ng-deep .main-nav .p-menuitem-link {
     padding: 0.4rem 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 
   :host ::ng-deep .main-nav .p-menuitem-icon {
@@ -213,7 +249,19 @@
   :host ::ng-deep .menu-donate {
     margin-left: 0.25rem;
     padding: 0.4rem 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  :host ::ng-deep .user-menu-container {
+    gap: 0.25rem;
+  }
+
+  :host ::ng-deep .user-menu-container .p-button {
+    padding: 0.4rem;
+  }
+
+  :host ::ng-deep .user-menu-container .p-button-icon {
+    font-size: 0.85rem;
   }
 
   .app-main {
