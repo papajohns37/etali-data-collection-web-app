@@ -1,19 +1,39 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ComparisonHandCollectionComponent } from './comparison-hand-collection.component';
 import { DeckComparisonService } from '../../services/deck-comparison.service';
+import { DecklistService } from '../../services/decklist.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
+import { signal } from '@angular/core';
 
 describe('ComparisonHandCollectionComponent', () => {
   let component: ComparisonHandCollectionComponent;
   let fixture: ComponentFixture<ComparisonHandCollectionComponent>;
   let mockComparisonService: any;
+  let mockDecklistService: any;
   let mockRouter: any;
   let mockLocation: any;
   let mockMessageService: any;
+
+  const mockCards = [
+    { name: 'Sol Ring', type: 'Artifact' },
+    { name: 'Command Tower', type: 'Land' },
+    { name: 'Lightning Bolt', type: 'Instant' },
+    { name: 'Mountain', type: 'Land' },
+    { name: 'Forest', type: 'Land' }
+  ];
+
+  const mockDecklists = [
+    {
+      id: 10,
+      name: 'Test Deck 1',
+      cards: mockCards,
+      createdAt: new Date()
+    }
+  ];
 
   const mockHand = {
     id: 1,
@@ -36,6 +56,11 @@ describe('ComparisonHandCollectionComponent', () => {
       submitEvaluation: vi.fn().mockReturnValue(of({ success: true }))
     };
 
+    mockDecklistService = {
+      loadDecklists: vi.fn().mockReturnValue(of(mockDecklists)),
+      decklists: signal(mockDecklists)
+    };
+
     mockRouter = {
       navigate: vi.fn()
     };
@@ -52,6 +77,7 @@ describe('ComparisonHandCollectionComponent', () => {
       imports: [ComparisonHandCollectionComponent],
       providers: [
         { provide: DeckComparisonService, useValue: mockComparisonService },
+        { provide: DecklistService, useValue: mockDecklistService },
         { provide: Router, useValue: mockRouter },
         { provide: Location, useValue: mockLocation },
         { provide: MessageService, useValue: mockMessageService },
@@ -99,6 +125,35 @@ describe('ComparisonHandCollectionComponent', () => {
     expect(metadata.decklistName).toBe('Test Deck 1');
     expect(metadata.whichDeck).toBe(1);
     expect(metadata.generationAttempts).toBe(3);
+  });
+
+  it('should load decklists on initialization', () => {
+    expect(mockDecklistService.loadDecklists).toHaveBeenCalled();
+  });
+
+  it('should compute allCards from decklist', () => {
+    const allCards = component.allCards();
+
+    expect(allCards).toEqual(mockCards);
+    expect(allCards.length).toBe(5);
+  });
+
+  it('should return empty array for allCards when no hand data', () => {
+    component.currentHandData.set(null);
+    const allCards = component.allCards();
+
+    expect(allCards).toEqual([]);
+  });
+
+  it('should return empty array for allCards when decklist not found', () => {
+    const handWithInvalidDecklistId = {
+      ...mockHand,
+      decklistId: 999 // non-existent decklist ID
+    };
+    component.currentHandData.set(handWithInvalidDecklistId);
+    const allCards = component.allCards();
+
+    expect(allCards).toEqual([]);
   });
 
   it('should handle hand generation error', () => {

@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DeckComparisonService } from '../../services/deck-comparison.service';
+import { DecklistService } from '../../services/decklist.service';
 import { Card } from '../../models/card.model';
 import { DeckComparisonHand } from '../../models/comparison.model';
 import { SharedHandEvaluationComponent, HandMetadata, HandEvaluationData } from '../shared-hand-evaluation/shared-hand-evaluation.component';
@@ -22,6 +23,7 @@ export class ComparisonHandCollectionComponent {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private comparisonService = inject(DeckComparisonService);
+  private decklistService = inject(DecklistService);
   private messageService = inject(MessageService);
 
   comparisonId = signal<number>(0);
@@ -56,12 +58,18 @@ export class ComparisonHandCollectionComponent {
   
   // All cards in deck for library search
   allCards = computed(() => {
-    // Get all cards from the comparison service
-    // For now return empty array, but this should be populated with deck cards
-    return [];
+    const handData = this.currentHandData();
+    if (!handData) return [];
+    
+    // Find the decklist by ID from the loaded decklists
+    const decklist = this.decklistService.decklists().find(d => d.id === handData.decklistId);
+    return decklist?.cards || [];
   });
 
   constructor() {
+    // Load decklists first so we have access to all cards
+    this.decklistService.loadDecklists().subscribe();
+    
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!isNaN(id)) {
       this.comparisonId.set(id);
