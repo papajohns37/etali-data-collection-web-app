@@ -30,6 +30,9 @@ services:
         name: X-XSS-Protection
         value: 1; mode=block
     routes:
+      # Rewrite only requests that do NOT contain a file extension
+      # This ensures requests for static assets (e.g., main.js, styles.css)
+      # are served normally and only SPA routes are rewritten to index.html.
       - type: rewrite
-        source: /*
+        source: '/^\/(?!.*\.[^\/]+$).*/'
         destination: /index.html
