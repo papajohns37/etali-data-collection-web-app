@@ -6,7 +6,8 @@
       <p-tag 
         [value]="getUserRoleLabel()" 
         [severity]="authService.isAdmin() ? 'danger' : 'info'"
-        [rounded]="true" />
+        [rounded]="true"
+        styleClass="user-role-tag" />
     </div>
     
     @if (authService.isAdmin()) {
@@ -16,6 +17,7 @@
         routerLink="/admin/users"
         [text]="true"
         severity="secondary"
+        styleClass="user-menu-button"
       ></p-button>
     }
     
@@ -25,6 +27,7 @@
       (onClick)="logout()"
       [text]="true"
       severity="secondary"
+      styleClass="user-menu-button"
     ></p-button>
   } @else {
     <!-- Login button for non-authenticated users -->
@@ -34,6 +37,7 @@
       routerLink="/login"
       [text]="true"
       severity="secondary"
+      styleClass="user-menu-button"
     ></p-button>
   }
 </div>

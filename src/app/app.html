@@ -9,7 +9,18 @@
   
   <ng-template pTemplate="center">
     <div class="main-nav-wrapper">
-      <p-menubar [model]="menuItems" styleClass="main-nav"></p-menubar>
+      <nav class="main-nav">
+        @for (item of menuItems; track item.label) {
+          <a 
+            [routerLink]="item.routerLink" 
+            class="nav-link"
+            [class.active]="item.styleClass?.includes('active-menu-item')"
+            routerLinkActive="active">
+            <i [class]="item.icon"></i>
+            <span class="nav-label">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
       <a class="donate-button menu-donate" href="https://paypal.me/JohnReynolds37" target="_blank" rel="noopener noreferrer">Donate</a>
     </div>
   </ng-template>

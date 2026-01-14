@@ -1,16 +1,15 @@
 import { Component, inject, OnInit, Renderer2, Inject } from '@angular/core';
-import { Router, RouterOutlet, RouterLink, NavigationEnd } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, NavigationEnd, RouterLinkActive } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
-import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { UserMenuComponent } from './components/user-menu/user-menu.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, ToastModule, ToolbarModule, MenubarModule, UserMenuComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ToastModule, ToolbarModule, UserMenuComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
