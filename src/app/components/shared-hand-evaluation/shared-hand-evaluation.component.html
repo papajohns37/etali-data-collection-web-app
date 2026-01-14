@@ -8,12 +8,6 @@
         severity="secondary"
         [text]="true"></p-button>
       <h1 class="deck-name">{{ metadata().decklistName }}</h1>
-      @if (metadata().whichDeck) {
-        <p-chip 
-          [label]="'Deck ' + metadata().whichDeck"
-          [styleClass]="getDeckBadgeClass()">
-        </p-chip>
-      }
     </div>
     <div class="top-bar-right">
       @if (showStatisticsButton()) {
@@ -48,12 +42,6 @@
 
     <div class="side-panel">
       <p-card header="Hand Metadata" styleClass="metadata-card">
-        @if (metadata().whichDeck) {
-          <div class="metadata-item">
-            <span class="label">Deck:</span>
-            <span class="value">Deck {{ metadata().whichDeck }}</span>
-          </div>
-        }
         <div class="metadata-item">
           <span class="label">Seat Order:</span>
           <span class="value">{{ metadata().seatOrder }}</span>
