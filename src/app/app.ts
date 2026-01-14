@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Renderer2, Inject } from '@angular/core';
 import { Router, RouterOutlet, RouterLink, NavigationEnd } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -15,6 +16,8 @@ import { UserMenuComponent } from './components/user-menu/user-menu.component';
 })
 export class App implements OnInit {
   private router = inject(Router);
+  private renderer = inject(Renderer2);
+  private document = inject(DOCUMENT);
   
   menuItems: MenuItem[] = [
     {
@@ -30,6 +33,11 @@ export class App implements OnInit {
       styleClass: 'menu-item-comparisons'
     }
   ];
+
+  constructor() {
+    // Force dark mode by adding the class that PrimeNG looks for
+    this.renderer.addClass(this.document.documentElement, 'app-dark');
+  }
 
   ngOnInit() {
     // Set initial active state

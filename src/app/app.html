@@ -8,7 +8,10 @@
   </ng-template>
   
   <ng-template pTemplate="center">
-    <p-menubar [model]="menuItems" styleClass="main-nav" />
+    <div class="main-nav-wrapper">
+      <p-menubar [model]="menuItems" styleClass="main-nav"></p-menubar>
+      <a class="donate-button menu-donate" href="https://paypal.me/JohnReynolds37" target="_blank" rel="noopener noreferrer">Donate</a>
+    </div>
   </ng-template>
   
   <ng-template pTemplate="end">

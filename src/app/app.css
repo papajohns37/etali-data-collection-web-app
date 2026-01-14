@@ -14,6 +14,59 @@
   border-bottom: 1px solid var(--surface-border);
 }
 
+:host ::ng-deep .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+:host ::ng-deep .donate-button {
+  background: var(--accent-color, #ff5a5f);
+  color: #fff;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity .15s ease, transform .08s ease;
+}
+
+:host ::ng-deep .donate-button:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+:host ::ng-deep .main-nav-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  z-index: 1010;
+}
+
+:host ::ng-deep .menu-donate {
+  margin-left: 0.5rem;
+}
+
+:host ::ng-deep .main-nav .p-menubar-root-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+:host ::ng-deep .main-nav .p-menubar {
+  display: inline-flex;
+  align-items: center;
+}
+
 :host ::ng-deep .app-header .p-toolbar {
   padding: 1rem 2rem;
   border-radius: 0;
@@ -66,6 +119,14 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+  :host ::ng-deep .main-nav-wrapper {
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    width: 100%;
+    justify-content: center;
+  }
   .header-content {
     flex-wrap: wrap;
     padding: 1rem;
@@ -105,5 +166,16 @@
   .main-nav a.nav-link {
     padding: 0.4rem 0.6rem;
     font-size: 0.85rem;
+  }
+
+  :host ::ng-deep .donate-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  :host ::ng-deep .main-nav-wrapper {
+    width: 100%;
+    justify-content: center;
+    gap: 0.5rem;
   }
 }
