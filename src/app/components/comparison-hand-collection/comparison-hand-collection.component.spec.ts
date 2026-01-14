@@ -27,7 +27,6 @@ describe('ComparisonHandCollectionComponent', () => {
     lowestGambleOdds: 0.5,
     decklistId: 10,
     decklistName: 'Test Deck 1',
-    whichDeck: 1,
     generationAttempts: 3
   };
 
