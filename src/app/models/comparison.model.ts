@@ -39,8 +39,6 @@ export interface DeckComparisonStatistics {
   deck2Name: string;
   deck1TotalHandsEvaluated: number;
   deck2TotalHandsEvaluated: number;
-  deck1N: number;
-  deck2N: number;
   handSizeDeltaStatistics: HandSizeDeltaStatistics[];
   overallProbabilityDifference: number;
   overallConfidenceIntervalLower: number;

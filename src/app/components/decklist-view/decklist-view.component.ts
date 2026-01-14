@@ -229,6 +229,8 @@ export class DecklistViewComponent implements OnInit {
   }
 
   hasComparisonData(comparison: DeckComparison): boolean {
+    // Note: deck1N and deck2N are still available in the API for generation efficiency tracking,
+    // but we check them here since we don't have TotalHandsEvaluated in the comparison list
     return comparison.deck1N > 0 || comparison.deck2N > 0;
   }
   

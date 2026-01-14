@@ -40,11 +40,7 @@
               <div class="summary-label">{{ statistics()!.deck1Name }}</div>
               <div class="summary-stats">
                 <span class="stat-value">{{ statistics()!.deck1TotalHandsEvaluated }}</span>
-                <span class="stat-label">Hands Evaluated</span>
-              </div>
-              <div class="summary-stats">
-                <span class="stat-value">{{ statistics()!.deck1N }}</span>
-                <span class="stat-label">Total Generated (N)</span>
+                <span class="stat-label">Sample Size (Hands Evaluated)</span>
               </div>
             </div>
 
@@ -62,11 +58,7 @@
               <div class="summary-label">{{ statistics()!.deck2Name }}</div>
               <div class="summary-stats">
                 <span class="stat-value">{{ statistics()!.deck2TotalHandsEvaluated }}</span>
-                <span class="stat-label">Hands Evaluated</span>
-              </div>
-              <div class="summary-stats">
-                <span class="stat-value">{{ statistics()!.deck2N }}</span>
-                <span class="stat-label">Total Generated (N)</span>
+                <span class="stat-label">Sample Size (Hands Evaluated)</span>
               </div>
             </div>
           </div>
@@ -142,7 +134,7 @@
                 <li>Positive differences mean Deck 1 ({{ statistics()!.deck1Name }}) performs better</li>
                 <li>Negative differences mean Deck 2 ({{ statistics()!.deck2Name }}) performs better</li>
                 <li>If the 90% confidence interval includes zero, the difference is not statistically significant</li>
-                <li>N represents total hands generated (including rejected hands without unique cards)</li>
+                <li>Sample size represents the number of evaluated hands containing at least one card unique to that deck. Only these hands provide information about performance differences.</li>
               </ul>
             </div>
           </p-message>

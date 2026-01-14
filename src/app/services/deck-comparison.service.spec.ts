@@ -55,8 +55,6 @@ describe('DeckComparisonService', () => {
     deck2Name: 'Deck B',
     deck1TotalHandsEvaluated: 100,
     deck2TotalHandsEvaluated: 100,
-    deck1N: 10,
-    deck2N: 8,
     handSizeDeltaStatistics: [],
     overallProbabilityDifference: 0.05,
     overallConfidenceIntervalLower: 0.01,
