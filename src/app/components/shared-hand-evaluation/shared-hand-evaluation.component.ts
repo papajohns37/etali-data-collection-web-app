@@ -91,7 +91,7 @@ export class SharedHandEvaluationComponent {
   canCastEtali = signal<boolean>(false);
   minimumCardsToCastEtali = signal<number>(8);
   cardsNeeded = signal<number>(1);
-  gambleCardsDrawn = signal<number>(0);
+  cardsInGambleHand = signal<number>(7);
   
   // Library search modal state
   showLibraryModal = signal(false);
@@ -137,6 +137,7 @@ export class SharedHandEvaluationComponent {
         this.canCastEtali.set(false);
         this.minimumCardsToCastEtali.set(8);
         this.cardsNeeded.set(1);
+        this.cardsInGambleHand.set(7);
         this.lastHandId = currentHandId;
       }
     });
@@ -144,12 +145,31 @@ export class SharedHandEvaluationComponent {
 
   // Check if Gamble card is in hand
   hasGambleInHand = computed(() => {
-    return this.currentHand().some(card => card.name.toLowerCase().includes('gamble'));
+    const inHand = this.currentHand().some(card => card.name.toLowerCase().includes('gamble'));
+    const onBattlefield = this.battlefield().some(c => c.card.name.toLowerCase().includes('gamble'));
+    return inHand || onBattlefield;
   });
+
+  // Handle total cards at the moment of casting Gamble (user-editable)
+  onTotalCardsChange(total: number) {
+    const t = Math.max(0, Math.floor(total || 0));
+    // `cardsInGambleHand` represents the total cards in hand at the moment of casting
+    this.cardsInGambleHand.set(t);
+    if (this.cardsNeeded() >= t) {
+      this.cardsNeeded.set(Math.max(0, t - 1));
+    }
+  }
+
+  onCardsNeededChange(value: number, total: number) {
+    const t = Math.max(0, Math.floor(total || 0));
+    let v = Math.max(0, Math.floor(value || 0));
+    if (v >= t) v = Math.max(0, t - 1);
+    this.cardsNeeded.set(v);
+  }
 
   // Calculate current gamble odds
   currentGambleOdds = computed(() => {
-    const cardsInHand = this.currentHand().length + this.gambleCardsDrawn();
+    const cardsInHand = this.cardsInGambleHand();
     if (cardsInHand === 0) return 0;
     return (cardsInHand - this.cardsNeeded()) / cardsInHand;
   });
@@ -168,7 +188,7 @@ export class SharedHandEvaluationComponent {
 
   // Calculate minimum hand size that makes gamble pass
   minHandSizeForPass = computed(() => {
-    return 7 - (this.currentHand().length + this.gambleCardsDrawn() - this.minCardsForGamblePass());
+    return 7 - (this.cardsInGambleHand() - this.minCardsForGamblePass());
   });
 
   // Library cards (cards not in hand or battlefield)
@@ -408,6 +428,7 @@ export class SharedHandEvaluationComponent {
     this.canCastEtali.set(false);
     this.minimumCardsToCastEtali.set(8);
     this.cardsNeeded.set(1);
+    this.cardsInGambleHand.set(7);
     
     this.handChanged.emit(this.currentHand());
     this.battlefieldChanged.emit(this.battlefield());

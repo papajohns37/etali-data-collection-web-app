@@ -74,11 +74,11 @@
         @let currentOdds = currentGambleOdds();
         @let minCards = minCardsForGamblePass();
         @let minHandSize = minHandSizeForPass();
-        @let handLength = currentHand().length;
+        @let totalCards = cardsInGambleHand();
         
         <p-card header="Gamble Calculator" styleClass="gamble-card">
           <p class="gamble-instructions">
-            Play out the hand, leaving all unused cards and Gamble in your hand.
+            Enter the total cards in hand when casting Gamble and the number of cards that cannot be discarded for the hand to work.
           </p>
 
           <div class="inline-group">
@@ -86,9 +86,9 @@
             <p-inputNumber 
               inputId="cardsNeeded"
               [ngModel]="cardsNeeded()"
-              (ngModelChange)="cardsNeeded.set($event)"
-              [min]="2"
-              [max]="7"
+              (ngModelChange)="onCardsNeededChange($event, totalCards)"
+              [min]="0"
+              [max]="totalCards - 1"
               [disabled]="isLoading()"
               [showButtons]="true"
               buttonLayout="horizontal"
@@ -99,13 +99,12 @@
           </div>
 
           <div class="inline-group">
-            <label for="gambleCardsDrawn">Cards Drawn</label>
+            <label for="cardsInGambleHand">Total Cards at Cast</label>
             <p-inputNumber 
-              inputId="gambleCardsDrawn"
-              [ngModel]="gambleCardsDrawn()"
-              (ngModelChange)="gambleCardsDrawn.set($event)"
-              [min]="0"
-              [max]="2"
+              inputId="cardsInGambleHand"
+              [ngModel]="cardsInGambleHand()"
+              (ngModelChange)="onTotalCardsChange($event)"
+              [min]="1"
               [disabled]="isLoading()"
               [showButtons]="true"
               buttonLayout="horizontal"
@@ -121,14 +120,14 @@
                 severity="success"
                 [text]="'Minimum hand size: ' + minHandSize"
                 styleClass="gamble-message"
-                [pTooltip]="'Calculation: 7 - (' + handLength + ' current cards + ' + gambleCardsDrawn() + ' drawn - ' + minCards + ' min cards for pass) = ' + minHandSize + '. Gamble odds: ' + (currentOdds | percentage:2) + ' ≥ ' + (metadata().lowestGambleOdds | percentage:2) + ' required.'"
+                [pTooltip]="'Odds formula: (TotalCards - CardsNeeded) / TotalCards = (' + totalCards + ' - ' + cardsNeeded() + ') / ' + totalCards + ' = ' + (currentOdds | percentage:2) + '. Required odds: ' + (metadata().lowestGambleOdds | percentage:2) + '. Min hand size to pass: ' + minHandSize"
                 tooltipPosition="top"></p-message>
             } @else {
               <p-message 
                 severity="error"
                 text="Gamble failed"
                 styleClass="gamble-message"
-                [pTooltip]="'Current odds ' + (currentOdds | percentage:2) + ' < ' + (metadata().lowestGambleOdds | percentage:2) + ' required. With ' + cardsNeeded() + ' cards needed and ' + (handLength + gambleCardsDrawn()) + ' cards total (' + handLength + ' in hand + ' + gambleCardsDrawn() + ' drawn), you need at most ' + minCards + ' cards total to pass.'"
+                [pTooltip]="'Odds formula: (TotalCards - CardsNeeded) / TotalCards = (' + totalCards + ' - ' + cardsNeeded() + ') / ' + totalCards + ' = ' + (currentOdds | percentage:2) + '. Required: ' + (metadata().lowestGambleOdds | percentage:2) + '. To reach required odds, reduce Cards Needed to ≤ ' + minCards"
                 tooltipPosition="top"></p-message>
             }
           </div>
