@@ -114,7 +114,7 @@ export class ComparisonHandCollectionComponent {
       handData.generationAttempts,
       {
         id: handData.id,
-        cards: this.currentHand(),
+        cards: evaluationData.allCards,
         seatOrder: handData.seatOrder,
         stickers: handData.stickers,
         canCastEtali: evaluationData.canCastEtali,

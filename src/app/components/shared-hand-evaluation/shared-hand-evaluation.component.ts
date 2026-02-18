@@ -31,6 +31,7 @@ export interface HandEvaluationData {
   canCastEtali: boolean;
   minimumCardsToCastEtali: number;
   cardsNeeded: number;
+  allCards: Card[];
 }
 
 @Component({
@@ -393,7 +394,8 @@ export class SharedHandEvaluationComponent {
     this.submitEvaluation.emit({
       canCastEtali: this.canCastEtali(),
       minimumCardsToCastEtali: this.canCastEtali() ? this.minimumCardsToCastEtali() : 8,
-      cardsNeeded: this.cardsNeeded()
+      cardsNeeded: this.cardsNeeded(),
+      allCards: [...this.currentHand(), ...this.battlefield().map(b => b.card)]
     });
   }
 

@@ -94,7 +94,7 @@ export class HandCollectionComponent {
 
     const payload = {
       id: this.currentHandId(),
-      cards: this.currentHand(),
+      cards: evaluationData.allCards,
       seatOrder: this.handMetadata().seatOrder,
       stickers: this.handMetadata().stickers,
       lowestGambleOdds: this.handMetadata().lowestGambleOdds,
