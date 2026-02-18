@@ -395,7 +395,7 @@ export class SharedHandEvaluationComponent {
       canCastEtali: this.canCastEtali(),
       minimumCardsToCastEtali: this.canCastEtali() ? this.minimumCardsToCastEtali() : 8,
       cardsNeeded: this.cardsNeeded(),
-      allCards: [...this.currentHand(), ...this.battlefield().map(b => b.card)]
+      allCards: [...this.originalHand()]
     });
   }
 
