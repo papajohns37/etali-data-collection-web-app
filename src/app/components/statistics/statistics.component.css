@@ -277,3 +277,89 @@ p-message {
   margin-bottom: 1.5rem;
   display: block;
 }
+
+/* ── Mulligan Statistics Section ────────────────────────────────────────── */
+.mulligan-statistics-section {
+  margin-top: 0;
+}
+
+.divider-label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-color-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mulligan-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.mulligan-empty-state h3 {
+  margin: 0.25rem 0;
+  color: var(--text-color);
+}
+
+.mulligan-empty-state p {
+  color: var(--text-color-secondary);
+  margin: 0;
+  max-width: 480px;
+}
+
+.mulligan-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem 0;
+}
+
+.mulligan-card-header h3 {
+  margin: 0;
+}
+
+.mulligan-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mulligan-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: var(--surface-ground);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--surface-border);
+}
+
+.mulligan-stat-label {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mulligan-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.mulligan-stat-value.success-value {
+  color: var(--green-500);
+}
+
+:host ::ng-deep .mulligan-progress .p-progressbar {
+  height: 0.75rem;
+}

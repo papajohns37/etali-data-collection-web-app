@@ -25,6 +25,8 @@ export interface HandMetadata {
   decklistName: string;
   whichDeck?: number; // For comparison mode
   generationAttempts?: number; // For comparison mode
+  handNumber?: number; // For mulligan mode
+  targetHandSize?: number; // For mulligan mode
 }
 
 export interface HandEvaluationData {
@@ -73,6 +75,7 @@ export class SharedHandEvaluationComponent {
   showLibrarySearch = input<boolean>(true);
   showResetButton = input<boolean>(true);
   showSkipButton = input<boolean>(false);
+  showMinCardsInput = input<boolean>(true);
   
   // Labels customization
   backButtonLabel = input<string>('Back');

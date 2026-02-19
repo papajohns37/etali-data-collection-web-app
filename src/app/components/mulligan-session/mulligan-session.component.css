@@ -1,0 +1,329 @@
+/* ── Start / summary / serum-powder screens share this container ─────────── */
+.mulligan-session-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: var(--font-family);
+  min-height: 100vh;
+  background: var(--surface-ground);
+}
+
+/* ── Start screen ────────────────────────────────────────────────────────── */
+.start-screen {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+:host ::ng-deep .start-card {
+  width: 100%;
+  max-width: 560px;
+}
+
+.start-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 0.5rem;
+  text-align: center;
+}
+
+.start-icon {
+  font-size: 4rem;
+  color: var(--green-500);
+}
+
+.start-content h2 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.start-description {
+  color: var(--text-color-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.serum-powder-note {
+  background: var(--yellow-50, #fffde7);
+  border: 1px solid var(--yellow-300, #ffe082);
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Session progress banner (shown above the shared component) ──────────── */
+.session-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 1rem;
+  background: var(--surface-section);
+  border-bottom: 1px solid var(--surface-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.progress-chip {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 1rem;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.progress-chip.chip-warn {
+  background: var(--orange-100, #ffe0b2);
+  border-color: var(--orange-400, #ffa726);
+  color: var(--orange-800, #e65100);
+}
+
+.progress-chip.chip-info {
+  background: var(--blue-50, #e3f2fd);
+  border-color: var(--blue-300, #64b5f6);
+  color: var(--blue-800, #0d47a1);
+}
+
+/* ── Decision panel (fixed bar at the bottom while deciding) ─────────────── */
+.decision-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* Must exceed CDK drag z-index (1000) and any card stacking context */
+  z-index: 9999;
+  background: var(--surface-card);
+  border-top: 2px solid var(--blue-400, #42a5f5);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.decision-panel-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.decision-prompt {
+  margin: 0;
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+}
+
+.decision-prompt .pi-info-circle {
+  color: var(--blue-500);
+  font-size: 1.1rem;
+}
+
+.decision-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* ── Serum Powder selection screen ───────────────────────────────────────── */
+.serum-powder-screen {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+:host ::ng-deep .sp-card {
+  width: 100%;
+  max-width: 640px;
+}
+
+.sp-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem 0.5rem;
+  color: var(--yellow-700, #f57f17);
+}
+
+.sp-icon {
+  font-size: 2.5rem;
+}
+
+.sp-header h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.sp-instruction {
+  color: var(--text-color);
+  line-height: 1.6;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
+.sp-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.sp-card-tile {
+  background: var(--surface-section);
+  border: 2px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 72px;
+  position: relative;
+  cursor: default;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sp-card-tile.sp-selectable {
+  cursor: pointer;
+}
+
+.sp-card-tile.sp-selectable:hover {
+  border-color: var(--yellow-400, #ffca28);
+  background: var(--yellow-50, #fffde7);
+}
+
+.sp-card-tile.sp-selected {
+  border-color: var(--yellow-500, #ffc107);
+  background: var(--yellow-100, #fff9c4);
+  cursor: pointer;
+}
+
+.sp-card-name {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--text-color);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.sp-card-type {
+  font-size: 0.72rem;
+  color: var(--text-color-secondary);
+}
+
+.sp-bottom-icon {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  color: var(--yellow-600, #f9a825);
+  font-size: 0.9rem;
+}
+
+.sp-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ── Summary screen ──────────────────────────────────────────────────────── */
+.summary-screen {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+:host ::ng-deep .summary-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.summary-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem 0.5rem;
+}
+
+.summary-header h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  text-align: center;
+}
+
+.summary-success {
+  color: var(--green-600);
+}
+
+.summary-failure {
+  color: var(--red-600);
+}
+
+.summary-result-icon {
+  font-size: 3rem;
+}
+
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  color: var(--text-color-secondary);
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .mulligan-session-container {
+    padding: 1rem;
+  }
+
+  .decision-panel-inner {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sp-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+

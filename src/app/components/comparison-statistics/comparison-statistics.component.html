@@ -153,3 +153,186 @@
     </p-card>
   }
 </div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     Mulligan Comparison Section
+     ═══════════════════════════════════════════════════════════ -->
+<div class="comparison-statistics-container">
+
+  <p-divider>
+    <span class="mulligan-divider-label"><i class="pi pi-replay"></i> Mulligan Testing Comparison</span>
+  </p-divider>
+
+  @if (mulliganLoading()) {
+    <div class="loading">
+      <p-progressSpinner styleClass="spinner" />
+      <p>Loading mulligan comparison...</p>
+    </div>
+  } @else if (mulliganError()) {
+    <p-message severity="error" [text]="mulliganError()"></p-message>
+  } @else if (!hasMulliganData()) {
+    <p-card>
+      <div class="mulligan-empty-state">
+        <i class="pi pi-replay" style="font-size: 2.5rem; color: var(--text-color-secondary)"></i>
+        <h3>No Mulligan Data Yet</h3>
+        <p>Run mulligan sessions for both decklists to compare their performance through the London Mulligan process.</p>
+      </div>
+    </p-card>
+  } @else if (hasMulliganComparison()) {
+    <!-- Full comparison result (enough sessions for z-test) -->
+    @let mc = mulliganComparison()!;
+    @let test = mc.statisticalTest;
+    @let d1 = mc.decklist1Stats;
+    @let d2 = mc.decklist2Stats;
+
+    <!-- Overall mulligan comparison -->
+    <p-card>
+      <ng-template pTemplate="header">
+        <h3 style="margin: 1rem 1.25rem 0">
+          {{ d1.decklistName }} vs {{ d2.decklistName }} — London Mulligan
+        </h3>
+      </ng-template>
+
+      <div class="overall-summary">
+        <div class="summary-card">
+          <div class="summary-label">{{ d1.decklistName }}</div>
+          <div class="summary-stats">
+            <span class="stat-value">{{ d1.successRate | number:'1.1-1' }}%</span>
+            <span class="stat-label">Success Rate</span>
+          </div>
+          <div class="summary-stats">
+            <span class="stat-value" style="font-size:1.25rem">{{ d1.totalSessions }}</span>
+            <span class="stat-label">Sessions</span>
+          </div>
+          <p-progressBar [value]="d1.successRate" [showValue]="false"></p-progressBar>
+        </div>
+
+        <div class="versus">
+          <div class="difference-display" [class]="test.isSignificant ? (mc.successRateDifference >= 0 ? 'sig-better' : 'sig-worse') : 'sig-neutral'">
+            <div class="diff-value">{{ mulliganSuccessRateDiffDisplay() }}</div>
+            <div class="diff-label">{{ test.isSignificant ? 'Statistically Significant' : 'Not Significant' }}</div>
+            <div class="confidence-interval">p = {{ test.pValue | number:'1.3-3' }} &nbsp;|&nbsp; z = {{ test.zScore | number:'1.2-2' }}</div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-label">{{ d2.decklistName }}</div>
+          <div class="summary-stats">
+            <span class="stat-value">{{ d2.successRate | number:'1.1-1' }}%</span>
+            <span class="stat-label">Success Rate</span>
+          </div>
+          <div class="summary-stats">
+            <span class="stat-value" style="font-size:1.25rem">{{ d2.totalSessions }}</span>
+            <span class="stat-label">Sessions</span>
+          </div>
+          <p-progressBar [value]="d2.successRate" [showValue]="false"></p-progressBar>
+        </div>
+      </div>
+
+      <div class="interpretation">
+        @if (test.isSignificant && mc.successRateDifference > 0) {
+          <p-message severity="success">
+            <div class="message-content"><strong>{{ d1.decklistName }}</strong> has a significantly higher mulligan success rate. {{ test.interpretation }}</div>
+          </p-message>
+        } @else if (test.isSignificant && mc.successRateDifference < 0) {
+          <p-message severity="info">
+            <div class="message-content"><strong>{{ d2.decklistName }}</strong> has a significantly higher mulligan success rate. {{ test.interpretation }}</div>
+          </p-message>
+        } @else {
+          <p-message severity="warn">
+            <div class="message-content">No significant difference in mulligan success rates. {{ test.interpretation }}</div>
+          </p-message>
+        }
+      </div>
+    </p-card>
+
+    <!-- Per-deck detail cards -->
+    <div class="mulligan-detail-grid">
+      @for (deck of [d1, d2]; track deck.decklistId) {
+        <p-card>
+          <ng-template pTemplate="header">
+            <h4 style="margin: 0.75rem 1rem 0">{{ deck.decklistName }}</h4>
+          </ng-template>
+          <div class="mulligan-stat-row">
+            <span class="mulligan-stat-label">Sessions</span>
+            <span class="mulligan-stat-value">{{ deck.totalSessions }}</span>
+          </div>
+          <div class="mulligan-stat-row">
+            <span class="mulligan-stat-label">Successful</span>
+            <span class="mulligan-stat-value">{{ deck.successfulSessions }}</span>
+          </div>
+          <div class="mulligan-stat-row">
+            <span class="mulligan-stat-label">Success Rate</span>
+            <span class="mulligan-stat-value">{{ deck.successRate | number:'1.1-1' }}%</span>
+          </div>
+          <div class="mulligan-stat-row">
+            <span class="mulligan-stat-label">Avg Mulligans</span>
+            <span class="mulligan-stat-value">{{ deck.averageMulligans | number:'1.2-2' }}</span>
+          </div>
+          @if (deck.sessionsWithSerumPowder > 0) {
+            <div class="mulligan-stat-row">
+              <span class="mulligan-stat-label"><i class="pi pi-bolt"></i> SP Activations</span>
+              <span class="mulligan-stat-value">{{ deck.totalSerumPowderActivations }}</span>
+            </div>
+            <div class="mulligan-stat-row">
+              <span class="mulligan-stat-label">Success w/ SP</span>
+              <span class="mulligan-stat-value">{{ deck.successRateWithSerumPowder | number:'1.1-1' }}%</span>
+            </div>
+          }
+        </p-card>
+      }
+    </div>
+  } @else {
+    <!-- Individual stats only — not enough sessions for z-test yet -->
+    <p-message severity="info" styleClass="mb-3">
+      <div class="message-content">
+        Not enough sessions for a full statistical comparison yet. Collect more data to unlock the significance test.
+        Individual deck results are shown below.
+      </div>
+    </p-message>
+    <div class="mulligan-detail-grid">
+      @for (deck of [deck1MulliganStats(), deck2MulliganStats()]; track $index) {
+        @if (deck) {
+          <p-card>
+            <ng-template pTemplate="header">
+              <h4 style="margin: 0.75rem 1rem 0">{{ deck.decklistName }}</h4>
+            </ng-template>
+            <div class="mulligan-stat-row">
+              <span class="mulligan-stat-label">Sessions</span>
+              <span class="mulligan-stat-value">{{ deck.totalSessions }}</span>
+            </div>
+            <div class="mulligan-stat-row">
+              <span class="mulligan-stat-label">Successful</span>
+              <span class="mulligan-stat-value">{{ deck.successfulSessions }}</span>
+            </div>
+            <div class="mulligan-stat-row">
+              <span class="mulligan-stat-label">Success Rate</span>
+              <span class="mulligan-stat-value">{{ deck.successRate | number:'1.1-1' }}%</span>
+            </div>
+            <div class="mulligan-stat-row">
+              <span class="mulligan-stat-label">Avg Mulligans</span>
+              <span class="mulligan-stat-value">{{ deck.averageMulligans | number:'1.2-2' }}</span>
+            </div>
+            @if (deck.sessionsWithSerumPowder > 0) {
+              <div class="mulligan-stat-row">
+                <span class="mulligan-stat-label"><i class="pi pi-bolt"></i> SP Activations</span>
+                <span class="mulligan-stat-value">{{ deck.totalSerumPowderActivations }}</span>
+              </div>
+              <div class="mulligan-stat-row">
+                <span class="mulligan-stat-label">Success w/ SP</span>
+                <span class="mulligan-stat-value">{{ deck.successRateWithSerumPowder | number:'1.1-1' }}%</span>
+              </div>
+            }
+          </p-card>
+        } @else {
+          <p-card>
+            <div class="mulligan-empty-state" style="padding: 1.5rem">
+              <i class="pi pi-replay" style="font-size: 1.75rem; color: var(--text-color-secondary)"></i>
+              <p style="margin:0">No mulligan sessions yet for this deck.</p>
+            </div>
+          </p-card>
+        }
+      }
+    </div>
+  }
+</div>

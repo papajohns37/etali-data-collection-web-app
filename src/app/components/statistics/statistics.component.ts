@@ -9,8 +9,12 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
+import { DividerModule } from 'primeng/divider';
+import { TagModule } from 'primeng/tag';
 import { DecklistService } from '../../services/decklist.service';
+import { MulliganService } from '../../services/mulligan.service';
 import { DecklistStatistics } from '../../models/statistics.model';
+import { MulliganStatistics } from '../../models/mulligan.model';
 import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
 
 @Component({
@@ -26,6 +30,8 @@ import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
     ProgressSpinnerModule,
     TooltipModule,
     ToolbarModule,
+    DividerModule,
+    TagModule,
     PercentagePipe
   ],
   templateUrl: './statistics.component.html',
@@ -33,6 +39,7 @@ import { PercentagePipe } from '../../shared/pipes/percentage.pipe';
 })
 export class StatisticsComponent implements OnInit {
   private decklistService = inject(DecklistService);
+  private mulliganService = inject(MulliganService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private location = inject(Location);
@@ -40,6 +47,33 @@ export class StatisticsComponent implements OnInit {
   statistics = signal<DecklistStatistics | null>(null);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+  currentDecklistId = signal<number>(0);
+
+  // ── Mulligan statistics ──────────────────────────────────────────────────
+  mulliganStats = signal<MulliganStatistics | null>(null);
+  mulliganLoading = signal<boolean>(false);
+  mulliganError = signal<string | null>(null);
+
+  hasMulliganData = computed(() => {
+    const s = this.mulliganStats();
+    return s !== null && s.totalSessions > 0;
+  });
+
+  mulliganSuccessByHandSize = computed(() => {
+    const s = this.mulliganStats();
+    if (!s) return [];
+    return Object.entries(s.successByHandSize)
+      .map(([hs, count]) => ({ handSize: +hs, successes: count }))
+      .sort((a, b) => b.handSize - a.handSize);
+  });
+
+  mulliganDistributionData = computed(() => {
+    const s = this.mulliganStats();
+    if (!s) return [];
+    return Object.entries(s.mulliganDistribution)
+      .map(([m, count]) => ({ mulligans: +m, sessions: count }))
+      .sort((a, b) => a.mulligans - b.mulligans);
+  });
 
   // Computed values for display
   hasData = computed(() => {
@@ -86,7 +120,10 @@ export class StatisticsComponent implements OnInit {
       return;
     }
 
-    this.loadStatistics(parseInt(decklistId, 10));
+    const id = parseInt(decklistId, 10);
+    this.currentDecklistId.set(id);
+    this.loadStatistics(id);
+    this.loadMulliganStatistics(id);
   }
 
   loadStatistics(decklistId: number): void {
@@ -127,10 +164,33 @@ export class StatisticsComponent implements OnInit {
     }
   }
 
+  loadMulliganStatistics(decklistId: number): void {
+    this.mulliganLoading.set(true);
+    this.mulliganError.set(null);
+    this.mulliganService.getStatistics(decklistId).subscribe({
+      next: (stats) => {
+        this.mulliganStats.set(stats);
+        this.mulliganLoading.set(false);
+      },
+      error: (err) => {
+        // 404 simply means no data yet — not a real error
+        if (err.status !== 404) {
+          this.mulliganError.set('Failed to load mulligan statistics');
+        }
+        this.mulliganLoading.set(false);
+      }
+    });
+  }
+
   refreshStatistics(): void {
-    const stats = this.statistics();
-    if (stats) {
-      this.loadStatistics(stats.decklistId);
+    const id = this.currentDecklistId();
+    if (id) {
+      this.loadStatistics(id);
+      this.loadMulliganStatistics(id);
     }
+  }
+
+  goToMulliganSession(): void {
+    this.router.navigate(['/decklists', this.currentDecklistId(), 'mulligan']);
   }
 }

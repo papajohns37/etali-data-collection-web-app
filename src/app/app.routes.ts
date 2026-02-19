@@ -34,6 +34,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/deck-compare/deck-compare.component').then(m => m.DeckCompareComponent)
   },
   {
+    path: 'decklists/:id/mulligan',
+    loadComponent: () => import('./components/mulligan-session/mulligan-session.component').then(m => m.MulliganSessionComponent),
+    canActivate: [authGuard] // Requires authentication to record mulligan sessions
+  },
+  {
     path: 'hand-collection',
     loadComponent: () => import('./components/hand-collection/hand-collection.component').then(m => m.HandCollectionComponent),
     canActivate: [decklistGuard, authGuard] // Requires both decklist selection and authentication

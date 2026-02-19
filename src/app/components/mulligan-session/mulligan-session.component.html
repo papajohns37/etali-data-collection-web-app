@@ -1,0 +1,220 @@
+<!-- ── Phase: Start screen ───────────────────────────────────────────────── -->
+@if (phase() === 'start') {
+  <main class="mulligan-session-container">
+    <div class="start-screen">
+      <p-card styleClass="start-card">
+        <div class="start-content">
+          <i class="pi pi-play-circle start-icon"></i>
+          <h2>Mulligan Session — {{ decklistName() }}</h2>
+          <p class="start-description">
+            You will see a series of 7-card hands following the London Mulligan
+            rules&nbsp;(7&nbsp;→&nbsp;7&nbsp;→&nbsp;6&nbsp;→&nbsp;5&nbsp;→&nbsp;4&nbsp;→&nbsp;3).
+            Arrange the cards on the battlefield, check whether the hand can cast
+            Etali by turn&nbsp;2, then submit. Successful hands are kept automatically.
+          </p>
+          @if (deckHasSerumPowder()) {
+            <p class="serum-powder-note">
+              <i class="pi pi-bolt"></i>
+              Your deck contains <strong>Serum Powder</strong>. When a hand cannot
+              cast Etali you may choose to activate it instead of taking a normal mulligan.
+            </p>
+          }
+          <p-button
+            label="Start Mulligan Session"
+            icon="pi pi-play"
+            severity="success"
+            size="large"
+            (onClick)="startSession()">
+          </p-button>
+          <p-button
+            label="Back"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            [text]="true"
+            (onClick)="goBack()">
+          </p-button>
+        </div>
+      </p-card>
+    </div>
+  </main>
+}
+
+<!-- ── Phase: Hand evaluation / deciding / loading ───────────────────────── -->
+@if (phase() === 'evaluating' || phase() === 'deciding' || phase() === 'loading') {
+  <!-- Session progress banner (sits above the shared component) -->
+  <div class="session-progress-bar">
+    @if (phase() === 'deciding') {
+      <span class="progress-chip chip-info">Cannot cast Etali — choose your action below</span>
+    }
+  </div>
+
+  <!-- Shared hand evaluation component -->
+  <app-shared-hand-evaluation
+    [hand]="handCards()"
+    [originalHand]="handCards()"
+    [metadata]="handMetadata()"
+    [allCards]="deckAllCards()"
+    [isLoading]="sharedIsLoading()"
+    [handId]="handKey()"
+    [showStatisticsButton]="false"
+    [showLibrarySearch]="true"
+    [showResetButton]="true"
+    [showSkipButton]="false"
+    [showMinCardsInput]="false"
+    [backButtonLabel]="'Back'"
+    [submitButtonLabel]="submitBtnLabel()"
+    (submitEvaluation)="onEvaluationSubmitted($event)"
+    (goBack)="goBack()">
+  </app-shared-hand-evaluation>
+
+  <!-- Decision panel: Mulligan or Serum Powder (only in 'deciding' phase) -->
+  @if (phase() === 'deciding') {
+    <div class="decision-panel">
+      <div class="decision-panel-inner">
+        <p class="decision-prompt">
+          <i class="pi pi-info-circle"></i>
+          Hand cannot cast Etali. What would you like to do?
+        </p>
+        <div class="decision-buttons">
+          <p-button
+            label="Mulligan"
+            icon="pi pi-replay"
+            severity="secondary"
+            (onClick)="mulligan()">
+          </p-button>
+          @if (deckHasSerumPowder()) {
+            <p-button
+              label="Activate Serum Powder"
+              icon="pi pi-bolt"
+              severity="warn"
+              [outlined]="true"
+              (onClick)="openSerumPowderSelection()">
+            </p-button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+}
+
+<!-- ── Phase: Serum Powder card selection ────────────────────────────────── -->
+@if (phase() === 'serum-powder') {
+  <main class="mulligan-session-container">
+    <div class="serum-powder-screen">
+      <p-card styleClass="sp-card">
+        <ng-template pTemplate="header">
+          <div class="sp-header">
+            <i class="pi pi-bolt sp-icon"></i>
+            <h2>Activate Serum Powder</h2>
+          </div>
+        </ng-template>
+
+        @if (requiredBottomCount() === 0) {
+          <p class="sp-instruction">
+            No cards need to be placed on the bottom — your entire hand will be exiled
+            and you will draw 7 fresh cards.
+          </p>
+        } @else {
+          <p class="sp-instruction">
+            Select&nbsp;<strong>{{ requiredBottomCount() }}</strong>
+            card{{ requiredBottomCount() === 1 ? '' : 's' }} to place on the bottom
+            of your library before drawing your new hand.
+            <br />
+            <small>({{ selectedCardsToBottom().length }}&nbsp;/&nbsp;{{ requiredBottomCount() }} selected)</small>
+          </p>
+        }
+
+        <div class="sp-cards-grid">
+          @for (card of currentHand()!.cards; track card.name + $index) {
+            <div
+              class="sp-card-tile"
+              [class.sp-selected]="isCardSelectedToBottom($index)"
+              [class.sp-selectable]="!isCardSelectedToBottom($index) && selectedCardsToBottom().length < requiredBottomCount()"
+              (click)="toggleCardToBottom($index)">
+              <div class="sp-card-name">{{ card.name }}</div>
+              <div class="sp-card-type">{{ card.type }}</div>
+              @if (isCardSelectedToBottom($index)) {
+                <i class="pi pi-arrow-down sp-bottom-icon"></i>
+              }
+            </div>
+          }
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="sp-actions">
+          <p-button
+            label="Activate Serum Powder"
+            icon="pi pi-bolt"
+            severity="warn"
+            [disabled]="!serumPowderConfirmEnabled()"
+            (onClick)="confirmSerumPowder()">
+          </p-button>
+          <p-button
+            label="Cancel"
+            icon="pi pi-times"
+            severity="secondary"
+            [text]="true"
+            (onClick)="cancelSerumPowder()">
+          </p-button>
+        </div>
+      </p-card>
+    </div>
+  </main>
+}
+
+<!-- ── Phase: Complete — session summary ─────────────────────────────────── -->
+@if (phase() === 'complete' && summary()) {
+  <main class="mulligan-session-container">
+    <div class="summary-screen">
+      <p-card styleClass="summary-card">
+        <ng-template pTemplate="header">
+          <div class="summary-header"
+               [class.summary-success]="summary()!.foundSuccessfulHand"
+               [class.summary-failure]="!summary()!.foundSuccessfulHand">
+            <i [class]="summary()!.foundSuccessfulHand
+                          ? 'pi pi-check-circle summary-result-icon'
+                          : 'pi pi-times-circle summary-result-icon'"></i>
+            <h2>{{ summary()!.foundSuccessfulHand ? 'Success – Hand Found!' : 'Failure – No Castable Hand' }}</h2>
+          </div>
+        </ng-template>
+
+        <div class="summary-stats">
+          <div class="stat-row">
+            <span class="stat-label">Final Hand Size</span>
+            <span class="stat-value">{{ summary()!.finalHandSize }}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Total Mulligans</span>
+            <span class="stat-value">{{ summary()!.totalMulligans }}</span>
+          </div>
+          @if (summary()!.totalSerumPowderActivations > 0) {
+            <div class="stat-row">
+              <span class="stat-label">Serum Powder Activations</span>
+              <span class="stat-value">{{ summary()!.totalSerumPowderActivations }}</span>
+            </div>
+          }
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="summary-actions">
+          <p-button
+            label="Start Another Session"
+            icon="pi pi-refresh"
+            severity="success"
+            (onClick)="startNewSession()">
+          </p-button>
+          <p-button
+            label="Back to Decklists"
+            icon="pi pi-list"
+            severity="secondary"
+            [text]="true"
+            (onClick)="goBack()">
+          </p-button>
+        </div>
+      </p-card>
+    </div>
+  </main>
+}
+

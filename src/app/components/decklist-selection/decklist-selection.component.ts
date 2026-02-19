@@ -55,6 +55,10 @@ export class DecklistSelectionComponent {
     this.router.navigate(['/comparisons']);
   }
 
+  startMulligan(decklist: Decklist): void {
+    this.router.navigate(['/decklists', decklist.id, 'mulligan']);
+  }
+
   openAddDecklistModal(): void {
     this.showModal.set(true);
   }

@@ -42,6 +42,18 @@
 
     <div class="side-panel">
       <p-card header="Hand Metadata" styleClass="metadata-card">
+        @if (metadata().handNumber !== undefined) {
+          <div class="metadata-item">
+            <span class="label">Hand #:</span>
+            <span class="value">{{ metadata().handNumber }}</span>
+          </div>
+        }
+        @if (metadata().targetHandSize !== undefined) {
+          <div class="metadata-item">
+            <span class="label">Target Size:</span>
+            <span class="value">{{ metadata().targetHandSize }}</span>
+          </div>
+        }
         <div class="metadata-item">
           <span class="label">Seat Order:</span>
           <span class="value">{{ metadata().seatOrder }}</span>
@@ -153,7 +165,7 @@
           <label for="castEtali" class="checkbox-label">This hand can cast Etali</label>
         </div>
 
-        @if (canCastEtali()) {
+        @if (canCastEtali() && showMinCardsInput()) {
           <div class="inline-group mt-2">
             <label for="minCards">Min Cards to Cast</label>
             <p-inputNumber 

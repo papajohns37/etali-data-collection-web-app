@@ -64,6 +64,12 @@
               (onClick)="goToHandCollection()">
             </p-button>
             <p-button 
+              label="Mulligan Session" 
+              icon="pi pi-replay" 
+              severity="info"
+              (onClick)="goToMulliganSession()">
+            </p-button>
+            <p-button 
               label="Back" 
               icon="pi pi-arrow-left" 
               severity="secondary"
@@ -204,6 +210,199 @@
           </div>
         </div>
       </p-card>
+    </div>
+  }
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     Mulligan Statistics Section (independent of hand-collection data)
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="statistics-container mulligan-statistics-section">
+
+  <p-divider>
+    <span class="divider-label"><i class="pi pi-replay"></i> Mulligan Testing Statistics</span>
+  </p-divider>
+
+  @if (mulliganLoading()) {
+    <p-card>
+      <div class="loading-state">
+        <p-progressSpinner styleClass="spinner" />
+        <p>Loading mulligan statistics...</p>
+      </div>
+    </p-card>
+  } @else if (mulliganError()) {
+    <p-card>
+      <p-message severity="error" [text]="mulliganError()!"></p-message>
+    </p-card>
+  } @else if (!hasMulliganData()) {
+    <p-card>
+      <div class="mulligan-empty-state">
+        <i class="pi pi-replay" style="font-size: 2.5rem; color: var(--text-color-secondary)"></i>
+        <h3>No Mulligan Data Yet</h3>
+        <p>Run mulligan sessions to collect data on how this deck performs through the London Mulligan process.</p>
+        <p-button
+          label="Start Mulligan Session"
+          icon="pi pi-play"
+          severity="success"
+          (onClick)="goToMulliganSession()">
+        </p-button>
+      </div>
+    </p-card>
+  } @else {
+    <div class="statistics-content">
+
+      <!-- Mulligan Overview Card -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="mulligan-card-header">
+            <h3>Mulligan Session Overview</h3>
+            <p-button
+              label="New Session"
+              icon="pi pi-play"
+              severity="success"
+              [text]="true"
+              (onClick)="goToMulliganSession()">
+            </p-button>
+          </div>
+        </ng-template>
+
+        <div class="mulligan-overview-grid">
+          <div class="mulligan-stat-item">
+            <span class="mulligan-stat-label">Total Sessions</span>
+            <span class="mulligan-stat-value">{{ mulliganStats()!.totalSessions }}</span>
+          </div>
+          <div class="mulligan-stat-item">
+            <span class="mulligan-stat-label">Successful</span>
+            <span class="mulligan-stat-value success-value">{{ mulliganStats()!.successfulSessions }}</span>
+          </div>
+          <div class="mulligan-stat-item">
+            <span class="mulligan-stat-label">Success Rate</span>
+            <span class="mulligan-stat-value success-value">{{ mulliganStats()!.successRate | number:'1.1-1' }}%</span>
+          </div>
+          <div class="mulligan-stat-item">
+            <span class="mulligan-stat-label">Avg Mulligans</span>
+            <span class="mulligan-stat-value">{{ mulliganStats()!.averageMulligans | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <p-progressBar
+          [value]="mulliganStats()!.successRate"
+          [showValue]="false"
+          styleClass="mulligan-progress">
+        </p-progressBar>
+        <div class="overall-ci" style="margin-top: 0.5rem">
+          {{ mulliganStats()!.successRate | number:'1.1-1' }}% success rate across {{ mulliganStats()!.totalSessions }} sessions
+        </div>
+      </p-card>
+
+      <!-- Success by Hand Size -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <h3>Successes by Final Hand Size</h3>
+        </ng-template>
+        <p-table
+          [value]="mulliganSuccessByHandSize()"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Hand Size</th>
+              <th>Successful Sessions</th>
+              <th>Visual</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td><strong>{{ row.handSize }} Cards</strong></td>
+              <td>{{ row.successes }}</td>
+              <td>
+                <div class="progress-cell">
+                  <p-progressBar
+                    [value]="mulliganStats()!.totalSessions > 0 ? (row.successes / mulliganStats()!.totalSessions) * 100 : 0"
+                    [showValue]="false">
+                  </p-progressBar>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="table-note">
+          <i class="pi pi-info-circle"></i>
+          <span>Number of sessions where the kept hand had the given number of cards.</span>
+        </div>
+      </p-card>
+
+      <!-- Mulligan Distribution -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <h3>Mulligan Distribution</h3>
+        </ng-template>
+        <p-table
+          [value]="mulliganDistributionData()"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Mulligans Taken</th>
+              <th>Sessions</th>
+              <th>Visual</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                @if (row.mulligans === 0) {
+                  <strong>0</strong> <span class="sample-detail">(kept opening hand)</span>
+                } @else {
+                  <strong>{{ row.mulligans }}</strong>
+                }
+              </td>
+              <td>{{ row.sessions }}</td>
+              <td>
+                <div class="progress-cell">
+                  <p-progressBar
+                    [value]="mulliganStats()!.totalSessions > 0 ? (row.sessions / mulliganStats()!.totalSessions) * 100 : 0"
+                    [showValue]="false">
+                  </p-progressBar>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+
+      <!-- Serum Powder Card (only when used) -->
+      @if (mulliganStats()!.sessionsWithSerumPowder > 0) {
+        <p-card>
+          <ng-template pTemplate="header">
+            <h3><i class="pi pi-bolt" style="margin-right: 0.5rem"></i> Serum Powder Statistics</h3>
+          </ng-template>
+          <div class="mulligan-overview-grid">
+            <div class="mulligan-stat-item">
+              <span class="mulligan-stat-label">Sessions Used</span>
+              <span class="mulligan-stat-value">{{ mulliganStats()!.sessionsWithSerumPowder }}</span>
+            </div>
+            <div class="mulligan-stat-item">
+              <span class="mulligan-stat-label">Total Activations</span>
+              <span class="mulligan-stat-value">{{ mulliganStats()!.totalSerumPowderActivations }}</span>
+            </div>
+            <div class="mulligan-stat-item">
+              <span class="mulligan-stat-label">Avg Activations</span>
+              <span class="mulligan-stat-value">{{ mulliganStats()!.averageSerumPowderActivations | number:'1.2-2' }}</span>
+            </div>
+          </div>
+          <p-divider></p-divider>
+          <div class="mulligan-overview-grid">
+            <div class="mulligan-stat-item">
+              <span class="mulligan-stat-label">Success w/ Serum Powder</span>
+              <span class="mulligan-stat-value success-value">{{ mulliganStats()!.successRateWithSerumPowder | number:'1.1-1' }}%</span>
+            </div>
+            <div class="mulligan-stat-item">
+              <span class="mulligan-stat-label">Success w/o Serum Powder</span>
+              <span class="mulligan-stat-value">{{ mulliganStats()!.successRateWithoutSerumPowder | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+        </p-card>
+      }
+
     </div>
   }
 </div>

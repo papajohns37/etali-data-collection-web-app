@@ -206,3 +206,72 @@
 :host ::ng-deep .result-message .p-message-wrapper {
   padding: 1rem;
 }
+
+/* ── Mulligan Comparison Section ────────────────────────────────────────── */
+.mulligan-divider-label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-color-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mulligan-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.mulligan-empty-state h3 {
+  margin: 0.25rem 0;
+  color: var(--text-color);
+}
+
+.mulligan-empty-state p {
+  color: var(--text-color-secondary);
+  margin: 0;
+  max-width: 480px;
+}
+
+.mulligan-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .mulligan-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mulligan-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.mulligan-stat-row:last-child {
+  border-bottom: none;
+}
+
+.mulligan-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mulligan-stat-value {
+  font-weight: 600;
+  color: var(--text-color);
+}
