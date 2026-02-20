@@ -203,13 +203,13 @@ export class MulliganSessionComponent {
       return;
     }
 
-    // No Serum Powder in deck — auto-mulligan without showing the decision overlay
-    if (!this.deckHasSerumPowder()) {
+    // Serum Powder not in hand — auto-mulligan without showing the decision overlay
+    if (!this.handHasSerumPowder()) {
       this.callEvaluateHand(data, { keepHand: false });
       return;
     }
 
-    // Cannot cast Etali, can mulligan, AND deck has Serum Powder — show decision overlay
+    // Cannot cast Etali, can mulligan, AND Serum Powder is in hand — show decision overlay
     this.pendingEvaluation.set(data);
     this.phase.set('deciding');
   }
