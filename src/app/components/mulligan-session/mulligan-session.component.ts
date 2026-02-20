@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { CachedImageDirective } from '../../shared/directives/cached-image.directive';
 
 import { MulliganService } from '../../services/mulligan.service';
 import { DecklistService } from '../../services/decklist.service';
@@ -44,6 +45,7 @@ type MulliganPhase = 'start' | 'evaluating' | 'deciding' | 'serum-powder' | 'loa
     CardModule,
     DividerModule,
     SharedHandEvaluationComponent,
+    CachedImageDirective,
   ],
   templateUrl: './mulligan-session.component.html',
   styleUrl: './mulligan-session.component.css',
@@ -125,6 +127,17 @@ export class MulliganSessionComponent {
       (c) => c.name.toLowerCase() === SERUM_POWDER_NAME.toLowerCase()
     );
   });
+
+  /**
+   * Hand cards with their original indices, excluding Serum Powder.
+   * Used on the Serum Powder selection screen so the Powder itself cannot
+   * be chosen as a card to bottom (it is being exiled/activated).
+   */
+  nonSerumPowderHandEntries = computed(() =>
+    this.handCards()
+      .map((card, index) => ({ card, originalIndex: index }))
+      .filter(({ card }) => card.name.toLowerCase() !== SERUM_POWDER_NAME.toLowerCase())
+  );
 
   /** Display name of the selected decklist. */
   decklistName = computed(() => {

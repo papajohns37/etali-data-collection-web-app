@@ -118,16 +118,17 @@
         }
 
         <div class="sp-cards-grid">
-          @for (card of currentHand()!.cards; track card.name + $index) {
+          @for (entry of nonSerumPowderHandEntries(); track entry.originalIndex) {
             <div
               class="sp-card-tile"
-              [class.sp-selected]="isCardSelectedToBottom($index)"
-              [class.sp-selectable]="!isCardSelectedToBottom($index) && selectedCardsToBottom().length < requiredBottomCount()"
-              (click)="toggleCardToBottom($index)">
-              <div class="sp-card-name">{{ card.name }}</div>
-              <div class="sp-card-type">{{ card.type }}</div>
-              @if (isCardSelectedToBottom($index)) {
-                <i class="pi pi-arrow-down sp-bottom-icon"></i>
+              [class.sp-selected]="isCardSelectedToBottom(entry.originalIndex)"
+              [class.sp-selectable]="!isCardSelectedToBottom(entry.originalIndex) && selectedCardsToBottom().length < requiredBottomCount()"
+              (click)="toggleCardToBottom(entry.originalIndex)">
+              <img [cachedSrc]="entry.card.name" [alt]="entry.card.name" />
+              @if (isCardSelectedToBottom(entry.originalIndex)) {
+                <div class="sp-selected-overlay">
+                  <i class="pi pi-arrow-down"></i>
+                </div>
               }
             </div>
           }
