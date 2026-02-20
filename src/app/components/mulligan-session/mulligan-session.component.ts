@@ -119,6 +119,13 @@ export class MulliganSessionComponent {
     );
   });
 
+  /** True when the current hand contains at least one Serum Powder. */
+  handHasSerumPowder = computed(() => {
+    return this.handCards().some(
+      (c) => c.name.toLowerCase() === SERUM_POWDER_NAME.toLowerCase()
+    );
+  });
+
   /** Display name of the selected decklist. */
   decklistName = computed(() => {
     const id = this.decklistId();

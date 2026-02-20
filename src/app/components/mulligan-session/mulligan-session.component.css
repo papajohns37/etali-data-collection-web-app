@@ -102,9 +102,10 @@
   right: 0;
   /* Must exceed CDK drag z-index (1000) and any card stacking context */
   z-index: 9999;
-  background: var(--surface-card);
+  background: var(--surface-card, #1e1e2e);
+  background-color: var(--surface-card, #1e1e2e);
   border-top: 2px solid var(--blue-400, #42a5f5);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.6);
 }
 
 .decision-panel-inner {
