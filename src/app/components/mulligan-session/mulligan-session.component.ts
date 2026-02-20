@@ -224,6 +224,17 @@ export class MulliganSessionComponent {
 
   openSerumPowderSelection(): void {
     this.selectedCardsToBottom.set([]);
+    // On a 7-card hand no cards need to go to the bottom — activate immediately.
+    if (this.requiredBottomCount() === 0) {
+      const pending = this.pendingEvaluation();
+      if (!pending) return;
+      this.callEvaluateHand(pending, {
+        keepHand: false,
+        activateSerumPowder: true,
+        cardsToBottomIndices: [],
+      });
+      return;
+    }
     this.phase.set('serum-powder');
   }
 
