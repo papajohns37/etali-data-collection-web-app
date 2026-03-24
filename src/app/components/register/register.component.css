@@ -84,31 +84,6 @@
   font-size: 0.875rem;
 }
 
-.password-requirements {
-  padding: 1rem;
-  background: var(--surface-50);
-  border-left: 3px solid var(--blue-500);
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-}
-
-.requirements-title {
-  margin: 0 0 0.5rem;
-  color: var(--text-color);
-  font-size: 0.9rem;
-}
-
-.password-requirements ul {
-  margin: 0;
-  padding-left: 1.5rem;
-  color: var(--text-color-secondary);
-  font-size: 0.875rem;
-}
-
-.password-requirements li {
-  margin-bottom: 0.25rem;
-}
-
 .form-actions {
   margin-top: 2rem;
   display: flex;

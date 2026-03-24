@@ -15,8 +15,6 @@ import { MessageModule } from 'primeng/message';
 
 /**
  * Register component for creating new users (Admin only)
- * 
- * Validates password requirements and role assignment
  */
 @Component({
   selector: 'app-register',
@@ -44,15 +42,6 @@ export class RegisterComponent {
   errorMessage = signal<string | null>(null);
   isLoading = signal(false);
 
-  // Password requirements for display
-  passwordRequirements = [
-    'Minimum 6 characters',
-    'At least 1 uppercase letter',
-    'At least 1 lowercase letter',
-    'At least 1 digit',
-    'At least 1 special character'
-  ];
-
   constructor() {
     // Initialize form with validators
     this.registerForm = this.fb.group({
@@ -62,32 +51,12 @@ export class RegisterComponent {
         Validators.maxLength(50),
         Validators.pattern(/^[a-zA-Z0-9\-._]+$/)
       ]],
-      password: ['', [Validators.required, Validators.minLength(6), this.passwordValidator]],
+      password: ['', [Validators.required]],
       confirmPassword: ['', [Validators.required]],
       isAdmin: [false]
     }, {
       validators: this.passwordMatchValidator
     });
-  }
-
-  /**
-   * Custom validator for password requirements
-   */
-  private passwordValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.value;
-    
-    if (!password) {
-      return null;
-    }
-
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumeric = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
-
-    return !passwordValid ? { passwordRequirements: true } : null;
   }
 
   /**
