@@ -46,27 +46,12 @@
           [toggleMask]="true"
           styleClass="w-full"
           inputStyleClass="w-full"
-          [feedback]="true"
+          [feedback]="false"
         ></p-password>
       </div>
       @if (hasError('password', 'required')) {
         <small class="error-text">Password is required</small>
       }
-      @if (hasError('password', 'minlength')) {
-        <small class="error-text">Password must be at least 6 characters</small>
-      }
-      @if (hasError('password', 'passwordRequirements')) {
-        <small class="error-text">Password does not meet requirements</small>
-      }
-
-      <div class="password-requirements">
-        <p class="requirements-title"><strong>Password Requirements:</strong></p>
-        <ul>
-          @for (requirement of passwordRequirements; track requirement) {
-            <li>{{ requirement }}</li>
-          }
-        </ul>
-      </div>
 
       <div class="form-field">
         <label for="confirmPassword" class="block mb-2">Confirm Password</label>
