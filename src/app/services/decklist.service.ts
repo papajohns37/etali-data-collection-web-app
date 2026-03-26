@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Decklist, RenameResponse } from '../models/decklist.model';
-import { Hand } from '../models/hand.model';
+import { Hand, MaximumManaHandEvaluation } from '../models/hand.model';
 import { Card } from '../models/card.model';
 import { DecklistStatistics } from '../models/statistics.model';
 import { API_BASE_URL } from '../core/tokens';
@@ -52,6 +52,28 @@ export class DecklistService {
     decklistName: string;
   }): Observable<any> {
     return this.http.post(`${this.baseUrl}/hand/evaluate`, evaluation);
+  }
+
+  /**
+   * Get a random maximum mana hand for the specified decklist
+   */
+  getMaximumManaHand(decklistName: string): Observable<Hand> {
+    const encodedDecklistName = encodeURIComponent(decklistName);
+    return this.http.get<Hand>(`${this.baseUrl}/maximum-mana-hand?decklistName=${encodedDecklistName}`);
+  }
+
+  /**
+   * Submit maximum mana hand evaluation to the server
+   */
+  submitMaximumManaHandEvaluation(evaluation: MaximumManaHandEvaluation): Observable<any> {
+    return this.http.post(`${this.baseUrl}/maximum-mana-hand/evaluate`, evaluation);
+  }
+
+  /**
+   * Retrieve all evaluated maximum mana hands
+   */
+  getMaximumManaEvaluatedHands(): Observable<MaximumManaHandEvaluation[]> {
+    return this.http.get<MaximumManaHandEvaluation[]>(`${this.baseUrl}/maximum-mana-hands/evaluated`);
   }
 
   addDecklist(moxfieldLink: string, name: string): Observable<any> {

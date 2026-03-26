@@ -39,6 +39,11 @@ export const routes: Routes = [
     canActivate: [authGuard] // Requires authentication to record mulligan sessions
   },
   {
+    path: 'decklists/:id/maximum-mana',
+    loadComponent: () => import('./components/maximum-mana-hand-collection/maximum-mana-hand-collection.component').then(m => m.MaximumManaHandCollectionComponent),
+    canActivate: [contributorGuard] // Requires contributor/admin to record maximum mana hands
+  },
+  {
     path: 'hand-collection',
     loadComponent: () => import('./components/hand-collection/hand-collection.component').then(m => m.HandCollectionComponent),
     canActivate: [decklistGuard, authGuard] // Requires both decklist selection and authentication

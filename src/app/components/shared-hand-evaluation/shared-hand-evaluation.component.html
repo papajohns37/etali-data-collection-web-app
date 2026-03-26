@@ -155,25 +155,14 @@
       }
 
       <p-card header="Evaluation" styleClass="evaluation-card">
-        <div class="checkbox-wrapper">
-          <p-checkbox 
-            [ngModel]="canCastEtali()"
-            (ngModelChange)="canCastEtali.set($event); onCanCastEtaliChange()"
-            [binary]="true"
-            [disabled]="isLoading()"
-            inputId="castEtali"></p-checkbox>
-          <label for="castEtali" class="checkbox-label">This hand can cast Etali</label>
-        </div>
-
-        @if (canCastEtali() && showMinCardsInput()) {
+        @if (isMaximumManaMode()) {
           <div class="inline-group mt-2">
-            <label for="minCards">Min Cards to Cast</label>
-            <p-inputNumber 
-              inputId="minCards"
-              [ngModel]="minimumCardsToCastEtali()"
-              (ngModelChange)="minimumCardsToCastEtali.set($event)"
-              [min]="1" 
-              [max]="7"
+            <label for="maximumManaIn7CardHand">Maximum Mana in 7 Cards</label>
+            <p-inputNumber
+              inputId="maximumManaIn7CardHand"
+              [ngModel]="maximumManaIn7CardHand()"
+              (ngModelChange)="onMaximumManaChange($event, 7)"
+              [min]="0"
               [disabled]="isLoading()"
               [showButtons]="true"
               buttonLayout="horizontal"
@@ -182,6 +171,95 @@
               styleClass="compact-number-input">
             </p-inputNumber>
           </div>
+          <div class="inline-group mt-2">
+            <label for="maximumManaIn6CardHand">Maximum Mana in 6 Cards</label>
+            <p-inputNumber
+              inputId="maximumManaIn6CardHand"
+              [ngModel]="maximumManaIn6CardHand()"
+              (ngModelChange)="onMaximumManaChange($event, 6)"
+              [min]="0"
+              [disabled]="isLoading()"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              styleClass="compact-number-input">
+            </p-inputNumber>
+          </div>
+          <div class="inline-group mt-2">
+            <label for="maximumManaIn5CardHand">Maximum Mana in 5 Cards</label>
+            <p-inputNumber
+              inputId="maximumManaIn5CardHand"
+              [ngModel]="maximumManaIn5CardHand()"
+              (ngModelChange)="onMaximumManaChange($event, 5)"
+              [min]="0"
+              [disabled]="isLoading()"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              styleClass="compact-number-input">
+            </p-inputNumber>
+          </div>
+          <div class="inline-group mt-2">
+            <label for="maximumManaIn4CardHand">Maximum Mana in 4 Cards</label>
+            <p-inputNumber
+              inputId="maximumManaIn4CardHand"
+              [ngModel]="maximumManaIn4CardHand()"
+              (ngModelChange)="onMaximumManaChange($event, 4)"
+              [min]="0"
+              [disabled]="isLoading()"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              styleClass="compact-number-input">
+            </p-inputNumber>
+          </div>
+          <div class="inline-group mt-2">
+            <label for="maximumManaIn3CardHand">Maximum Mana in 3 Cards</label>
+            <p-inputNumber
+              inputId="maximumManaIn3CardHand"
+              [ngModel]="maximumManaIn3CardHand()"
+              (ngModelChange)="onMaximumManaChange($event, 3)"
+              [min]="0"
+              [disabled]="isLoading()"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              styleClass="compact-number-input">
+            </p-inputNumber>
+          </div>
+        } @else {
+          <div class="checkbox-wrapper">
+            <p-checkbox 
+              [ngModel]="canCastEtali()"
+              (ngModelChange)="canCastEtali.set($event); onCanCastEtaliChange()"
+              [binary]="true"
+              [disabled]="isLoading()"
+              inputId="castEtali"></p-checkbox>
+            <label for="castEtali" class="checkbox-label">This hand can cast Etali</label>
+          </div>
+
+          @if (canCastEtali() && showMinCardsInput()) {
+            <div class="inline-group mt-2">
+              <label for="minCards">Min Cards to Cast</label>
+              <p-inputNumber 
+                inputId="minCards"
+                [ngModel]="minimumCardsToCastEtali()"
+                (ngModelChange)="minimumCardsToCastEtali.set($event)"
+                [min]="1" 
+                [max]="7"
+                [disabled]="isLoading()"
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                styleClass="compact-number-input">
+              </p-inputNumber>
+            </div>
+          }
         }
 
         @if (evaluationMessage()) {

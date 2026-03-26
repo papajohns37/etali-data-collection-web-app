@@ -59,6 +59,10 @@ export class DecklistSelectionComponent {
     this.router.navigate(['/decklists', decklist.id, 'mulligan']);
   }
 
+  startMaximumMana(decklist: Decklist): void {
+    this.router.navigate(['/decklists', decklist.id, 'maximum-mana']);
+  }
+
   openAddDecklistModal(): void {
     this.showModal.set(true);
   }

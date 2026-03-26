@@ -34,6 +34,11 @@ export interface HandEvaluationData {
   minimumCardsToCastEtali: number;
   cardsNeeded: number;
   allCards: Card[];
+  maximumManaIn7CardHand?: number;
+  maximumManaIn6CardHand?: number;
+  maximumManaIn5CardHand?: number;
+  maximumManaIn4CardHand?: number;
+  maximumManaIn3CardHand?: number;
 }
 
 @Component({
@@ -76,6 +81,7 @@ export class SharedHandEvaluationComponent {
   showResetButton = input<boolean>(true);
   showSkipButton = input<boolean>(false);
   showMinCardsInput = input<boolean>(true);
+  isMaximumManaMode = input<boolean>(false);
   
   // Labels customization
   backButtonLabel = input<string>('Back');
@@ -96,6 +102,11 @@ export class SharedHandEvaluationComponent {
   minimumCardsToCastEtali = signal<number>(8);
   cardsNeeded = signal<number>(1);
   cardsInGambleHand = signal<number>(7);
+  maximumManaIn7CardHand = signal<number>(0);
+  maximumManaIn6CardHand = signal<number>(0);
+  maximumManaIn5CardHand = signal<number>(0);
+  maximumManaIn4CardHand = signal<number>(0);
+  maximumManaIn3CardHand = signal<number>(0);
   
   // Library search modal state
   showLibraryModal = signal(false);
@@ -142,9 +153,23 @@ export class SharedHandEvaluationComponent {
         this.minimumCardsToCastEtali.set(8);
         this.cardsNeeded.set(1);
         this.cardsInGambleHand.set(7);
+        this.maximumManaIn7CardHand.set(0);
+        this.maximumManaIn6CardHand.set(0);
+        this.maximumManaIn5CardHand.set(0);
+        this.maximumManaIn4CardHand.set(0);
+        this.maximumManaIn3CardHand.set(0);
         this.lastHandId = currentHandId;
       }
     });
+  }
+
+  onMaximumManaChange(value: number | null | undefined, handSize: 7 | 6 | 5 | 4 | 3) {
+    const normalizedValue = Math.max(0, Math.floor(value ?? 0));
+    if (handSize === 7) this.maximumManaIn7CardHand.set(normalizedValue);
+    if (handSize === 6) this.maximumManaIn6CardHand.set(normalizedValue);
+    if (handSize === 5) this.maximumManaIn5CardHand.set(normalizedValue);
+    if (handSize === 4) this.maximumManaIn4CardHand.set(normalizedValue);
+    if (handSize === 3) this.maximumManaIn3CardHand.set(normalizedValue);
   }
 
   // Check if Gamble card is in hand
@@ -398,7 +423,12 @@ export class SharedHandEvaluationComponent {
       canCastEtali: this.canCastEtali(),
       minimumCardsToCastEtali: this.canCastEtali() ? this.minimumCardsToCastEtali() : 8,
       cardsNeeded: this.cardsNeeded(),
-      allCards: [...this.originalHand()]
+      allCards: [...this.originalHand()],
+      maximumManaIn7CardHand: this.maximumManaIn7CardHand(),
+      maximumManaIn6CardHand: this.maximumManaIn6CardHand(),
+      maximumManaIn5CardHand: this.maximumManaIn5CardHand(),
+      maximumManaIn4CardHand: this.maximumManaIn4CardHand(),
+      maximumManaIn3CardHand: this.maximumManaIn3CardHand()
     });
   }
 
@@ -434,6 +464,11 @@ export class SharedHandEvaluationComponent {
     this.minimumCardsToCastEtali.set(8);
     this.cardsNeeded.set(1);
     this.cardsInGambleHand.set(7);
+    this.maximumManaIn7CardHand.set(0);
+    this.maximumManaIn6CardHand.set(0);
+    this.maximumManaIn5CardHand.set(0);
+    this.maximumManaIn4CardHand.set(0);
+    this.maximumManaIn3CardHand.set(0);
     
     this.handChanged.emit(this.currentHand());
     this.battlefieldChanged.emit(this.battlefield());
