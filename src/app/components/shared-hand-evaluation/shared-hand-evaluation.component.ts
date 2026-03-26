@@ -165,11 +165,43 @@ export class SharedHandEvaluationComponent {
 
   onMaximumManaChange(value: number | null | undefined, handSize: 7 | 6 | 5 | 4 | 3) {
     const normalizedValue = Math.max(0, Math.floor(value ?? 0));
-    if (handSize === 7) this.maximumManaIn7CardHand.set(normalizedValue);
-    if (handSize === 6) this.maximumManaIn6CardHand.set(normalizedValue);
-    if (handSize === 5) this.maximumManaIn5CardHand.set(normalizedValue);
-    if (handSize === 4) this.maximumManaIn4CardHand.set(normalizedValue);
-    if (handSize === 3) this.maximumManaIn3CardHand.set(normalizedValue);
+    const values = this.getMaximumManaValues(); // [3-card, 4-card, 5-card, 6-card, 7-card]
+    const indexByHandSize: Record<3 | 4 | 5 | 6 | 7, number> = {
+      3: 0,
+      4: 1,
+      5: 2,
+      6: 3,
+      7: 4
+    };
+
+    const changedIndex = indexByHandSize[handSize];
+    const minForChangedIndex = changedIndex > 0 ? values[changedIndex - 1] : 0;
+    values[changedIndex] = Math.max(normalizedValue, minForChangedIndex);
+
+    // Propagate the minimum forward so each larger hand size is never below a smaller one.
+    for (let i = changedIndex + 1; i < values.length; i++) {
+      values[i] = Math.max(values[i], values[i - 1]);
+    }
+
+    this.setMaximumManaValues(values);
+  }
+
+  private getMaximumManaValues(): number[] {
+    return [
+      this.maximumManaIn3CardHand(),
+      this.maximumManaIn4CardHand(),
+      this.maximumManaIn5CardHand(),
+      this.maximumManaIn6CardHand(),
+      this.maximumManaIn7CardHand()
+    ];
+  }
+
+  private setMaximumManaValues(values: number[]) {
+    this.maximumManaIn3CardHand.set(values[0]);
+    this.maximumManaIn4CardHand.set(values[1]);
+    this.maximumManaIn5CardHand.set(values[2]);
+    this.maximumManaIn6CardHand.set(values[3]);
+    this.maximumManaIn7CardHand.set(values[4]);
   }
 
   // Check if Gamble card is in hand
